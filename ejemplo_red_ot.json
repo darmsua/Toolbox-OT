@@ -1,0 +1,342 @@
+{
+  "schema": "red-ot/1.0",
+  "nombre": "Planta Depuradora — Laboratorio OT",
+  "devices": [
+    {
+      "id": "n1",
+      "type": "server",
+      "x": 120,
+      "y": 49,
+      "level": 4,
+      "props": {
+        "name": "Servidor MES",
+        "ip": "10.0.4.10",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "HP",
+        "zone": "IT",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n2",
+      "type": "firewall",
+      "x": 120,
+      "y": 219,
+      "level": 3.5,
+      "props": {
+        "name": "Firewall OT",
+        "ip": "10.0.35.1",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "Fortinet",
+        "zone": "DMZ",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n3",
+      "type": "historian",
+      "x": 120,
+      "y": 389,
+      "level": 3,
+      "props": {
+        "name": "Historiador PI",
+        "ip": "10.0.3.20",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "OSIsoft PI",
+        "zone": "OT",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n4",
+      "type": "scada",
+      "x": 360,
+      "y": 389,
+      "level": 3,
+      "props": {
+        "name": "SCADA Ignition",
+        "ip": "10.0.3.10",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "Ignition",
+        "zone": "OT",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n5",
+      "type": "switch_ind",
+      "x": 120,
+      "y": 559,
+      "level": 2,
+      "props": {
+        "name": "Switch célula",
+        "ip": "10.0.2.2",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "Siemens",
+        "zone": "OT",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n6",
+      "type": "hmi",
+      "x": 360,
+      "y": 559,
+      "level": 2,
+      "props": {
+        "name": "HMI Línea",
+        "ip": "10.0.2.30",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "Wonderware",
+        "zone": "OT",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n7",
+      "type": "plc",
+      "x": 120,
+      "y": 729,
+      "level": 1,
+      "props": {
+        "name": "PLC S7-1215C",
+        "ip": "10.0.1.10",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "Siemens S7",
+        "zone": "OT",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n8",
+      "type": "vfd",
+      "x": 360,
+      "y": 729,
+      "level": 1,
+      "props": {
+        "name": "Variador bomba",
+        "ip": "10.0.1.40",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "ABB",
+        "zone": "OT",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n9",
+      "type": "motor_ac",
+      "x": 120,
+      "y": 899,
+      "level": 0,
+      "props": {
+        "name": "Bomba 1",
+        "ip": "",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "",
+        "zone": "Campo",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n10",
+      "type": "temp",
+      "x": 360,
+      "y": 899,
+      "level": 0,
+      "props": {
+        "name": "Sensor Temp.",
+        "ip": "",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "",
+        "zone": "Campo",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n11",
+      "type": "pressure",
+      "x": 560,
+      "y": 899,
+      "level": 0,
+      "props": {
+        "name": "Sensor Presión",
+        "ip": "",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "",
+        "zone": "Campo",
+        "notes": ""
+      }
+    }
+  ],
+  "conexiones": [
+    {
+      "from": "n1",
+      "to": "n2",
+      "protocolos": "HTTPS",
+      "direccion": "->"
+    },
+    {
+      "from": "n2",
+      "to": "n3",
+      "protocolos": "OPC UA",
+      "direccion": "->"
+    },
+    {
+      "from": "n3",
+      "to": "n4",
+      "protocolos": "OPC UA",
+      "direccion": "->"
+    },
+    {
+      "from": "n4",
+      "to": "n5",
+      "protocolos": "PROFINET",
+      "direccion": "->"
+    },
+    {
+      "from": "n5",
+      "to": "n6",
+      "protocolos": "PROFINET",
+      "direccion": "->"
+    },
+    {
+      "from": "n5",
+      "to": "n7",
+      "protocolos": "S7comm",
+      "direccion": "->"
+    },
+    {
+      "from": "n7",
+      "to": "n8",
+      "protocolos": "PROFINET",
+      "direccion": "->"
+    },
+    {
+      "from": "n7",
+      "to": "n9",
+      "protocolos": "Modbus RTU",
+      "direccion": "->"
+    },
+    {
+      "from": "n7",
+      "to": "n10",
+      "protocolos": "HART",
+      "direccion": "->"
+    },
+    {
+      "from": "n7",
+      "to": "n11",
+      "protocolos": "HART",
+      "direccion": "->"
+    }
+  ],
+  "zonas": [
+    {
+      "id": "s22",
+      "nombre": "Zona Enterprise / DMZ",
+      "color": "#2f6fb0",
+      "slt": 2,
+      "devices": [
+        "n1",
+        "n2"
+      ]
+    },
+    {
+      "id": "s23",
+      "nombre": "Zona Supervisión",
+      "color": "#1f8a8a",
+      "slt": 3,
+      "devices": [
+        "n3",
+        "n4",
+        "n5",
+        "n6"
+      ]
+    },
+    {
+      "id": "s24",
+      "nombre": "Zona Control y Campo",
+      "color": "#e8743b",
+      "slt": 3,
+      "devices": [
+        "n7",
+        "n8",
+        "n9",
+        "n10",
+        "n11"
+      ]
+    }
+  ],
+  "shapes": [
+    {
+      "id": "s22",
+      "kind": "rect",
+      "x": 20,
+      "y": 6,
+      "w": 1720,
+      "h": 328,
+      "props": {
+        "name": "Zona Enterprise / DMZ",
+        "fill": "#2f6fb0",
+        "stroke": "#2f6fb0",
+        "opacity": 0.1,
+        "radius": 14,
+        "slt": 2
+      }
+    },
+    {
+      "id": "s23",
+      "kind": "rect",
+      "x": 20,
+      "y": 346,
+      "w": 1720,
+      "h": 328,
+      "props": {
+        "name": "Zona Supervisión",
+        "fill": "#1f8a8a",
+        "stroke": "#1f8a8a",
+        "opacity": 0.1,
+        "radius": 14,
+        "slt": 3
+      }
+    },
+    {
+      "id": "s24",
+      "kind": "rect",
+      "x": 20,
+      "y": 686,
+      "w": 1720,
+      "h": 328,
+      "props": {
+        "name": "Zona Control y Campo",
+        "fill": "#e8743b",
+        "stroke": "#e8743b",
+        "opacity": 0.1,
+        "radius": 14,
+        "slt": 3
+      }
+    }
+  ]
+}
