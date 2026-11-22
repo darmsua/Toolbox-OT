@@ -1,4 +1,4 @@
-TOOLBOX-OT v1.0 - Licencia de uso
+TOOLBOX-OT v1.9 - Licencia de uso
 
 Esta obra se distribuye bajo
   Creative Commons Reconocimiento 4.0 Internacional (CC BY 4.0)
@@ -12,7 +12,7 @@ ERES LIBRE DE:
 BAJO LA CONDICIÓN DE:
   - Reconocimiento (BY): debes dar crédito de forma adecuada, incluyendo:
 
-      "Toolbox-OT v1.0. Inspirada por David de Armas Suárez (conecta3@hotmail.com).
+      "Toolbox-OT v1.9. Inspirada por David de Armas Suárez (conecta3@hotmail.com).
        Propulsada por Claude.ai (boosted by Claude.ai)."
 
     Indicar si se han realizado cambios y enlazar a la licencia. Puedes hacerlo de

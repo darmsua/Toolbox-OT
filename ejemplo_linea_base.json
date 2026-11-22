@@ -1,0 +1,124 @@
+{
+  "schema": "ot-baseline/1.0",
+  "celda": {
+    "nombre": "Picadora",
+    "zona_redot": "s46",
+    "vlan": "11",
+    "red": "10.10.11.0/24",
+    "origen": "ejemplo_red_ot.json",
+    "autor": "",
+    "fecha": "2026-11-22",
+    "notas": "Línea base de ejemplo. Los valores esperados (firmware, avisos, números de serie) son ficticios: cada grupo los rellena con los datos de su célula."
+  },
+  "ajustes": {
+    "timeout_s": 2,
+    "pausa_s": 0.5,
+    "snmp_comunidades": ["public", "private"],
+    "dcp": { "activar": false, "ip_interfaz": "10.10.11.250" },
+    "ifm_ruta_validacion": "/iolinkmaster/port[{p}]/validation_datastorage_mode"
+  },
+  "dispositivos": [
+    {
+      "id_redot": "n6",
+      "tipo_redot": "plc",
+      "nombre": "PLC 1",
+      "ip": "10.10.11.10",
+      "perfil": "plc_s7",
+      "esperado": {
+        "referencia": "6ES7 215-1AG40-0XB0",
+        "nombre_pn": "plc1",
+        "fw_minimo": "V4.6.0",
+        "avisos": [
+          { "id": "SSA-000000", "titulo": "Aviso de ejemplo (sustituir por uno real)", "corregido_en": "V4.6.1", "severidad": "ALTA", "cve": "CVE-0000-00000", "mitigacion": "Actualizar a la versión corregida o aplicar las mitigaciones del aviso." }
+        ],
+        "estado_cpu": "RUN",
+        "put_get": false,
+        "rack": 0,
+        "slot": 1,
+        "snmp": "v3",
+        "web": "desactivado",
+        "puertos_abiertos": [102],
+        "puertos_cerrados": [21, 23, 80, 443, 502],
+        "opcua": {
+          "url": "opc.tcp://10.10.11.10:4840",
+          "cred_env": "OT_OPCUA",
+          "nodos": [
+            { "nombre": "G120 · r0018 firmware CU", "nodeid": "ns=3;s=\"DB_Verif\".\"G120_r0018\"", "esperado": 4710000, "severidad": "MEDIA" },
+            { "nombre": "G120 · p1082 velocidad máx. (rpm)", "nodeid": "ns=3;s=\"DB_Verif\".\"G120_p1082\"", "maximo": 1500, "severidad": "ALTA", "recomendacion": "Velocidad máxima por encima de la línea base: riesgo para la máquina y las personas." }
+          ]
+        }
+      }
+    },
+    {
+      "id_redot": "n7",
+      "tipo_redot": "vfd",
+      "nombre": "VF 1",
+      "ip": "10.10.11.11",
+      "perfil": "vfd_g120",
+      "esperado": {
+        "nombre_pn": "g120-picadora",
+        "snmp": "v3",
+        "web": "https",
+        "puertos_abiertos": [],
+        "puertos_cerrados": [21, 23]
+      }
+    },
+    {
+      "id_redot": "n5",
+      "tipo_redot": "hmi",
+      "nombre": "HMI 1",
+      "ip": "10.10.11.12",
+      "perfil": "hmi",
+      "esperado": {
+        "nombre_pn": "hmi1",
+        "snmp": "v3",
+        "web": "desactivado",
+        "puertos_abiertos": [102],
+        "puertos_cerrados": [21, 23, 5900]
+      }
+    },
+    {
+      "id_redot": "",
+      "tipo_redot": "io_remote",
+      "nombre": "Maestro IO-Link",
+      "ip": "10.10.11.20",
+      "perfil": "iolink_ifm",
+      "esperado": {
+        "nombre_pn": "iolink-picadora",
+        "iot_auth": true,
+        "cred_env": "OT_IFM",
+        "snmp": "v3",
+        "puertos_abiertos": [80],
+        "puertos_cerrados": [21, 23],
+        "puertos_iolink": {
+          "1": { "nombre": "Sensor de temperatura", "vendorid": 310, "deviceid": 1063, "serial": "000123456789", "validacion": "" },
+          "2": { "nombre": "Sensor de nivel", "vendorid": 310, "deviceid": 1027, "serial": "", "validacion": "" }
+        }
+      }
+    },
+    {
+      "id_redot": "n4",
+      "tipo_redot": "switch_ind",
+      "nombre": "SW1",
+      "ip": "10.10.11.2",
+      "perfil": "switch_cisco",
+      "esperado": {
+        "snmp": "v3",
+        "cred_env": "OT_SSH",
+        "netmiko_tipo": "cisco_ios",
+        "puertos_abiertos": [22],
+        "puertos_cerrados": [23, 80],
+        "debe_contener": [
+          { "patron": "^ip ssh version 2", "severidad": "MEDIA", "recomendacion": "Forzar SSH v2." },
+          { "patron": "^service password-encryption", "severidad": "BAJA" },
+          { "patron": "transport input ssh", "severidad": "ALTA", "recomendacion": "En las líneas vty permitir solo SSH." }
+        ],
+        "no_debe_contener": [
+          { "patron": "^snmp-server community (public|private)", "severidad": "ALTA", "recomendacion": "Eliminar las comunidades SNMP por defecto." },
+          { "patron": "^ip http server", "severidad": "MEDIA", "recomendacion": "Desactivar el servidor HTTP del switch." },
+          { "patron": "transport input (telnet|all)", "severidad": "ALTA" }
+        ]
+      }
+    }
+  ]
+}

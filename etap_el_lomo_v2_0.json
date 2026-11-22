@@ -1,0 +1,964 @@
+{
+  "schema": "red-ot/1.0",
+  "nombre": "ETAP El Lomo V2.0",
+  "bandH": [
+    233.6363525390625,
+    188.74329331341914,
+    272.51177835621564,
+    483.4121313158116,
+    253.42366661697702,
+    356
+  ],
+  "devices": [
+    {
+      "id": "n1",
+      "type": "vfd",
+      "x": 560,
+      "y": 1240,
+      "level": 1,
+      "props": {
+        "ref": "A001",
+        "clase": [
+          "HW"
+        ],
+        "name": "VFD Bomba Pozo",
+        "ip": "192.168.0.31",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "Siemens",
+        "model": "SINAMICS G120",
+        "product_code": "",
+        "firmware": "V4.7",
+        "ubicacion": "",
+        "zone": "OT",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n2",
+      "type": "vfd",
+      "x": 700,
+      "y": 1240,
+      "level": 1,
+      "props": {
+        "ref": "A002",
+        "clase": [
+          "HW"
+        ],
+        "name": "VFD Red 1",
+        "ip": "192.168.0.32",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "Siemens",
+        "model": "SINAMICS G120",
+        "product_code": "",
+        "firmware": "V4.7",
+        "ubicacion": "",
+        "zone": "OT",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n3",
+      "type": "vfd",
+      "x": 840,
+      "y": 1240,
+      "level": 1,
+      "props": {
+        "ref": "A003",
+        "clase": [
+          "HW"
+        ],
+        "name": "VFD Red 2",
+        "ip": "192.168.0.33",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "Siemens",
+        "model": "SINAMICS G120",
+        "product_code": "",
+        "firmware": "V4.7",
+        "ubicacion": "",
+        "zone": "OT",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n4",
+      "type": "flow",
+      "x": 1120,
+      "y": 1583,
+      "level": 0,
+      "props": {
+        "ref": "A004",
+        "clase": [
+          "HW"
+        ],
+        "name": "Caudalímetro de salida",
+        "ip": "",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "SIEMENS",
+        "model": "SITRANS F M MAG 5000",
+        "product_code": "",
+        "firmware": "",
+        "ubicacion": "",
+        "zone": "Campo",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n5",
+      "type": "sensor",
+      "x": 1240,
+      "y": 1663,
+      "level": 0,
+      "props": {
+        "ref": "A005",
+        "clase": [
+          "HW"
+        ],
+        "name": "Analizador Cloro",
+        "ip": "",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "Genérico",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
+        "ubicacion": "",
+        "zone": "Campo",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n6",
+      "type": "motor_ac",
+      "x": 1380,
+      "y": 1583,
+      "level": 0,
+      "props": {
+        "ref": "A006",
+        "clase": [
+          "HW"
+        ],
+        "name": "Dosificador Hipoclorito",
+        "ip": "",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "Genérico",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
+        "ubicacion": "",
+        "zone": "Campo",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n7",
+      "type": "plc",
+      "x": 340,
+      "y": 1240,
+      "level": 1,
+      "props": {
+        "ref": "A007",
+        "clase": [
+          "HW",
+          "SW"
+        ],
+        "name": "PLC Bombeo y Filtración",
+        "ip": "192.168.0.10",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "Siemens S7-1500",
+        "model": "CPU 1513-1 PN",
+        "product_code": "",
+        "firmware": "V2.6",
+        "ubicacion": "",
+        "zone": "OT",
+        "notes": "PUT/GET habilitado a petición del integrador"
+      }
+    },
+    {
+      "id": "n8",
+      "type": "plc",
+      "x": 1240,
+      "y": 1240,
+      "level": 1,
+      "props": {
+        "ref": "A008",
+        "clase": [
+          "HW",
+          "SW"
+        ],
+        "name": "PLC Dosificación",
+        "ip": "192.168.0.11",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "Siemens S7-1200",
+        "model": "CPU 1214C DC/DC/DC",
+        "product_code": "",
+        "firmware": "V4.2",
+        "ubicacion": "",
+        "zone": "OT",
+        "notes": "PUT/GET habilitado a petición del integrador"
+      }
+    },
+    {
+      "id": "n9",
+      "type": "hmi",
+      "x": 480,
+      "y": 900,
+      "level": 2,
+      "props": {
+        "ref": "A009",
+        "clase": [
+          "HW",
+          "SW"
+        ],
+        "name": "Panel Local",
+        "ip": "192.168.0.40",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "Siemens",
+        "model": "KTP700 Basic PN",
+        "product_code": "",
+        "firmware": "V16",
+        "ubicacion": "",
+        "zone": "OT",
+        "notes": "Contraseña de fábrica."
+      }
+    },
+    {
+      "id": "n10",
+      "type": "scada",
+      "x": 480,
+      "y": 540,
+      "level": 3,
+      "props": {
+        "ref": "A010",
+        "clase": [
+          "HW",
+          "SW",
+          "S",
+          "D"
+        ],
+        "name": "Servidor SCADA 1",
+        "ip": "192.168.0.50",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "Genérico",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
+        "ubicacion": "",
+        "zone": "OT",
+        "notes": "Siemens WinCC V7.5 SP2 sobre Windows 10 LTSC 2019.\nTambién guarda histórico de datos.\n\n2024/02: El operador de noche pide poder ver el SCADA desde casa; se instala un programa de control remoto en el servidor \nSCADA."
+      }
+    },
+    {
+      "id": "n11",
+      "type": "eng_ws",
+      "x": 960,
+      "y": 900,
+      "level": 2,
+      "props": {
+        "ref": "A011",
+        "clase": [
+          "HW",
+          "SW"
+        ],
+        "name": "Estación de Ingeniería",
+        "ip": "192.168.0.60",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "Genérico",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
+        "ubicacion": "",
+        "zone": "OT",
+        "notes": "TIA Portal V16 sobre Windows 10"
+      }
+    },
+    {
+      "id": "n12",
+      "type": "switch_ind",
+      "x": 720,
+      "y": 900,
+      "level": 2,
+      "props": {
+        "ref": "A012",
+        "clase": [
+          "HW",
+          "COM"
+        ],
+        "name": "SW-XC208",
+        "ip": "192.168.0.2",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "Siemens",
+        "model": "SCALANCE XC208",
+        "product_code": "",
+        "firmware": "V4.1",
+        "ubicacion": "",
+        "zone": "OT",
+        "notes": "Sin VLAN"
+      }
+    },
+    {
+      "id": "n13",
+      "type": "firewall_ot",
+      "x": 720,
+      "y": 540,
+      "level": 3,
+      "props": {
+        "ref": "A013",
+        "clase": [
+          "HW",
+          "COM"
+        ],
+        "name": "Firewall OT 1",
+        "ip": "192.168.0.1",
+        "ip_wan": "10.10.0.254",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "Siemens",
+        "model": "SCALANCE S615",
+        "product_code": "",
+        "firmware": "V6.2",
+        "ubicacion": "",
+        "zone": "OT",
+        "notes": "Reglas heredadas."
+      }
+    },
+    {
+      "id": "n14",
+      "type": "io_remote",
+      "x": 220,
+      "y": 1240,
+      "level": 1,
+      "props": {
+        "ref": "A014",
+        "clase": [
+          "HW"
+        ],
+        "name": "Periferia descentralizada",
+        "ip": "192.168.0.20",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "Siemens",
+        "model": " ET 200SP",
+        "product_code": "",
+        "firmware": "V4.2",
+        "ubicacion": "",
+        "zone": "OT",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n15",
+      "type": "level",
+      "x": 100,
+      "y": 1663,
+      "level": 0,
+      "props": {
+        "ref": "A015",
+        "clase": [
+          "HW"
+        ],
+        "name": "Sensor Nivel 1",
+        "ip": "",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "SIEMENS",
+        "model": "SITRANS LR",
+        "product_code": "",
+        "firmware": "",
+        "ubicacion": "",
+        "zone": "Campo",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n16",
+      "type": "level",
+      "x": 340,
+      "y": 1663,
+      "level": 0,
+      "props": {
+        "ref": "A016",
+        "clase": [
+          "HW"
+        ],
+        "name": "Sensor Nivel 2",
+        "ip": "",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "SIEMENS",
+        "model": "SITRANS LR",
+        "product_code": "",
+        "firmware": "",
+        "ubicacion": "",
+        "zone": "Campo",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n17",
+      "type": "motor_ac",
+      "x": 560,
+      "y": 1663,
+      "level": 0,
+      "props": {
+        "ref": "A017",
+        "clase": [
+          "HW"
+        ],
+        "name": "Motor AC 2",
+        "ip": "",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
+        "ubicacion": "",
+        "zone": "Campo",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n18",
+      "type": "motor_ac",
+      "x": 700,
+      "y": 1663,
+      "level": 0,
+      "props": {
+        "ref": "A018",
+        "clase": [
+          "HW"
+        ],
+        "name": "Motor AC 3",
+        "ip": "",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
+        "ubicacion": "",
+        "zone": "Campo",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n19",
+      "type": "motor_ac",
+      "x": 840,
+      "y": 1663,
+      "level": 0,
+      "props": {
+        "ref": "A019",
+        "clase": [
+          "HW"
+        ],
+        "name": "Motor AC 4",
+        "ip": "",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
+        "ubicacion": "",
+        "zone": "Campo",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n20",
+      "type": "pc",
+      "x": 720,
+      "y": 60,
+      "level": 4,
+      "props": {
+        "ref": "A020",
+        "clase": [
+          "HW",
+          "SW"
+        ],
+        "name": "Jefe de Planta",
+        "ip": "10.10.0.21",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "Dell",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
+        "ubicacion": "",
+        "zone": "IT",
+        "notes": "Windows 11\n"
+      }
+    },
+    {
+      "id": "n21",
+      "type": "vpn",
+      "x": 960,
+      "y": 540,
+      "level": 3,
+      "props": {
+        "ref": "A021",
+        "clase": [
+          "S",
+          "COM"
+        ],
+        "name": "Servicio VPN 1",
+        "ip": "",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
+        "ubicacion": "",
+        "zone": "OT",
+        "notes": "Cuenta compartida."
+      }
+    },
+    {
+      "id": "n22",
+      "type": "cloud",
+      "x": 1260,
+      "y": 60,
+      "level": 4,
+      "props": {
+        "ref": "A022",
+        "clase": [
+          "COM",
+          "S"
+        ],
+        "name": "Internet",
+        "ip": "",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
+        "ubicacion": "",
+        "zone": "IT",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n23",
+      "type": "modem",
+      "x": 1380,
+      "y": 860,
+      "level": 2,
+      "props": {
+        "ref": "A023",
+        "clase": [
+          "HW",
+          "COM"
+        ],
+        "name": "Módem 1",
+        "ip": "",
+        "ip_wan": "192.168.0.254",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "TELTONIKA",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
+        "ubicacion": "",
+        "zone": "OT",
+        "notes": "MAC: 00:1e:42:4f:47:fe\nPaquete 830"
+      }
+    },
+    {
+      "id": "n24",
+      "type": "net_gsm",
+      "x": 1380,
+      "y": 60,
+      "level": 4,
+      "props": {
+        "ref": "A024",
+        "clase": [
+          "COM"
+        ],
+        "name": "Red GSM 4G/5G 1",
+        "ip": "",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
+        "ubicacion": "",
+        "zone": "IT",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n25",
+      "type": "laptop",
+      "x": 1640,
+      "y": 1060,
+      "level": 2,
+      "props": {
+        "ref": "A025",
+        "clase": [
+          "HW",
+          "SW"
+        ],
+        "name": "Portátil técnico",
+        "ip": "192.168.0.99",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "HP",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
+        "ubicacion": "",
+        "zone": "OT",
+        "notes": "Paquete 3824: IP, MAC, Fabricante\nPort: 102 (TIA Portal)\nPaquete 3456: protocolo nbns NETBIOS: PORTATIL-MANT"
+      }
+    },
+    {
+      "id": "n26",
+      "type": "switch_ind",
+      "x": 1240,
+      "y": 1060,
+      "level": 2,
+      "props": {
+        "ref": "A026",
+        "clase": [
+          "HW",
+          "COM"
+        ],
+        "name": "Switch Industrial 2",
+        "ip": "",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "Siemens",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
+        "ubicacion": "Cuadro de dosificación.",
+        "zone": "OT",
+        "notes": "No gestionable,\nno hay evidencias del dispositivo en el protocolo lldp."
+      }
+    }
+  ],
+  "conexiones": [
+    {
+      "from": "n12",
+      "to": "n7",
+      "protocolos": "PROFINET",
+      "direccion": "<->",
+      "bow": 40
+    },
+    {
+      "from": "n12",
+      "to": "n1",
+      "protocolos": "PROFINET",
+      "direccion": "<->",
+      "bow": 46
+    },
+    {
+      "from": "n12",
+      "to": "n2",
+      "protocolos": "PROFINET",
+      "direccion": "<->"
+    },
+    {
+      "from": "n12",
+      "to": "n3",
+      "protocolos": "PROFINET",
+      "direccion": "<->",
+      "bow": 51
+    },
+    {
+      "from": "n12",
+      "to": "n14",
+      "protocolos": "PROFINET",
+      "direccion": "<->",
+      "bow": 86
+    },
+    {
+      "from": "n4",
+      "to": "n8",
+      "protocolos": "Señal 4..20 mA",
+      "direccion": "->",
+      "bow": 84
+    },
+    {
+      "from": "n5",
+      "to": "n8",
+      "protocolos": "Señal 4..20 mA",
+      "direccion": "->"
+    },
+    {
+      "from": "n8",
+      "to": "n6",
+      "protocolos": "Consigna 4..20 mA",
+      "direccion": "->",
+      "bow": 88
+    },
+    {
+      "from": "n9",
+      "to": "n12",
+      "protocolos": "PROFINET",
+      "direccion": "<->",
+      "bow": 84
+    },
+    {
+      "from": "n11",
+      "to": "n12",
+      "protocolos": "PROFINET/S7comm",
+      "direccion": "<->",
+      "bow": 94,
+      "lt": 0.5000000000000001
+    },
+    {
+      "from": "n10",
+      "to": "n12",
+      "protocolos": "PROFINET/HTTP",
+      "direccion": "<->"
+    },
+    {
+      "from": "n12",
+      "to": "n13",
+      "protocolos": "HTTP/S7comm",
+      "direccion": "<->"
+    },
+    {
+      "from": "n1",
+      "to": "n17",
+      "protocolos": "",
+      "direccion": "->"
+    },
+    {
+      "from": "n2",
+      "to": "n18",
+      "protocolos": "",
+      "direccion": "->"
+    },
+    {
+      "from": "n3",
+      "to": "n19",
+      "protocolos": "",
+      "direccion": "->"
+    },
+    {
+      "from": "n15",
+      "to": "n14",
+      "protocolos": "Señal 4..20mA",
+      "direccion": "->",
+      "bow": -105,
+      "lt": 0.5000000000000001
+    },
+    {
+      "from": "n16",
+      "to": "n14",
+      "protocolos": "Señal 4..20mA",
+      "direccion": "->",
+      "bow": 89,
+      "lt": 0.5000000000000001
+    },
+    {
+      "from": "n20",
+      "to": "n13",
+      "protocolos": "HTTP",
+      "direccion": "<->"
+    },
+    {
+      "from": "n13",
+      "to": "n21",
+      "protocolos": "VPN 1",
+      "direccion": "<->"
+    },
+    {
+      "from": "n21",
+      "to": "n22",
+      "protocolos": "VPN 1",
+      "direccion": "<->",
+      "bow": -139,
+      "lt": 0.5400000000000001
+    },
+    {
+      "from": "n12",
+      "to": "n23",
+      "protocolos": "TeamViewer + DNS",
+      "direccion": "<->",
+      "lt": 0.5400000000000001
+    },
+    {
+      "from": "n23",
+      "to": "n24",
+      "protocolos": "Wireless 4G/5G",
+      "direccion": "<->"
+    },
+    {
+      "from": "n12",
+      "to": "n26",
+      "protocolos": "PROFINET",
+      "direccion": "<->",
+      "bow": -71,
+      "lt": 0.36000000000000004
+    },
+    {
+      "from": "n26",
+      "to": "n8",
+      "protocolos": "PROFINET",
+      "direccion": "<->"
+    },
+    {
+      "from": "n25",
+      "to": "n26",
+      "protocolos": "s7comm-plus",
+      "direccion": "<->"
+    }
+  ],
+  "zonas": [],
+  "shapes": [
+    {
+      "id": "s44",
+      "kind": "memo",
+      "x": 1080,
+      "y": 540,
+      "w": 205.4545454545455,
+      "h": 75.15153364701712,
+      "props": {
+        "text": "El integrador entra por VPN que termina en el cortafuegos.",
+        "fontSize": 14,
+        "color": "#3a3320",
+        "bg": "#fff8db"
+      }
+    },
+    {
+      "id": "s48",
+      "kind": "memo",
+      "x": 1440,
+      "y": 180,
+      "w": 278.3998448988971,
+      "h": 298.3058992273669,
+      "props": {
+        "text": "El técnico de noche, se conecta mediante TeamViewer al escritorio remoto del servidor SCADA.\nIP en la nube de TeamViewer 203.0.113.45\n\nPaquete 836: DNS\nPaquete 853: Inicio de conexión desde servidor SCADA, Port: 5938\n\nGateway por defecto del SCADA = 192.168.0.254 (Teltonika); nunca ARPea la 192.168.0.1 del cortafuegos → salida a Internet por 4G saltándose el S615\n\n\n",
+        "fontSize": 14,
+        "color": "#3a3320",
+        "bg": "#fff8db"
+      }
+    },
+    {
+      "id": "s49",
+      "kind": "memo",
+      "x": 1080,
+      "y": 900,
+      "w": 278.3528406479779,
+      "h": 94.58819221047793,
+      "props": {
+        "text": "Técnico de mantenimiento: mantenimiento eléctrico e instrumentación; cambios menores \nen el programa.",
+        "fontSize": 14,
+        "color": "#3a3320",
+        "bg": "#fff8db"
+      }
+    },
+    {
+      "id": "s54",
+      "kind": "memo",
+      "x": 1500,
+      "y": 860,
+      "w": 268.0000574448529,
+      "h": 85.17646340762872,
+      "props": {
+        "text": " Por una avería en fin de semana, el integrador deja un módem en el armario de control «para soporte urgente».",
+        "fontSize": 14,
+        "color": "#3a3320",
+        "bg": "#fff8db"
+      }
+    },
+    {
+      "id": "s57",
+      "kind": "memo",
+      "x": 1760,
+      "y": 1060,
+      "w": 192.70586799172796,
+      "h": 111.52939740349268,
+      "props": {
+        "text": "El técnico conecta su portátil al switch del armario para descargar cambios en la dosificación.",
+        "fontSize": 14,
+        "color": "#3a3320",
+        "bg": "#fff8db"
+      }
+    },
+    {
+      "id": "s62",
+      "kind": "memo",
+      "x": 1360,
+      "y": 1060,
+      "w": 256.1175896139705,
+      "h": 92.70580336626836,
+      "props": {
+        "text": "Bocas del switch del armario agotadas; se añade un switch pequeño en el cuadro de dosificación.",
+        "fontSize": 14,
+        "color": "#3a3320",
+        "bg": "#fff8db"
+      }
+    },
+    {
+      "id": "s63",
+      "kind": "memo",
+      "x": 840,
+      "y": 60,
+      "w": 206.82358685661757,
+      "h": 76.70586081112131,
+      "props": {
+        "text": "Jefe de planta: consulta informes y tendencias desde la oficina.",
+        "fontSize": 14,
+        "color": "#3a3320",
+        "bg": "#fff8db"
+      }
+    },
+    {
+      "id": "s64",
+      "kind": "memo",
+      "x": 180,
+      "y": 540,
+      "w": 279.0238744506836,
+      "h": 134.59800479125965,
+      "props": {
+        "text": "Paquete 853:\nMAC perteneciente a DELL.\n\nSCADA ↔ PLC Dosificación S7comm clásico con PUT/GET = lectura/escritura sin autenticar.",
+        "fontSize": 14,
+        "color": "#3a3320",
+        "bg": "#fff8db"
+      }
+    }
+  ]
+}

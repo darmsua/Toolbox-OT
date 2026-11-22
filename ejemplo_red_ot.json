@@ -1,165 +1,180 @@
 {
   "schema": "red-ot/1.0",
-  "nombre": "Planta Depuradora — Laboratorio OT",
+  "nombre": "Ejemplo",
+  "bandH": [
+    233.6363525390625,
+    167.272705078125,
+    254.54542541503912,
+    310.98813131581187,
+    160.90914916992188,
+    170
+  ],
   "devices": [
     {
       "id": "n1",
-      "type": "server",
-      "x": 120,
-      "y": 49,
-      "level": 4,
+      "type": "firewall",
+      "x": 680,
+      "y": 278,
+      "level": 3.5,
       "props": {
-        "name": "Servidor MES",
-        "ip": "10.0.4.10",
-        "ip_wan": "",
+        "name": "FW OT 3",
+        "ip": "10.10.1.11",
+        "ip_wan": "192.168.1.1",
         "mask": "255.255.255.0",
-        "vlan": "",
-        "manufacturer": "HP",
-        "zone": "IT",
+        "vlan": "40",
+        "manufacturer": "Fortinet",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
+        "zone": "DMZ",
         "notes": ""
       }
     },
     {
       "id": "n2",
-      "type": "firewall",
-      "x": 120,
-      "y": 219,
+      "type": "historian",
+      "x": 460,
+      "y": 278,
       "level": 3.5,
       "props": {
-        "name": "Firewall OT",
-        "ip": "10.0.35.1",
+        "name": "Historiador",
+        "ip": "10.10.1.200",
         "ip_wan": "",
         "mask": "255.255.255.0",
-        "vlan": "",
-        "manufacturer": "Fortinet",
+        "vlan": "20",
+        "manufacturer": "OSIsoft PI",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
         "zone": "DMZ",
         "notes": ""
       }
     },
     {
       "id": "n3",
-      "type": "historian",
-      "x": 120,
-      "y": 389,
-      "level": 3,
+      "type": "scada",
+      "x": 680,
+      "y": 680,
+      "level": 2,
       "props": {
-        "name": "Historiador PI",
-        "ip": "10.0.3.20",
+        "name": "SCADA",
+        "ip": "10.10.1.100",
         "ip_wan": "",
         "mask": "255.255.255.0",
-        "vlan": "",
-        "manufacturer": "OSIsoft PI",
+        "vlan": "20",
+        "manufacturer": "Ignition",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
         "zone": "OT",
         "notes": ""
       }
     },
     {
       "id": "n4",
-      "type": "scada",
-      "x": 360,
-      "y": 389,
-      "level": 3,
+      "type": "switch_ind",
+      "x": 380,
+      "y": 858,
+      "level": 2,
       "props": {
-        "name": "SCADA Ignition",
-        "ip": "10.0.3.10",
+        "name": "SW1",
+        "ip": "10.10.11.2",
         "ip_wan": "",
         "mask": "255.255.255.0",
-        "vlan": "",
-        "manufacturer": "Ignition",
+        "vlan": "11",
+        "manufacturer": "Siemens",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
         "zone": "OT",
         "notes": ""
       }
     },
     {
       "id": "n5",
-      "type": "switch_ind",
-      "x": 120,
-      "y": 559,
+      "type": "hmi",
+      "x": 640,
+      "y": 858,
       "level": 2,
       "props": {
-        "name": "Switch célula",
-        "ip": "10.0.2.2",
+        "name": "HMI 1",
+        "ip": "10.10.11.12",
         "ip_wan": "",
         "mask": "255.255.255.0",
-        "vlan": "",
-        "manufacturer": "Siemens",
+        "vlan": "11",
+        "manufacturer": "SIEMENS",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
         "zone": "OT",
         "notes": ""
       }
     },
     {
       "id": "n6",
-      "type": "hmi",
-      "x": 360,
-      "y": 559,
-      "level": 2,
+      "type": "plc",
+      "x": 380,
+      "y": 1039,
+      "level": 1,
       "props": {
-        "name": "HMI Línea",
-        "ip": "10.0.2.30",
+        "name": "PLC 1",
+        "ip": "10.10.11.10",
         "ip_wan": "",
         "mask": "255.255.255.0",
-        "vlan": "",
-        "manufacturer": "Wonderware",
+        "vlan": "11",
+        "manufacturer": "Siemens S7",
+        "model": "PLC S7-1215C DC/DC/DC",
+        "product_code": "",
+        "firmware": "",
         "zone": "OT",
         "notes": ""
       }
     },
     {
       "id": "n7",
-      "type": "plc",
-      "x": 120,
-      "y": 729,
+      "type": "vfd",
+      "x": 640,
+      "y": 1039,
       "level": 1,
       "props": {
-        "name": "PLC S7-1215C",
-        "ip": "10.0.1.10",
+        "name": "VF 1",
+        "ip": "10.10.11.11",
         "ip_wan": "",
         "mask": "255.255.255.0",
-        "vlan": "",
-        "manufacturer": "Siemens S7",
+        "vlan": "11",
+        "manufacturer": "ABB",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
         "zone": "OT",
         "notes": ""
       }
     },
     {
       "id": "n8",
-      "type": "vfd",
-      "x": 360,
-      "y": 729,
-      "level": 1,
-      "props": {
-        "name": "Variador bomba",
-        "ip": "10.0.1.40",
-        "ip_wan": "",
-        "mask": "255.255.255.0",
-        "vlan": "",
-        "manufacturer": "ABB",
-        "zone": "OT",
-        "notes": ""
-      }
-    },
-    {
-      "id": "n9",
       "type": "motor_ac",
-      "x": 120,
-      "y": 899,
+      "x": 640,
+      "y": 1179,
       "level": 0,
       "props": {
-        "name": "Bomba 1",
+        "name": "Motor Picadora",
         "ip": "",
         "ip_wan": "",
         "mask": "255.255.255.0",
         "vlan": "",
         "manufacturer": "",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
         "zone": "Campo",
         "notes": ""
       }
     },
     {
-      "id": "n10",
+      "id": "n9",
       "type": "temp",
-      "x": 360,
-      "y": 899,
+      "x": 380,
+      "y": 1179,
       "level": 0,
       "props": {
         "name": "Sensor Temp.",
@@ -168,174 +183,572 @@
         "mask": "255.255.255.0",
         "vlan": "",
         "manufacturer": "",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
         "zone": "Campo",
         "notes": ""
       }
     },
     {
+      "id": "n10",
+      "type": "switch_ind",
+      "x": 680,
+      "y": 520,
+      "level": 3,
+      "props": {
+        "name": "SW 3",
+        "ip": "10.10.1.10",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "Siemens",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
+        "zone": "OT",
+        "notes": ""
+      }
+    },
+    {
       "id": "n11",
-      "type": "pressure",
-      "x": 560,
-      "y": 899,
+      "type": "firewall_ot",
+      "x": 380,
+      "y": 520,
+      "level": 3,
+      "props": {
+        "name": "FW OT 1",
+        "ip": "10.10.11.1",
+        "ip_wan": "10.10.1.1",
+        "mask": "255.255.255.0",
+        "vlan": "11",
+        "manufacturer": "",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
+        "zone": "OT",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n12",
+      "type": "switch_ind",
+      "x": 960,
+      "y": 858,
+      "level": 2,
+      "props": {
+        "name": "SW2",
+        "ip": "10.10.12.2",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "12",
+        "manufacturer": "Siemens",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
+        "zone": "OT",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n13",
+      "type": "hmi",
+      "x": 1220,
+      "y": 858,
+      "level": 2,
+      "props": {
+        "name": "HMI 2",
+        "ip": "10.10.12.12",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "12",
+        "manufacturer": "SIEMENS",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
+        "zone": "OT",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n14",
+      "type": "plc",
+      "x": 960,
+      "y": 1039,
+      "level": 1,
+      "props": {
+        "name": "PLC 2",
+        "ip": "10.10.12.10",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "12",
+        "manufacturer": "Siemens S7",
+        "model": "PLC S7-1214C AC/DC/RLY",
+        "product_code": "",
+        "firmware": "",
+        "zone": "OT",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n15",
+      "type": "vfd",
+      "x": 1220,
+      "y": 1039,
+      "level": 1,
+      "props": {
+        "name": "Variador",
+        "ip": "10.10.12.11",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "12",
+        "manufacturer": "ABB",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
+        "zone": "OT",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n16",
+      "type": "motor_ac",
+      "x": 1220,
+      "y": 1179,
       "level": 0,
       "props": {
-        "name": "Sensor Presión",
+        "name": "Motor mezcladora",
         "ip": "",
         "ip_wan": "",
         "mask": "255.255.255.0",
         "vlan": "",
         "manufacturer": "",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
         "zone": "Campo",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n17",
+      "type": "temp",
+      "x": 960,
+      "y": 1179,
+      "level": 0,
+      "props": {
+        "name": "Sensor Temp.",
+        "ip": "",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
+        "zone": "Campo",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n18",
+      "type": "firewall_ot",
+      "x": 960,
+      "y": 520,
+      "level": 3,
+      "props": {
+        "name": "FW OT 2",
+        "ip": "10.10.12.1",
+        "ip_wan": "10.10.1.2",
+        "mask": "255.255.255.0",
+        "vlan": "12",
+        "manufacturer": "",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
+        "zone": "OT",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n19",
+      "type": "level",
+      "x": 1100,
+      "y": 1179,
+      "level": 0,
+      "props": {
+        "name": "Sensor Nivel 1",
+        "ip": "",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
+        "zone": "Campo",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n20",
+      "type": "database",
+      "x": 880,
+      "y": 100,
+      "level": 4,
+      "props": {
+        "name": "Base de Datos 1",
+        "ip": "192.168.1.20",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
+        "zone": "IT",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n21",
+      "type": "switch_it",
+      "x": 680,
+      "y": 100,
+      "level": 4,
+      "props": {
+        "name": "Switch IT 1",
+        "ip": "192.168.1.2",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "Cisco",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
+        "zone": "IT",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n22",
+      "type": "mes",
+      "x": 820,
+      "y": 520,
+      "level": 3,
+      "props": {
+        "name": "MES/MOM 1",
+        "ip": "10.10.1.50",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "20",
+        "manufacturer": "",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
+        "zone": "OT",
+        "notes": ""
+      }
+    },
+    {
+      "id": "n23",
+      "type": "server",
+      "x": 460,
+      "y": 100,
+      "level": 4,
+      "props": {
+        "name": "Servidor IT 1",
+        "ip": "192.168.1.10",
+        "ip_wan": "",
+        "mask": "255.255.255.0",
+        "vlan": "",
+        "manufacturer": "HP",
+        "model": "",
+        "product_code": "",
+        "firmware": "",
+        "zone": "IT",
         "notes": ""
       }
     }
   ],
   "conexiones": [
     {
-      "from": "n1",
-      "to": "n2",
-      "protocolos": "HTTPS",
-      "direccion": "->"
-    },
-    {
-      "from": "n2",
-      "to": "n3",
-      "protocolos": "OPC UA",
-      "direccion": "->"
-    },
-    {
-      "from": "n3",
-      "to": "n4",
-      "protocolos": "OPC UA",
-      "direccion": "->"
-    },
-    {
       "from": "n4",
       "to": "n5",
       "protocolos": "PROFINET",
-      "direccion": "->"
+      "direccion": "<->"
     },
     {
-      "from": "n5",
+      "from": "n4",
       "to": "n6",
       "protocolos": "PROFINET",
-      "direccion": "->"
+      "direccion": "<->"
     },
     {
-      "from": "n5",
-      "to": "n7",
-      "protocolos": "S7comm",
-      "direccion": "->"
+      "from": "n6",
+      "to": "n9",
+      "protocolos": "4..20 mA",
+      "direccion": "<-"
     },
     {
       "from": "n7",
       "to": "n8",
-      "protocolos": "PROFINET",
+      "protocolos": "",
       "direccion": "->"
     },
     {
-      "from": "n7",
-      "to": "n9",
-      "protocolos": "Modbus RTU",
-      "direccion": "->"
-    },
-    {
-      "from": "n7",
+      "from": "n2",
       "to": "n10",
-      "protocolos": "HART",
+      "protocolos": "OPC UA",
+      "direccion": "<->"
+    },
+    {
+      "from": "n3",
+      "to": "n10",
+      "protocolos": "PROFINET",
+      "direccion": "<->"
+    },
+    {
+      "from": "n11",
+      "to": "n4",
+      "protocolos": "PROFINET",
+      "direccion": "<->"
+    },
+    {
+      "from": "n10",
+      "to": "n11",
+      "protocolos": "PROFINET",
+      "direccion": "<->"
+    },
+    {
+      "from": "n12",
+      "to": "n13",
+      "protocolos": "PROFINET",
+      "direccion": "<->"
+    },
+    {
+      "from": "n12",
+      "to": "n14",
+      "protocolos": "PROFINET",
+      "direccion": "<->"
+    },
+    {
+      "from": "n14",
+      "to": "n17",
+      "protocolos": "4..20 mA",
+      "direccion": "<-"
+    },
+    {
+      "from": "n15",
+      "to": "n16",
+      "protocolos": "",
       "direccion": "->"
     },
     {
-      "from": "n7",
-      "to": "n11",
-      "protocolos": "HART",
+      "from": "n18",
+      "to": "n12",
+      "protocolos": "PROFINET",
+      "direccion": "<->"
+    },
+    {
+      "from": "n10",
+      "to": "n18",
+      "protocolos": "PROFINET",
+      "direccion": "<->"
+    },
+    {
+      "from": "n19",
+      "to": "n14",
+      "protocolos": "4..20 mA",
       "direccion": "->"
+    },
+    {
+      "from": "n10",
+      "to": "n1",
+      "protocolos": "HTTPS",
+      "direccion": "<->"
+    },
+    {
+      "from": "n10",
+      "to": "n22",
+      "protocolos": "HTTPS",
+      "direccion": "<->"
+    },
+    {
+      "from": "n23",
+      "to": "n21",
+      "protocolos": "HTTPS",
+      "direccion": "<->"
+    },
+    {
+      "from": "n20",
+      "to": "n21",
+      "protocolos": "HTTPS",
+      "direccion": "<->"
+    },
+    {
+      "from": "n21",
+      "to": "n1",
+      "protocolos": "HTTPS",
+      "direccion": "<->"
+    },
+    {
+      "from": "n4",
+      "to": "n7",
+      "protocolos": "PROFINET",
+      "direccion": "<->"
+    },
+    {
+      "from": "n12",
+      "to": "n15",
+      "protocolos": "PROFINET",
+      "direccion": "<->"
     }
   ],
   "zonas": [
     {
-      "id": "s22",
-      "nombre": "Zona Enterprise / DMZ",
+      "id": "s60",
+      "nombre": "IT/Enterprise",
       "color": "#2f6fb0",
       "slt": 2,
+      "devices": [
+        "n20",
+        "n21",
+        "n23"
+      ]
+    },
+    {
+      "id": "s61",
+      "nombre": "DMZ Industrial",
+      "color": "#d98a2b",
+      "slt": 3,
       "devices": [
         "n1",
         "n2"
       ]
     },
     {
-      "id": "s23",
-      "nombre": "Zona Supervisión",
-      "color": "#1f8a8a",
-      "slt": 3,
+      "id": "s62",
+      "nombre": "Operaciones/OT",
+      "color": "#6a8f3b",
+      "slt": 2,
       "devices": [
         "n3",
-        "n4",
-        "n5",
-        "n6"
+        "n10",
+        "n11",
+        "n18",
+        "n22"
       ]
     },
     {
-      "id": "s24",
-      "nombre": "Zona Control y Campo",
-      "color": "#e8743b",
-      "slt": 3,
+      "id": "s46",
+      "nombre": "Picadora",
+      "color": "#1f8a8a",
+      "slt": 2,
       "devices": [
+        "n4",
+        "n5",
+        "n6",
         "n7",
         "n8",
-        "n9",
-        "n10",
-        "n11"
+        "n9"
+      ]
+    },
+    {
+      "id": "s47",
+      "nombre": "Mezcladora",
+      "color": "#1f8a8a",
+      "slt": 2,
+      "devices": [
+        "n12",
+        "n13",
+        "n14",
+        "n15",
+        "n16",
+        "n17",
+        "n19"
       ]
     }
   ],
   "shapes": [
     {
-      "id": "s22",
+      "id": "s60",
       "kind": "rect",
-      "x": 20,
-      "y": 6,
-      "w": 1720,
-      "h": 328,
+      "x": 300,
+      "y": 40,
+      "w": 736.3635253906251,
+      "h": 166.36361694335938,
       "props": {
-        "name": "Zona Enterprise / DMZ",
+        "name": "IT/Enterprise",
         "fill": "#2f6fb0",
         "stroke": "#2f6fb0",
+        "opacity": 0.12,
+        "radius": 14,
+        "slt": 2
+      }
+    },
+    {
+      "id": "s61",
+      "kind": "rect",
+      "x": 300,
+      "y": 258.1817932128906,
+      "w": 740.9091186523438,
+      "h": 117.27270507812497,
+      "props": {
+        "name": "DMZ Industrial",
+        "fill": "#d98a2b",
+        "stroke": "#d98a2b",
+        "opacity": 0.12,
+        "radius": 14,
+        "slt": 3
+      }
+    },
+    {
+      "id": "s62",
+      "kind": "rect",
+      "x": 300,
+      "y": 420,
+      "w": 837.272705078125,
+      "h": 339.5454406738281,
+      "props": {
+        "name": "Operaciones/OT",
+        "fill": "#6a8f3b",
+        "stroke": "#6a8f3b",
         "opacity": 0.1,
         "radius": 14,
         "slt": 2
       }
     },
     {
-      "id": "s23",
+      "id": "s46",
       "kind": "rect",
-      "x": 20,
-      "y": 346,
-      "w": 1720,
-      "h": 328,
+      "x": 300,
+      "y": 778.1817932128906,
+      "w": 484.426906419837,
+      "h": 497.2331967561141,
       "props": {
-        "name": "Zona Supervisión",
+        "name": "Picadora",
         "fill": "#1f8a8a",
         "stroke": "#1f8a8a",
-        "opacity": 0.1,
+        "opacity": 0.14,
         "radius": 14,
-        "slt": 3
+        "slt": 2
       }
     },
     {
-      "id": "s24",
+      "id": "s47",
       "kind": "rect",
-      "x": 20,
-      "y": 686,
-      "w": 1720,
-      "h": 328,
+      "x": 860,
+      "y": 778.1817932128906,
+      "w": 505.77074133831525,
+      "h": 496.44265879755426,
       "props": {
-        "name": "Zona Control y Campo",
-        "fill": "#e8743b",
-        "stroke": "#e8743b",
-        "opacity": 0.1,
+        "name": "Mezcladora",
+        "fill": "#1f8a8a",
+        "stroke": "#1f8a8a",
+        "opacity": 0.14,
         "radius": 14,
-        "slt": 3
+        "slt": 2
       }
     }
   ]

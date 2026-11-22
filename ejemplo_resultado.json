@@ -1,0 +1,538 @@
+{
+  "schema": "ot-verif/1.0",
+  "herramienta": "verificar_celda.py v1.0",
+  "celda": {
+    "nombre": "Picadora",
+    "zona_redot": "s46",
+    "vlan": "11",
+    "red": "10.10.11.0/24",
+    "origen": "ejemplo_red_ot.json",
+    "autor": "",
+    "fecha": "2026-11-22",
+    "notas": "Línea base de ejemplo. Los valores esperados (firmware, avisos, números de serie) son ficticios: cada grupo los rellena con los datos de su célula."
+  },
+  "linea_base": "linea_base_picadora.json",
+  "fecha": "2026-11-22T10:30:00",
+  "equipo_origen": {
+    "host": "PC-INGENIERIA-01",
+    "so": "Windows-11"
+  },
+  "dispositivos": [
+    {
+      "id_redot": "n6",
+      "nombre": "PLC 1",
+      "ip": "10.10.11.10",
+      "perfil": "plc_s7",
+      "observado": {
+        "puertos_abiertos": [
+          102
+        ],
+        "snmp_sysdescr": "Siemens, SIMATIC S7, CPU-1200, 6ES7 215-1AG40-0XB0, HW: Version 1, FW: Version V4.5.2, S C-XXX",
+        "snmp_sysname": "plc1",
+        "firmware": "V4.5.2",
+        "referencia": "6ES7 215-1AG40-0XB0",
+        "estado_cpu": "RUN",
+        "put_get": true,
+        "web": "desactivado",
+        "opcua:G120 · p1082 velocidad máx. (rpm)": 1800.0
+      },
+      "comprobaciones": [
+        {
+          "id": "puerto_102",
+          "descripcion": "Puerto necesario 102/tcp (S7comm (ISO-TSAP))",
+          "esperado": "abierto",
+          "real": "abierto",
+          "estado": "OK",
+          "severidad": "",
+          "evidencia": "",
+          "recomendacion": ""
+        },
+        {
+          "id": "puerto_21",
+          "descripcion": "Puerto no permitido 21/tcp (FTP)",
+          "esperado": "cerrado",
+          "real": "cerrado",
+          "estado": "OK",
+          "severidad": "",
+          "evidencia": "",
+          "recomendacion": ""
+        },
+        {
+          "id": "puerto_23",
+          "descripcion": "Puerto no permitido 23/tcp (Telnet)",
+          "esperado": "cerrado",
+          "real": "cerrado",
+          "estado": "OK",
+          "severidad": "",
+          "evidencia": "",
+          "recomendacion": ""
+        },
+        {
+          "id": "puerto_80",
+          "descripcion": "Puerto no permitido 80/tcp (HTTP)",
+          "esperado": "cerrado",
+          "real": "cerrado",
+          "estado": "OK",
+          "severidad": "",
+          "evidencia": "",
+          "recomendacion": ""
+        },
+        {
+          "id": "puerto_443",
+          "descripcion": "Puerto no permitido 443/tcp (HTTPS)",
+          "esperado": "cerrado",
+          "real": "cerrado",
+          "estado": "OK",
+          "severidad": "",
+          "evidencia": "",
+          "recomendacion": ""
+        },
+        {
+          "id": "puerto_502",
+          "descripcion": "Puerto no permitido 502/tcp (Modbus/TCP)",
+          "esperado": "cerrado",
+          "real": "cerrado",
+          "estado": "OK",
+          "severidad": "",
+          "evidencia": "",
+          "recomendacion": ""
+        },
+        {
+          "id": "snmp",
+          "descripcion": "SNMP v1/v2c con comunidad por defecto",
+          "esperado": "sin respuesta (SNMPv3)",
+          "real": "RESPONDE a la comunidad «public» (v2c)",
+          "estado": "DESVIACION",
+          "severidad": "MEDIA",
+          "evidencia": "Siemens, SIMATIC S7, CPU-1200, 6ES7 215-1AG40-0XB0, HW: Version 1, FW: Version V4.5.2, S C-XXX",
+          "recomendacion": "Desactivar SNMP v1/v2c o cambiar la comunidad; usar SNMPv3 con autenticación y cifrado."
+        },
+        {
+          "id": "s7_estado",
+          "descripcion": "Estado de la CPU",
+          "esperado": "RUN",
+          "real": "RUN",
+          "estado": "OK",
+          "severidad": "",
+          "evidencia": "",
+          "recomendacion": ""
+        },
+        {
+          "id": "s7_putget",
+          "descripcion": "Acceso PUT/GET (lectura/escritura sin autenticación)",
+          "esperado": "deshabilitado",
+          "real": "HABILITADO",
+          "estado": "DESVIACION",
+          "severidad": "ALTA",
+          "evidencia": "lectura de MB0 aceptada sin autenticación",
+          "recomendacion": "Desactivar «Permitir acceso vía comunicación PUT/GET» en las propiedades de la CPU (TIA Portal) y usar OPC UA con usuarios."
+        },
+        {
+          "id": "s7_proteccion",
+          "descripcion": "Nivel de protección (SZL 0x0232)",
+          "esperado": "-",
+          "real": "no disponible en S7-1200",
+          "estado": "NO_COMPROBABLE",
+          "severidad": "",
+          "evidencia": "",
+          "recomendacion": "Contrastar con el nivel de acceso configurado en TIA Portal."
+        },
+        {
+          "id": "web",
+          "descripcion": "Servidor web",
+          "esperado": "desactivado",
+          "real": "desactivado",
+          "estado": "OK",
+          "severidad": "",
+          "evidencia": "",
+          "recomendacion": ""
+        },
+        {
+          "id": "opcua_anon",
+          "descripcion": "Acceso OPC UA",
+          "esperado": "con usuario",
+          "real": "anónimo aceptado",
+          "estado": "DESVIACION",
+          "severidad": "MEDIA",
+          "evidencia": "",
+          "recomendacion": "Desactivar el acceso anónimo al servidor OPC UA y exigir usuario y certificado."
+        },
+        {
+          "id": "opcua_G120 · r0018 firmware CU",
+          "descripcion": "G120 · r0018 firmware CU",
+          "esperado": 4710000,
+          "real": 4710000,
+          "estado": "OK",
+          "severidad": "",
+          "evidencia": "",
+          "recomendacion": ""
+        },
+        {
+          "id": "opcua_G120 · p1082 velocidad máx. (rpm)",
+          "descripcion": "G120 · p1082 velocidad máx. (rpm)",
+          "esperado": "≤ 1500",
+          "real": 1800.0,
+          "estado": "DESVIACION",
+          "severidad": "ALTA",
+          "evidencia": "",
+          "recomendacion": "Velocidad máxima por encima de la línea base: riesgo para la máquina y las personas."
+        },
+        {
+          "id": "referencia",
+          "descripcion": "Referencia del equipo",
+          "esperado": "6ES7 215-1AG40-0XB0",
+          "real": "6ES7 215-1AG40-0XB0",
+          "estado": "OK",
+          "severidad": "",
+          "evidencia": "",
+          "recomendacion": ""
+        },
+        {
+          "id": "fw",
+          "descripcion": "Versión de firmware",
+          "esperado": "≥ V4.6.0",
+          "real": "V4.5.2",
+          "estado": "DESVIACION",
+          "severidad": "MEDIA",
+          "evidencia": "",
+          "recomendacion": "Planificar la actualización del firmware (en parada y con copia del proyecto)."
+        },
+        {
+          "id": "aviso_SSA-000000",
+          "descripcion": "Aviso SSA-000000 (Aviso de ejemplo (sustituir por uno real))",
+          "esperado": "firmware ≥ V4.6.1",
+          "real": "V4.5.2 → VULNERABLE",
+          "estado": "DESVIACION",
+          "severidad": "ALTA",
+          "evidencia": "CVE-0000-00000",
+          "recomendacion": "Actualizar a la versión corregida o aplicar las mitigaciones del aviso."
+        }
+      ]
+    },
+    {
+      "id_redot": "n7",
+      "nombre": "VF 1",
+      "ip": "10.10.11.11",
+      "perfil": "vfd_g120",
+      "observado": {
+        "puertos_abiertos": [],
+        "web": "solo HTTP"
+      },
+      "comprobaciones": [
+        {
+          "id": "puerto_21",
+          "descripcion": "Puerto no permitido 21/tcp (FTP)",
+          "esperado": "cerrado",
+          "real": "cerrado",
+          "estado": "OK",
+          "severidad": "",
+          "evidencia": "",
+          "recomendacion": ""
+        },
+        {
+          "id": "puerto_23",
+          "descripcion": "Puerto no permitido 23/tcp (Telnet)",
+          "esperado": "cerrado",
+          "real": "cerrado",
+          "estado": "OK",
+          "severidad": "",
+          "evidencia": "",
+          "recomendacion": ""
+        },
+        {
+          "id": "snmp",
+          "descripcion": "SNMP v1/v2c con comunidades por defecto",
+          "esperado": "sin respuesta",
+          "real": "sin respuesta a public, private",
+          "estado": "OK",
+          "severidad": "",
+          "evidencia": "",
+          "recomendacion": ""
+        },
+        {
+          "id": "web",
+          "descripcion": "Servidor web cifrado",
+          "esperado": "solo HTTPS (HTTP redirigido o cerrado)",
+          "real": "solo HTTP",
+          "estado": "DESVIACION",
+          "severidad": "MEDIA",
+          "evidencia": "",
+          "recomendacion": "Forzar HTTPS y desactivar HTTP sin cifrar: las credenciales viajan en claro."
+        }
+      ]
+    },
+    {
+      "id_redot": "n5",
+      "nombre": "HMI 1",
+      "ip": "10.10.11.12",
+      "perfil": "hmi",
+      "observado": {
+        "puertos_abiertos": [
+          102,
+          23
+        ],
+        "web": "desactivado"
+      },
+      "comprobaciones": [
+        {
+          "id": "puerto_102",
+          "descripcion": "Puerto necesario 102/tcp (S7comm (ISO-TSAP))",
+          "esperado": "abierto",
+          "real": "abierto",
+          "estado": "OK",
+          "severidad": "",
+          "evidencia": "",
+          "recomendacion": ""
+        },
+        {
+          "id": "puerto_21",
+          "descripcion": "Puerto no permitido 21/tcp (FTP)",
+          "esperado": "cerrado",
+          "real": "cerrado",
+          "estado": "OK",
+          "severidad": "",
+          "evidencia": "",
+          "recomendacion": ""
+        },
+        {
+          "id": "puerto_23",
+          "descripcion": "Puerto no permitido 23/tcp (Telnet)",
+          "esperado": "cerrado",
+          "real": "ABIERTO",
+          "estado": "DESVIACION",
+          "severidad": "ALTA",
+          "evidencia": "",
+          "recomendacion": "Desactivar el servicio Telnet si no es necesario o filtrarlo en el cortafuegos de la célula."
+        },
+        {
+          "id": "puerto_5900",
+          "descripcion": "Puerto no permitido 5900/tcp (VNC)",
+          "esperado": "cerrado",
+          "real": "cerrado",
+          "estado": "OK",
+          "severidad": "",
+          "evidencia": "",
+          "recomendacion": ""
+        },
+        {
+          "id": "snmp",
+          "descripcion": "SNMP v1/v2c con comunidades por defecto",
+          "esperado": "sin respuesta",
+          "real": "sin respuesta a public, private",
+          "estado": "OK",
+          "severidad": "",
+          "evidencia": "",
+          "recomendacion": ""
+        },
+        {
+          "id": "web",
+          "descripcion": "Servidor web",
+          "esperado": "desactivado",
+          "real": "desactivado",
+          "estado": "OK",
+          "severidad": "",
+          "evidencia": "",
+          "recomendacion": ""
+        }
+      ]
+    },
+    {
+      "id_redot": "",
+      "nombre": "Maestro IO-Link",
+      "ip": "10.10.11.20",
+      "perfil": "iolink_ifm",
+      "observado": {
+        "puertos_abiertos": [
+          80
+        ],
+        "referencia": "AL1102",
+        "firmware": "AL1102_cn_if_v2.4.27",
+        "serie": "000201234567",
+        "iolink": {
+          "1": {
+            "vendorid": 310,
+            "deviceid": 1063,
+            "serial": "000123456789",
+            "producto": "Temp sensor",
+            "firmware": "V3.12",
+            "validacion": 0
+          },
+          "2": {
+            "vendorid": 310,
+            "deviceid": 9999,
+            "serial": "X",
+            "producto": "Otro sensor",
+            "firmware": "1.0",
+            "validacion": 0
+          }
+        }
+      },
+      "comprobaciones": [
+        {
+          "id": "puerto_80",
+          "descripcion": "Puerto necesario 80/tcp (HTTP)",
+          "esperado": "abierto",
+          "real": "abierto",
+          "estado": "OK",
+          "severidad": "",
+          "evidencia": "",
+          "recomendacion": ""
+        },
+        {
+          "id": "puerto_21",
+          "descripcion": "Puerto no permitido 21/tcp (FTP)",
+          "esperado": "cerrado",
+          "real": "cerrado",
+          "estado": "OK",
+          "severidad": "",
+          "evidencia": "",
+          "recomendacion": ""
+        },
+        {
+          "id": "puerto_23",
+          "descripcion": "Puerto no permitido 23/tcp (Telnet)",
+          "esperado": "cerrado",
+          "real": "cerrado",
+          "estado": "OK",
+          "severidad": "",
+          "evidencia": "",
+          "recomendacion": ""
+        },
+        {
+          "id": "snmp",
+          "descripcion": "SNMP v1/v2c con comunidades por defecto",
+          "esperado": "sin respuesta",
+          "real": "sin respuesta a public, private",
+          "estado": "OK",
+          "severidad": "",
+          "evidencia": "",
+          "recomendacion": ""
+        },
+        {
+          "id": "ifm_auth",
+          "descripcion": "IoT Core exige autenticación",
+          "esperado": "sí",
+          "real": "NO (responde a cualquiera)",
+          "estado": "DESVIACION",
+          "severidad": "ALTA",
+          "evidencia": "",
+          "recomendacion": "Activar usuario y contraseña en el IoT Core y limitar desde qué red se accede al puerto IoT."
+        },
+        {
+          "id": "iol_1_tipo",
+          "descripcion": "Puerto IO-Link 1: tipo de dispositivo",
+          "esperado": "vendor 310 / device 1063",
+          "real": "vendor 310 / device 1063 (Temp sensor)",
+          "estado": "OK",
+          "severidad": "",
+          "evidencia": "",
+          "recomendacion": ""
+        },
+        {
+          "id": "iol_1_serie",
+          "descripcion": "Puerto IO-Link 1: número de serie",
+          "esperado": "000123456789",
+          "real": "000123456789",
+          "estado": "OK",
+          "severidad": "",
+          "evidencia": "",
+          "recomendacion": ""
+        },
+        {
+          "id": "iol_2_tipo",
+          "descripcion": "Puerto IO-Link 2: tipo de dispositivo",
+          "esperado": "vendor 310 / device 1027",
+          "real": "vendor 310 / device 9999 (Otro sensor)",
+          "estado": "DESVIACION",
+          "severidad": "ALTA",
+          "evidencia": "",
+          "recomendacion": "Se ha conectado un dispositivo distinto al previsto: verificar sustitución no autorizada."
+        }
+      ]
+    },
+    {
+      "id_redot": "n4",
+      "nombre": "SW1",
+      "ip": "10.10.11.2",
+      "perfil": "switch_cisco",
+      "observado": {
+        "puertos_abiertos": []
+      },
+      "comprobaciones": [
+        {
+          "id": "puerto_22",
+          "descripcion": "Puerto necesario 22/tcp (SSH)",
+          "esperado": "abierto",
+          "real": "abierto",
+          "estado": "OK",
+          "severidad": "",
+          "evidencia": "",
+          "recomendacion": ""
+        },
+        {
+          "id": "puerto_23",
+          "descripcion": "Puerto no permitido 23/tcp (Telnet)",
+          "esperado": "cerrado",
+          "real": "cerrado",
+          "estado": "OK",
+          "severidad": "",
+          "evidencia": "",
+          "recomendacion": ""
+        },
+        {
+          "id": "puerto_80",
+          "descripcion": "Puerto no permitido 80/tcp (HTTP)",
+          "esperado": "cerrado",
+          "real": "cerrado",
+          "estado": "OK",
+          "severidad": "",
+          "evidencia": "",
+          "recomendacion": ""
+        },
+        {
+          "id": "snmp",
+          "descripcion": "SNMP v1/v2c con comunidades por defecto",
+          "esperado": "sin respuesta",
+          "real": "sin respuesta a public, private",
+          "estado": "OK",
+          "severidad": "",
+          "evidencia": "",
+          "recomendacion": ""
+        },
+        {
+          "id": "cfg-^snmp-server community (public|private)",
+          "descripcion": "No debe contener «^snmp-server community (public|private)»",
+          "esperado": "ausente",
+          "real": "PRESENTE: snmp-server community public RO",
+          "estado": "DESVIACION",
+          "severidad": "ALTA",
+          "evidencia": "",
+          "recomendacion": "Eliminar las comunidades SNMP por defecto."
+        }
+      ]
+    }
+  ],
+  "duracion_s": 19.4,
+  "resumen": {
+    "OK": 28,
+    "DESVIACION": 11,
+    "NO_COMPROBABLE": 1,
+    "INFO": 0,
+    "ALTA": 7,
+    "MEDIA": 4,
+    "BAJA": 0,
+    "equipos_no_inventariados": 1
+  },
+  "nota": "Resultado SIMULADO para practicar con la herramienta.",
+  "dcp": {
+    "equipos": [],
+    "desconocidos": [
+      {
+        "nombre_pn": "et200sp-x",
+        "ip": "10.10.11.77",
+        "mac": "28:63:36:aa:bb:cc",
+        "familia": "ET200SP"
+      }
+    ]
+  }
+}

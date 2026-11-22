@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Accesos OT · Toolbox-OT</title>
+<style>
+:root{
+  --navy:#0f2744;--navy2:#17375e;--teal:#1f8a8a;--teal-d:#0e6b6b;--ink:#1a2535;
+  --muted:#5a6b80;--line:#dfe6ee;--bg:#f4f7fa;--card:#fff;--accent:#e8743b;
+  --soft:#eef4f8;--soft2:#f6f9fb;
+  --crit:#c0392b;--critb:#f7c7c2;--alta:#d9662f;--altab:#fbdcc9;--media:#c88a1e;--mediab:#fde8c9;--ok:#2f9e5e;--okb:#e5f4e4;--info:#2b6a9a;--infob:#e3edf5;
+}
+:root[data-theme="dark"]{
+  --navy:#132233;--navy2:#1b3147;--ink:#e7eef6;--muted:#9fb2c6;--line:#2b3a4c;
+  --bg:#0f1720;--card:#16212e;--soft:#172431;--soft2:#1a2735;
+  --crit:#f06a6a;--critb:#43242a;--alta:#f0905a;--altab:#432a20;--media:#e3b55a;--mediab:#3d3320;--ok:#5fcf8a;--okb:#1e3a2a;--info:#8fc0f0;--infob:#17324d;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit;font-size:14px;color:var(--ink)}
+a{color:var(--teal-d)}
+header.top{background:linear-gradient(135deg,var(--navy),var(--navy2) 70%,var(--teal-d));color:#fff;padding:16px 0}
+header.top .wrap,.tabs .wrap,.app{max-width:1240px;margin:0 auto;padding:0 18px}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+header.top h1{font-size:20px;margin:0;font-weight:800;letter-spacing:-.3px}
+header.top .sub{font-size:12.5px;color:#bcd4e6;margin-top:2px}
+.badge-ra{display:inline-block;background:var(--accent);color:#fff;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:5px;margin-left:8px;vertical-align:middle}
+.stickytop{position:sticky;top:0;z-index:70}
+.tabs{background:var(--navy2)}
+.tabs .wrap{display:flex;gap:2px;overflow-x:auto}
+.tab{padding:11px 14px;color:#9fb6cc;font-size:13px;font-weight:700;border:0;background:transparent;border-bottom:3px solid transparent;white-space:nowrap}
+.tab:hover{color:#fff}
+.tab.on{color:#fff;border-bottom-color:var(--accent)}
+.tab .cnt{display:inline-block;min-width:18px;padding:0 5px;margin-left:5px;border-radius:9px;background:rgba(255,255,255,.15);font-size:11px}
+.tab .cnt.bad{background:var(--crit);color:#fff}
+.menu{position:relative}
+.menu-pop{position:absolute;right:0;top:calc(100% + 8px);background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 34px rgba(15,39,68,.25);padding:6px;min-width:250px;z-index:90}
+.menu-pop[hidden]{display:none}
+.menu-sec{font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);font-weight:700;padding:7px 10px 3px}
+.menu-item{display:block;width:100%;text-align:left;background:transparent;border:0;border-radius:7px;padding:8px 10px;font-size:13.5px;color:var(--ink);text-decoration:none}
+.menu-item:hover{background:var(--soft2)}
+.menu-sep{height:1px;background:var(--line);margin:5px 4px}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--navy);padding:8px 14px;border-radius:8px;font-weight:600;font-size:13px}
+:root[data-theme="dark"] .btn{background:#1d2a38;color:#dbe7f2}
+.btn:hover{border-color:var(--teal)}
+.btn.pri{background:var(--teal);color:#fff;border-color:var(--teal)}
+.btn.pri:hover{background:var(--teal-d)}
+.btn.ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.4)}
+.btn.ghost:hover{background:rgba(255,255,255,.1)}
+.btn.sm{padding:4px 9px;font-size:12px}
+.btn.danger{color:var(--crit);border-color:var(--critb)}
+.btn:disabled{opacity:.5;cursor:default}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;margin-top:18px}
+.card h2{margin:0 0 4px;font-size:21px;color:var(--navy)}
+:root[data-theme="dark"] .card h2,:root[data-theme="dark"] h3{color:var(--ink)}
+.card h3{margin:18px 0 8px;font-size:15px;color:var(--navy)}
+.lead{color:var(--muted);font-size:13.5px;margin:0 0 14px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.spacer{flex:1}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--teal-d);background:var(--soft2);position:sticky;top:0}
+:root[data-theme="dark"] th{color:#4fcfcf}
+tr:hover td{background:var(--soft2)}
+td.act{white-space:nowrap;text-align:right}
+.tablewrap{overflow-x:auto}
+.tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;background:var(--soft);color:var(--muted);white-space:nowrap}
+.tag.crit{background:var(--critb);color:var(--crit)}.tag.alta{background:var(--altab);color:var(--alta)}.tag.media{background:var(--mediab);color:var(--media)}
+.tag.ok{background:var(--okb);color:var(--ok)}.tag.info{background:var(--infob);color:var(--info)}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.kpi{background:var(--soft2);border:1px solid var(--line);border-radius:10px;padding:12px}
+.kpi .n{font-size:26px;font-weight:800;color:var(--navy)}
+:root[data-theme="dark"] .kpi .n{color:var(--ink)}
+.kpi .l{font-size:12px;color:var(--muted)}
+.kpi.bad .n{color:var(--crit)}
+.alert{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-left:5px solid var(--muted);border-radius:8px;padding:10px 12px;margin-bottom:8px;background:var(--card)}
+.alert.crit{border-left-color:var(--crit)}.alert.alta{border-left-color:var(--alta)}.alert.media{border-left-color:var(--media)}.alert.aviso{border-left-color:var(--info)}
+.alert .t{font-weight:700;font-size:13.5px}
+.alert .d{font-size:12.5px;color:var(--muted);margin-top:2px}
+.alert .ref{font-size:11px;color:var(--muted);white-space:nowrap;text-align:right}
+.banner{border-radius:10px;padding:10px 14px;font-size:13px;margin-top:14px;border:1px solid var(--line)}
+.banner.warn{background:var(--altab);border-color:var(--alta)}
+.banner.info{background:var(--infob);border-color:var(--info)}
+.mx td,.mx th{text-align:center;font-size:12px;padding:5px}
+.mx td:first-child,.mx th:first-child{text-align:left}
+.cell{display:inline-block;min-width:26px;padding:2px 6px;border-radius:6px;font-weight:700}
+.chk{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-bottom:1px solid var(--line)}
+.chk input{margin-top:3px;width:16px;height:16px}
+.chk .g{font-size:11px;color:var(--muted);text-transform:uppercase;font-weight:700}
+.chk.done .x{text-decoration:line-through;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+label.f{display:block;font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:4px}
+:root[data-theme="dark"] label.f{color:var(--ink)}
+.field{margin-bottom:12px}
+input.t,select.t,textarea.t{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+:root[data-theme="dark"] input.t,:root[data-theme="dark"] select.t,:root[data-theme="dark"] textarea.t{background:#1d2a38}
+input.t:focus,select.t:focus,textarea.t:focus{outline:none;border-color:var(--teal)}
+.multi{max-height:150px;overflow:auto;border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+.multi label{display:block;font-size:13px;padding:2px 0}
+.hint{font-size:12px;color:var(--muted);margin-top:3px}
+.modal-bg{position:fixed;inset:0;background:rgba(10,20,35,.55);display:flex;align-items:flex-start;justify-content:center;z-index:100;padding:40px 14px;overflow:auto}
+.modal{background:var(--card);border-radius:14px;max-width:720px;width:100%;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.modal h3{margin:0 0 14px;font-size:18px;color:var(--navy)}
+:root[data-theme="dark"] .modal h3{color:var(--ink)}
+.modal .foot{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+.toast{position:fixed;bottom:18px;right:18px;background:var(--navy);color:#fff;padding:10px 16px;border-radius:9px;font-size:13px;z-index:200;opacity:0;transition:opacity .25s}
+.toast.on{opacity:1}
+.empty{padding:20px;text-align:center;color:var(--muted);font-size:13.5px}
+footer.cred{max-width:1240px;margin:30px auto 20px;padding:0 18px;font-size:11.5px;color:var(--muted);text-align:center}
+#print{display:none}
+@media print{
+  header.top,.stickytop,.app,footer.cred,.toast{display:none!important}
+  #print{display:block;color:#000;font-size:11px}
+  #print h1{font-size:18px}#print h2{font-size:14px;margin-top:16px}
+  #print table{font-size:10px}#print th{position:static;color:#000;background:#eee}
+}
+@media (max-width:900px){.kpis{grid-template-columns:repeat(3,1fr)}.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="stickytop">
+<header class="top"><div class="wrap">
+  <div><h1>🔐 Accesos OT <span class="badge-ra">RA4</span></h1>
+  <div class="sub" id="subTitle">Identidades, cuentas y credenciales de la instalación</div></div>
+  <div class="row">
+    <button class="btn ghost" id="btnSave" title="Exportar el proyecto como JSON">📤 Exportar</button>
+    <div class="menu"><button class="btn ghost" id="btnMenu">☰ Menú</button>
+      <div class="menu-pop" id="menuPop" hidden>
+        <div class="menu-sec">Proyecto</div>
+        <button class="menu-item" data-act="nuevo">✚ Proyecto nuevo</button>
+        <button class="menu-item" data-act="etap">💧 Cargar caso ETAP El Lomo</button>
+        <div class="menu-sep"></div>
+        <div class="menu-sec">Archivo</div>
+        <button class="menu-item" data-act="import">📥 Importar proyecto (JSON)</button>
+        <button class="menu-item" data-act="redot">🔌 Importar activos desde Red OT</button>
+        <button class="menu-item" data-act="prov">🤝 Importar proveedores (Proveedores OT)</button>
+        <button class="menu-item" data-act="export">📤 Exportar proyecto (JSON)</button>
+        <button class="menu-item" data-act="csv">🧾 Hoja de revisión de accesos (CSV)</button>
+        <button class="menu-item" data-act="print">🖨 Informe imprimible / PDF</button>
+        <div class="menu-sep"></div>
+        <button class="menu-item" data-act="theme"><span id="themeIcon">🌙</span> <span id="themeTxt">Tema oscuro</span></button>
+        <button class="menu-item" data-act="help">❓ Ayuda</button>
+        <div class="menu-sep"></div>
+        <div class="menu-sec">Toolbox-OT</div>
+        <a class="menu-item" href="index.html">🧰 Inicio (Toolbox-OT)</a>
+        <a class="menu-item" href="redot.html">🔌 Editor Red OT</a>
+        <a class="menu-item" href="riesgo.html">🛡️ Análisis de Riesgo</a>
+        <a class="menu-item" href="proveedores.html">🤝 Proveedores OT</a>
+        <a class="menu-item" href="verificacion.html">✅ Verificación OT (beta)</a>
+      </div></div>
+  </div>
+</div></header>
+<nav class="tabs"><div class="wrap" id="tabs"></div></nav>
+</div>
+<main class="app" id="app"></main>
+<footer class="cred">Accesos OT · Toolbox-OT v1.9 · Inspirador: David de Armas Suárez (conecta3@hotmail.com) · Propulsada por Claude.ai · Licencia CC BY 4.0</footer>
+<div id="print"></div>
+<input type="file" id="fileIn" accept=".json,application/json" hidden>
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+/* ================================================================
+   Modelo de datos  ot-accesos/1.0
+   ================================================================ */
+var SCHEMA = "ot-accesos/1.0";
+var LS_KEY = "ot_accesos_v1";
+var THEME_KEYS = ["toolbox_theme", "ot_risk_theme"]; // se lee el primero que exista; se escriben todos
+
+var ZONAS_FISICAS_DEF = [
+  {id:"Z0", nombre:"Perímetro de la parcela"},
+  {id:"Z1", nombre:"Edificios y nave de proceso"},
+  {id:"Z2", nombre:"Sala de control"},
+  {id:"Z3", nombre:"Sala técnica y armarios OT"},
+  {id:"REM", nombre:"Instalaciones remotas"}
+];
+var ROLES_DEF = [
+  {id:"R-OP", nombre:"Operador", nivel:1, privilegiado:false, descripcion:"Ver, operar, reconocer alarmas, cambiar consignas dentro de límites"},
+  {id:"R-AU", nombre:"Auditor", nivel:1, privilegiado:false, descripcion:"Solo lectura de registros y configuraciones"},
+  {id:"R-MA", nombre:"Mantenedor", nivel:2, privilegiado:false, descripcion:"Diagnóstico y lectura online; sin cambios de programa"},
+  {id:"R-IN", nombre:"Ingeniero", nivel:3, privilegiado:true, descripcion:"Modificar y cargar programas de PLC y pantallas"},
+  {id:"R-AD", nombre:"Administrador", nivel:4, privilegiado:true, descripcion:"Gestión de usuarios, red y sistemas"}
+];
+var TIPOS_CUENTA = {nominal:"Nominal", compartida:"Compartida", servicio:"De servicio", emergencia:"Emergencia", fabrica:"De fábrica"};
+var MECANISMOS = ["Contraseña","Contraseña de nivel (PLC)","Certificado","Clave SSH","RADIUS","Tarjeta / RFID","PIN"];
+var TIPOS_ACTIVO = ["PLC","HMI","SCADA","Estación de ingeniería","Servidor","Portátil","PC","Switch","Firewall","Router / módem","Servicio VPN","Pasarela","Variador","E/S remota","RTU","IDS","Punto de acceso","Cámara IP","Otro"];
+var REQ = {
+  "PCA-01":"Cuentas nominales", "PCA-02":"Roles y mínimo privilegio", "PCA-03":"Solicitud aprobada",
+  "PCA-04":"Contraseñas", "PCA-05":"Acceso remoto con clave o certificado", "PCA-06":"Intentos fallidos",
+  "PCA-07":"Caducidad de terceros", "PCA-08":"Retirada el mismo día", "PCA-09":"Revisión periódica",
+  "PCA-10":"Credenciales de fábrica",
+  "PSF-01":"Puntos de acceso físico protegidos", "PSF-02":"Terceros dentro de su homologación"
+};
+var FIS_TIPOS={toma_red:"Toma de red libre",usb_port:"Puerto USB accesible",selector:"Selector RUN/STOP",cerradura:"Armario con cerradura",lector:"Lector de tarjeta",contacto:"Contacto de puerta",cctv:"Cámara CCTV"};
+var FIS_PUNTOS=["toma_red","usb_port","selector"];
+
+function emptyState(){
+  return {
+    schema: SCHEMA,
+    proyecto: {nombre:"Proyecto sin nombre", organizacion:"", autor:"", creado: hoy(),
+      revisionPrivMeses:3, revisionRestoMeses:6, avisoCertDias:30, avisoTerceroDias:7, modoPractica:false},
+    zonasLogicas: [],
+    zonasFisicas: clone(ZONAS_FISICAS_DEF),
+    roles: clone(ROLES_DEF),
+    activos: [], personas: [], cuentas: [], certificados: [], excepciones: [], registro: [], fisicos: [], proveedores: []
+  };
+}
+
+/* ================================================================ utilidades */
+var S = null, TAB = "panel", uidN = 1;
+function clone(o){return JSON.parse(JSON.stringify(o));}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];});}
+function pad(n){return (n<10?"0":"")+n;}
+function iso(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());}
+function hoy(){return iso(new Date());}
+function addDays(s,n){var d=s?new Date(s+"T12:00:00"):new Date();d.setDate(d.getDate()+n);return iso(d);}
+function addMonths(s,n){var d=new Date(s+"T12:00:00");d.setMonth(d.getMonth()+n);return iso(d);}
+function daysTo(s){if(!s)return null;var a=new Date(hoy()+"T12:00:00"),b=new Date(s+"T12:00:00");return Math.round((b-a)/86400000);}
+function fmt(s){if(!s)return "—";var p=s.split("-");return p.length===3?p[2]+"/"+p[1]+"/"+p[0]:s;}
+function uid(p){var id;do{id=p+(uidN++);}while(findAny(id));return id;}
+function findAny(id){var L=["activos","personas","cuentas","certificados","excepciones","roles"];for(var i=0;i<L.length;i++){if((S[L[i]]||[]).some(function(x){return x.id===id;}))return true;}return false;}
+function byId(list,id){return (S[list]||[]).filter(function(x){return x.id===id;})[0]||null;}
+function rol(id){return byId("roles",id);}
+function rolN(id){var r=rol(id);return r?r.nombre:"—";}
+function rolNivel(id){var r=rol(id);return r?r.nivel:0;}
+function per(id){return byId("personas",id);}
+function perN(id){var p=per(id);return p?p.nombre:"—";}
+function act(id){return byId("activos",id);}
+function actN(id){var a=act(id);return a?a.nombre:"—";}
+function prv(id){return (S.proveedores||[]).filter(function(x){return x.id===id;})[0]||null;}
+function prvN(id){var p=prv(id);return p?p.nombre:"";}
+/* fin efectivo de un tercero: el más temprano entre su fecha y la del contrato de su proveedor */
+function finEf(p){var f=p.fechaFin||"",v=p.proveedorId&&prv(p.proveedorId);if(v&&v.finContrato&&(!f||v.finContrato<f))f=v.finContrato;return f;}
+function toast(m){var t=document.getElementById("toast");t.textContent=m;t.classList.add("on");clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove("on");},2200);}
+function log(accion,detalle){S.registro.unshift({fecha:new Date().toISOString().slice(0,16).replace("T"," "),accion:accion,detalle:detalle});if(S.registro.length>800)S.registro.length=800;}
+function save(){try{localStorage.setItem(LS_KEY,JSON.stringify(S));}catch(e){}}
+function sanitize(){
+  var e=emptyState();
+  if(!S||typeof S!=="object")S=e;
+  Object.keys(e).forEach(function(k){if(S[k]==null)S[k]=e[k];});
+  Object.keys(e.proyecto).forEach(function(k){if(S.proyecto[k]==null)S.proyecto[k]=e.proyecto[k];});
+  ["activos","personas","cuentas","certificados","excepciones","registro","roles","zonasFisicas","zonasLogicas","fisicos","proveedores"].forEach(function(k){if(!Array.isArray(S[k]))S[k]=[];});
+  if(!S.roles.length)S.roles=clone(ROLES_DEF);
+  if(!S.zonasFisicas.length)S.zonasFisicas=clone(ZONAS_FISICAS_DEF);
+  S.cuentas.forEach(function(c){if(!Array.isArray(c.conocen))c.conocen=[];});
+  S.schema=SCHEMA;
+}
+function load(){try{var r=localStorage.getItem(LS_KEY);S=r?JSON.parse(r):null;}catch(e){S=null;}sanitize();}
+
+/* ================================================================ tema */
+function loadTheme(){for(var i=0;i<THEME_KEYS.length;i++){try{var v=localStorage.getItem(THEME_KEYS[i]);if(v)return v;}catch(e){}}return "light";}
+function applyTheme(t){if(t==="dark")document.documentElement.setAttribute("data-theme","dark");else document.documentElement.removeAttribute("data-theme");
+  document.getElementById("themeIcon").textContent=t==="dark"?"☀":"🌙";document.getElementById("themeTxt").textContent=t==="dark"?"Tema claro":"Tema oscuro";}
+function toggleTheme(){var nx=loadTheme()==="dark"?"light":"dark";THEME_KEYS.forEach(function(k){try{localStorage.setItem(k,nx);}catch(e){}});applyTheme(nx);}
+
+/* ================================================================ diagnóstico (alertas) */
+function cuentasActivas(){return S.cuentas.filter(function(c){return c.estado!=="deshabilitada";});}
+function diagnostico(){
+  var A=[], P=S.proyecto;
+  function add(sev,t,d,req,ref,tab){A.push({sev:sev,t:t,d:d,req:req,ref:ref||"",tab:tab});}
+  cuentasActivas().forEach(function(c){
+    var a=actN(c.activoId), lbl="«"+c.nombre+"» en "+a;
+    if(c.tipo==="fabrica")add("crit","Credencial de fábrica sin cambiar: "+lbl,"La credencial viene documentada por el fabricante; cualquiera puede conocerla.","PCA-10","IEC 62443-3-3 SR 1.5","cuentas");
+    if(c.tipo==="compartida"&&!c.excepcionId)add("alta","Cuenta compartida sin excepción aprobada: "+lbl,"La política solo admite cuentas compartidas con una excepción y su medida compensatoria.","PCA-01","SR 1.1","cuentas");
+    if(c.excepcionId){var ex=byId("excepciones",c.excepcionId);if(ex&&ex.caduca&&daysTo(ex.caduca)<0)add("media","Excepción caducada para "+lbl,"La excepción «"+ex.titulo+"» caducó el "+fmt(ex.caduca)+".","PCA-01","","excepciones");}
+    if(c.tipo==="nominal"){
+      var p=per(c.titular);
+      if(!p)add("media","Cuenta nominal sin titular: "+lbl,"Asigna la persona a la que pertenece o conviértela en otro tipo.","PCA-01","SR 1.1","cuentas");
+      else{
+        if(p.estado==="baja")add("crit","Cuenta activa de una persona dada de baja: "+lbl,p.nombre+" causó baja el "+fmt(p.fechaBaja)+".","PCA-08","SR 1.3","cuentas");
+        else if(rolNivel(c.rol)>rolNivel(p.rol))add("alta","Más privilegio que el rol de la persona: "+lbl,"La cuenta tiene rol "+rolN(c.rol)+" y "+p.nombre+" tiene rol "+rolN(p.rol)+".","PCA-02","SR 2.1","cuentas");
+      }
+    }
+    if(c.tipo==="compartida"||c.tipo==="emergencia"){
+      (c.conocen||[]).forEach(function(pid){var p=per(pid);if(p&&p.estado==="baja")add("alta","Contraseña compartida conocida por una baja: "+lbl,p.nombre+" la conocía. Hay que cambiarla.","PCA-08","SR 1.5","cuentas");});
+    }
+    if(c.pendienteCambio)add("alta","Cambio de credencial pendiente: "+lbl,c.motivoPendiente||"Marcada para cambio.","PCA-08","SR 1.5","cuentas");
+    var r=rol(c.rol);
+    if(r&&r.privilegiado&&!c.mfa&&/Contraseña/.test(c.mecanismo||"")&&c.tipo!=="emergencia"&&c.tipo!=="fabrica"&&!c.excepcionId&&!(c.tipo==="nominal"&&per(c.titular)&&rolNivel(c.rol)>rolNivel(per(c.titular).rol)))add("media","Cuenta privilegiada solo con contraseña: "+lbl,"Para roles privilegiados la política recomienda segundo factor o certificado.","PCA-04","SR 1.1 RE 2","cuentas");
+    if(c.remoto&&/^Contraseña/.test(c.mecanismo||""))add("alta","Acceso remoto con contraseña: "+lbl,"El acceso remoto debe hacerse con clave pública o certificado.","PCA-05","SR 1.13","cuentas");
+    if(c.proveedorId){var sv=prv(c.proveedorId);if(sv&&(sv.estado==="No homologado"||sv.estado==="Baja"))add("alta","Cuenta de un servicio externo "+sv.estado.toLowerCase()+": "+lbl,sv.nombre+" figura como «"+sv.estado+"» en Proveedores OT.","PSF-02","IEC 62443-2-4","cuentas");}
+    /* terceros: alcance y acceso remoto según su homologación en Proveedores OT */
+    var implic=[];if(c.titular)implic.push(c.titular);(c.conocen||[]).forEach(function(x){implic.push(x);});
+    implic.forEach(function(pid){var pp=per(pid);if(!pp||pp.estado==="baja"||!pp.proveedorId)return;var v=prv(pp.proveedorId);if(!v)return;var a0=act(c.activoId);
+      if(c.remoto&&v.acceso&&v.acceso.remoto===false)add("alta","Acceso remoto no autorizado a "+v.nombre+": "+lbl,pp.nombre+" usa una credencial remota, pero en Proveedores OT el proveedor no tiene autorizado el acceso remoto.","PSF-02","IEC 62443-2-4 SP.07","cuentas");
+      if(a0&&a0.srcId&&Array.isArray(v.activos)&&v.activos.length&&v.activos.indexOf(a0.srcId)<0)add("media","Credencial fuera del alcance del proveedor: "+lbl,pp.nombre+" ("+v.nombre+") tiene acceso a un equipo que no figura entre los activos del proveedor en Proveedores OT.","PSF-02","IEC 62443-2-4","cuentas");
+    });
+  });
+  (S.fisicos||[]).forEach(function(f){
+    if(FIS_PUNTOS.indexOf(f.tipo)<0)return;
+    if(!f.proteccion||f.proteccion==="Ninguna"){var exp=f.zonaFisica==="Z0"||f.zonaFisica==="Z1"||!f.zonaFisica;
+      add(exp?"alta":"media","Punto de acceso físico sin proteger: "+(FIS_TIPOS[f.tipo]||f.tipo)+" «"+f.nombre+"»"+(f.zonaFisica?" en "+f.zonaFisica:""),(f.vinculados||[]).length?"Da acceso a: "+f.vinculados.map(actN).join(", ")+".":"Indica en Red OT a qué equipo da acceso.","PSF-01","ISO/IEC 27002 7.1–7.4","activos");}
+  });
+  S.personas.forEach(function(p){
+    if(p.estado==="baja")return;
+    var cs=cuentasActivas().filter(function(c){return c.titular===p.id||(c.conocen||[]).indexOf(p.id)>=0;});
+    if(p.tipo==="tercero"){
+      var _v=p.proveedorId&&prv(p.proveedorId);
+      if(S.proveedores.length&&!p.proveedorId)add("media","Tercero sin proveedor asociado: "+p.nombre,"Asocia la persona a su empresa en Proveedores OT para comprobar su homologación y su contrato.","PSF-02","","personas");
+      if(_v&&(_v.estado==="Baja"||_v.estado==="No homologado")&&cs.length)add("crit","Personal de un proveedor «"+_v.estado+"» con credenciales activas: "+p.nombre,_v.nombre+" tiene estado «"+_v.estado+"» en Proveedores OT.","PSF-02","IEC 62443-2-4","personas");
+      if(!finEf(p))add("alta","Tercero sin fecha de fin: "+p.nombre,"Todo acceso de terceros debe tener fecha de caducidad.","PCA-07","SR 1.3","personas");
+      else{var fe=finEf(p),dd=daysTo(fe),orig=(fe!==p.fechaFin&&_v)?" (fin del contrato de "+_v.nombre+")":"";
+        if(dd<0&&cs.length)add("crit","Tercero con el contrato vencido y "+cs.length+" credencial(es) activa(s): "+p.nombre,"La intervención terminó el "+fmt(fe)+orig+".","PCA-07","SR 1.3","personas");
+        else if(dd>=0&&dd<=P.avisoTerceroDias)add("aviso","Fin de intervención próximo: "+p.nombre,"Termina el "+fmt(fe)+orig+" ("+dd+" días). Prepara la baja.","PCA-07","","personas");}
+    }
+    var r=rol(p.rol), meses=r&&r.privilegiado?P.revisionPrivMeses:P.revisionRestoMeses;
+    if(!p.ultimaRevision)add("media","Accesos nunca revisados: "+p.nombre,"No consta ninguna revisión de sus accesos.","PCA-09","SR 1.3","personas");
+    else if(addMonths(p.ultimaRevision,meses)<hoy())add("media","Revisión de accesos vencida: "+p.nombre,"Última revisión el "+fmt(p.ultimaRevision)+"; toca cada "+meses+" meses"+(r&&r.privilegiado?" (rol privilegiado)":"")+".","PCA-09","","personas");
+    if(!p.solicitud)add("media","Sin solicitud de acceso registrada: "+p.nombre,"No consta el formulario aprobado que justifica sus accesos.","PCA-03","","personas");
+  });
+  S.certificados.forEach(function(k){
+    var d=daysTo(k.caduca);if(d==null||k.revocado)return;
+    var dueño=k.activoId?actN(k.activoId):perN(k.personaId);
+    if(d<0)add("crit","Certificado caducado: "+k.sujeto+" ("+dueño+")","Caducó el "+fmt(k.caduca)+". Las comunicaciones que dependan de él fallarán.","PCA-04","SR 1.8","certificados");
+    else if(d<=P.avisoCertDias)add("aviso","Certificado a punto de caducar: "+k.sujeto+" ("+dueño+")","Caduca el "+fmt(k.caduca)+" ("+d+" días).","PCA-04","SR 1.8","certificados");
+    if(k.personaId){var p=per(k.personaId);if(p&&p.estado==="baja")add("crit","Certificado sin revocar de una baja: "+k.sujeto,p.nombre+" ya no está en la organización.","PCA-08","SR 1.8","certificados");}
+  });
+  var ord={crit:0,alta:1,media:2,aviso:3};A.sort(function(a,b){return ord[a.sev]-ord[b.sev];});
+  return A;
+}
+var SEVN={crit:"Crítica",alta:"Alta",media:"Media",aviso:"Aviso"};
+
+/* ================================================================ UI general */
+var TABS=[["panel","Panel"],["activos","Activos"],["roles","Roles"],["personas","Personas"],["cuentas","Cuentas"],["matriz","Matriz"],["bajas","Bajas y cambios"],["certificados","Certificados"],["excepciones","Excepciones"],["registro","Registro"],["proyecto","Proyecto"]];
+function renderTabs(){
+  var al=S.proyecto.modoPractica?[]:diagnostico(),crit=al.filter(function(a){return a.sev==="crit"||a.sev==="alta";}).length;
+  var cnt={activos:S.activos.length,personas:S.personas.length,cuentas:S.cuentas.length,certificados:S.certificados.length,excepciones:S.excepciones.length};
+  document.getElementById("tabs").innerHTML=TABS.map(function(t){
+    var c="";if(t[0]==="panel"&&crit)c='<span class="cnt bad">'+crit+'</span>';else if(cnt[t[0]]!=null)c='<span class="cnt">'+cnt[t[0]]+'</span>';
+    return '<button class="tab'+(TAB===t[0]?" on":"")+'" data-tab="'+t[0]+'">'+t[1]+c+'</button>';}).join("");
+  document.getElementById("subTitle").textContent=(S.proyecto.nombre||"Proyecto")+(S.proyecto.organizacion?" · "+S.proyecto.organizacion:"");
+}
+function render(){renderTabs();var f=VIEWS[TAB]||VIEWS.panel;document.getElementById("app").innerHTML=f();if(AFTER[TAB])AFTER[TAB]();save();}
+function go(t){TAB=t;render();window.scrollTo(0,0);}
+
+/* ---------- formularios genéricos */
+function optsRoles(){return S.roles.map(function(r){return [r.id,r.nombre];});}
+function optsPersonas(soloActivas){return S.personas.filter(function(p){return !soloActivas||p.estado!=="baja";}).map(function(p){return [p.id,p.nombre+(p.estado==="baja"?" (baja)":"")];});}
+function optsActivos(){return S.activos.map(function(a){return [a.id,a.nombre];});}
+function optsZF(){return S.zonasFisicas.map(function(z){return [z.id,z.id+" · "+z.nombre];});}
+function optsZL(){return [["","—"]].concat(S.zonasLogicas.map(function(z){return [z.id,z.nombre];}));}
+function optsEx(){return [["","— ninguna —"]].concat(S.excepciones.map(function(e){return [e.id,e.titulo];}));}
+function optsPrv(){return [["","—"]].concat((S.proveedores||[]).map(function(p){return [p.id,p.nombre+" ("+p.estado+")"];}));}
+function kv(arr){return arr.map(function(x){return [x,x];});}
+
+var FORMS={
+  activos:{title:"Activo",fields:[
+    {k:"nombre",l:"Nombre",req:1},{k:"tipo",l:"Tipo",t:"select",o:function(){return kv(TIPOS_ACTIVO);}},
+    {k:"ip",l:"Dirección IP"},{k:"zonaLogica",l:"Zona lógica (IEC 62443)",t:"select",o:optsZL},
+    {k:"zonaFisica",l:"Zona física",t:"select",o:optsZF},{k:"ubicacion",l:"Ubicación (sala, armario)",h:"Ej.: armario CD-01, rack de la sala técnica"},
+    {k:"notas",l:"Notas",t:"area"}]},
+  roles:{title:"Rol",fields:[
+    {k:"nombre",l:"Nombre",req:1},{k:"nivel",l:"Nivel de privilegio (1 a 4)",t:"num",h:"Se usa para detectar cuentas con más privilegio que el rol de la persona"},
+    {k:"privilegiado",l:"Rol privilegiado",t:"bool",h:"Revisión más frecuente y segundo factor recomendado"},{k:"descripcion",l:"Qué puede hacer",t:"area"}]},
+  personas:{title:"Persona",fields:[
+    {k:"nombre",l:"Nombre y apellidos",req:1},{k:"puesto",l:"Puesto"},{k:"empresa",l:"Empresa"},
+    {k:"tipo",l:"Tipo",t:"select",o:function(){return [["propio","Personal propio"],["tercero","Tercero (integrador, mantenedor…)"]];}},
+    {k:"rol",l:"Rol",t:"select",o:optsRoles},{k:"fechaFin",l:"Fecha de fin (obligatoria para terceros)",t:"date"},
+    {k:"proveedorId",l:"Proveedor (Proveedores OT)",t:"select",o:optsPrv,h:"Si el contrato del proveedor termina antes, manda esa fecha"},
+    {k:"solicitud",l:"Referencia de la solicitud aprobada",h:"Ej.: SOL-2026-014 (formulario firmado)"},
+    {k:"ultimaRevision",l:"Última revisión de sus accesos",t:"date"},
+    {k:"fisicas",l:"Credenciales físicas que tiene",h:"Ej.: tarjeta 0042, llave armarios Z3 nº 3"},
+    {k:"estado",l:"Estado",t:"select",o:function(){return [["activa","Activa"],["baja","Baja"]];}},{k:"fechaBaja",l:"Fecha de baja",t:"date"},
+    {k:"notas",l:"Notas",t:"area"}]},
+  cuentas:{title:"Cuenta",fields:[
+    {k:"activoId",l:"Equipo",t:"select",o:optsActivos,req:1},{k:"nombre",l:"Nombre de la cuenta",req:1,h:"Solo el nombre de usuario o el nivel. Nunca escribas aquí la contraseña."},
+    {k:"tipo",l:"Tipo",t:"select",o:function(){return Object.keys(TIPOS_CUENTA).map(function(k){return [k,TIPOS_CUENTA[k]];});}},
+    {k:"rol",l:"Rol que concede",t:"select",o:optsRoles},
+    {k:"titular",l:"Titular (cuentas nominales)",t:"select",o:function(){return [["","—"]].concat(optsPersonas());}},
+    {k:"conocen",l:"Quién conoce la credencial (compartidas y de emergencia)",t:"multi",o:optsPersonas},
+    {k:"mecanismo",l:"Mecanismo de autenticación",t:"select",o:function(){return kv(MECANISMOS);}},
+    {k:"mfa",l:"Segundo factor (MFA)",t:"bool"},{k:"remoto",l:"Se usa para acceso remoto",t:"bool"},
+    {k:"custodia",l:"Custodia de la credencial",h:"Ej.: sobre lacrado en caja fuerte de jefatura. No la contraseña."},
+    {k:"ultimoCambio",l:"Último cambio de la credencial",t:"date"},
+    {k:"excepcionId",l:"Excepción que la ampara",t:"select",o:optsEx},
+    {k:"proveedorId",l:"Servicio externo que la usa",t:"select",o:optsPrv,h:"Ej.: software de control remoto de un tercero"},
+    {k:"estado",l:"Estado",t:"select",o:function(){return [["activa","Activa"],["deshabilitada","Deshabilitada"]];}},
+    {k:"notas",l:"Notas",t:"area"}]},
+  certificados:{title:"Certificado",fields:[
+    {k:"sujeto",l:"Sujeto (CN)",req:1},{k:"emisor",l:"Emisor (CA)"},
+    {k:"activoId",l:"Equipo titular",t:"select",o:function(){return [["","—"]].concat(optsActivos());}},
+    {k:"personaId",l:"Persona titular",t:"select",o:function(){return [["","—"]].concat(optsPersonas());}},
+    {k:"uso",l:"Uso",h:"Ej.: VPN IPsec, OPC UA, comunicación PG/PC, usuario"},{k:"caduca",l:"Caduca el",t:"date",req:1},
+    {k:"revocado",l:"Revocado",t:"bool"}]},
+  excepciones:{title:"Excepción",fields:[
+    {k:"titulo",l:"Título",req:1},{k:"requisito",l:"Requisito afectado",t:"select",o:function(){return Object.keys(REQ).map(function(k){return [k,k+" · "+REQ[k]];});}},
+    {k:"motivo",l:"Por qué no se puede cumplir",t:"area"},{k:"compensatoria",l:"Medida compensatoria",t:"area",req:1},
+    {k:"aprueba",l:"Aprobada por"},{k:"caduca",l:"Revisar antes de",t:"date"}]}
+};
+var DEFAULTS={activos:{tipo:"PLC",zonaFisica:"Z3"},roles:{nivel:1,privilegiado:false},personas:{tipo:"propio",rol:"R-OP",estado:"activa"},
+  cuentas:{tipo:"nominal",rol:"R-OP",mecanismo:"Contraseña",estado:"activa",conocen:[]},certificados:{},excepciones:{requisito:"PCA-01"}};
+var PREFIX={activos:"A",roles:"R-",personas:"P",cuentas:"C",certificados:"K",excepciones:"E"};
+
+function field(f,v){
+  var id="f_"+f.k, o=f.o?f.o():[], h=f.h?'<div class="hint">'+esc(f.h)+'</div>':"";
+  var lab='<label class="f" for="'+id+'">'+esc(f.l)+(f.req?" *":"")+'</label>';
+  if(f.t==="select")return '<div class="field">'+lab+'<select class="t" id="'+id+'">'+o.map(function(x){return '<option value="'+esc(x[0])+'"'+(String(v==null?"":v)===String(x[0])?" selected":"")+'>'+esc(x[1])+'</option>';}).join("")+'</select>'+h+'</div>';
+  if(f.t==="multi"){var vv=v||[];return '<div class="field">'+lab+'<div class="multi" id="'+id+'">'+(o.length?o.map(function(x){return '<label><input type="checkbox" value="'+esc(x[0])+'"'+(vv.indexOf(x[0])>=0?" checked":"")+'> '+esc(x[1])+'</label>';}).join(""):'<span class="hint">Aún no hay personas</span>')+'</div>'+h+'</div>';}
+  if(f.t==="bool")return '<div class="field"><label class="f"><input type="checkbox" id="'+id+'"'+(v?" checked":"")+'> '+esc(f.l)+'</label>'+h+'</div>';
+  if(f.t==="area")return '<div class="field">'+lab+'<textarea class="t" rows="2" id="'+id+'">'+esc(v||"")+'</textarea>'+h+'</div>';
+  return '<div class="field">'+lab+'<input class="t" id="'+id+'" type="'+(f.t==="date"?"date":f.t==="num"?"number":"text")+'" value="'+esc(v==null?"":v)+'">'+h+'</div>';
+}
+function readField(f){
+  var el=document.getElementById("f_"+f.k);
+  if(f.t==="bool")return el.checked;
+  if(f.t==="multi")return Array.prototype.slice.call(el.querySelectorAll("input:checked")).map(function(i){return i.value;});
+  if(f.t==="num")return Number(el.value)||0;
+  return el.value.trim();
+}
+function modal(title,html,onOk,okTxt){
+  var bg=document.createElement("div");bg.className="modal-bg";
+  bg.innerHTML='<div class="modal" role="dialog" aria-modal="true"><h3>'+esc(title)+'</h3><div class="mbody">'+html+'</div><div class="foot"><button class="btn" data-x="c">Cancelar</button>'+(onOk?'<button class="btn pri" data-x="ok">'+esc(okTxt||"Guardar")+'</button>':'')+'</div></div>';
+  document.body.appendChild(bg);
+  bg.addEventListener("click",function(e){var x=e.target.getAttribute("data-x");if(e.target===bg||x==="c")bg.remove();if(x==="ok"){if(onOk()!==false)bg.remove();}});
+  var f=bg.querySelector("input,select,textarea");if(f)f.focus();
+  return bg;
+}
+function editItem(list,id){
+  var F=FORMS[list],it=id?byId(list,id):Object.assign({},DEFAULTS[list]);
+  var html=F.fields.map(function(f){return field(f,it[f.k]);}).join("");
+  if(list==="cuentas")html='<div class="banner warn" style="margin:0 0 12px">No escribas contraseñas en esta aplicación: registra solo qué cuenta existe, quién la conoce y dónde está custodiada.</div>'+html;
+  modal((id?"Editar ":"Nuevo: ")+F.title.toLowerCase(),'<div class="grid2">'+html+'</div>',function(){
+    var o={};for(var i=0;i<F.fields.length;i++){var f=F.fields[i];o[f.k]=readField(f);if(f.req&&(o[f.k]===""||o[f.k]==null)){alert("Falta: "+f.l);return false;}}
+    if(list==="personas"&&o.tipo==="tercero"&&!o.fechaFin&&!confirm("Un tercero debería tener fecha de fin (PCA-07). ¿Guardar igualmente?"))return false;
+    if(list==="personas"&&o.estado==="baja"&&!o.fechaBaja)o.fechaBaja=hoy();
+    if(id){Object.assign(it,o);log("Modificación",F.title+": "+(o.nombre||o.sujeto||o.titulo||id));}
+    else{o.id=uid(PREFIX[list]);S[list].push(o);log("Alta",F.title+": "+(o.nombre||o.sujeto||o.titulo||o.id)+(list==="cuentas"?" en "+actN(o.activoId):""));}
+    render();
+  });
+}
+function delItem(list,id){
+  var it=byId(list,id);if(!it)return;
+  var uso="";
+  if(list==="activos"&&S.cuentas.some(function(c){return c.activoId===id;}))uso="Tiene cuentas asociadas, que también se eliminarán.";
+  if(list==="personas"&&S.cuentas.some(function(c){return c.titular===id||(c.conocen||[]).indexOf(id)>=0;}))uso="Aparece en cuentas. Para una salida usa «Bajas y cambios»: así queda registro.";
+  if(list==="roles"&&(S.personas.some(function(p){return p.rol===id;})||S.cuentas.some(function(c){return c.rol===id;})))return alert("El rol está en uso y no se puede eliminar.");
+  if(!confirm("¿Eliminar «"+(it.nombre||it.sujeto||it.titulo)+"»?"+(uso?"\n\n"+uso:"")))return;
+  S[list]=S[list].filter(function(x){return x.id!==id;});
+  if(list==="activos")S.cuentas=S.cuentas.filter(function(c){return c.activoId!==id;});
+  if(list==="personas")S.cuentas.forEach(function(c){if(c.titular===id)c.titular="";c.conocen=(c.conocen||[]).filter(function(p){return p!==id;});});
+  log("Eliminación",FORMS[list].title+": "+(it.nombre||it.sujeto||it.titulo));render();
+}
+function btns(list,id){return '<td class="act"><button class="btn sm" data-edit="'+list+'" data-id="'+id+'">Editar</button> <button class="btn sm danger" data-del="'+list+'" data-id="'+id+'">✕</button></td>';}
+function head(title,lead,list,extra){
+  return '<div class="row"><div><h2>'+title+'</h2><p class="lead">'+lead+'</p></div><div class="spacer"></div>'+(extra||"")+(list?'<button class="btn pri" data-new="'+list+'">+ Añadir</button>':"")+'</div>';
+}
+function tbl(cols,rows,empty){
+  if(!rows.length)return '<div class="empty">'+(empty||"Sin elementos")+'</div>';
+  return '<div class="tablewrap"><table><thead><tr>'+cols.map(function(c){return '<th>'+c+'</th>';}).join("")+'</tr></thead><tbody>'+rows.join("")+'</tbody></table></div>';
+}
+function alertsFor(fn){return S.proyecto.modoPractica?[]:diagnostico().filter(fn);}
+
+/* ================================================================ vistas */
+var VIEWS={}, AFTER={};
+VIEWS.panel=function(){
+  var P=S.proyecto, ca=cuentasActivas();
+  var k=[[S.personas.filter(function(p){return p.estado!=="baja";}).length,"Personas activas"],[ca.length,"Cuentas activas"],
+    [ca.filter(function(c){return c.tipo==="compartida";}).length,"Compartidas"],[ca.filter(function(c){var r=rol(c.rol);return r&&r.privilegiado;}).length,"Privilegiadas"],
+    [S.personas.filter(function(p){return p.tipo==="tercero"&&p.estado!=="baja";}).length,"Terceros"],[S.certificados.filter(function(x){return !x.revocado;}).length,"Certificados"]];
+  var h='<div class="card">'+head("Panel de cumplimiento","Estado de las identidades y credenciales frente a la política de control de acceso (PCA-01 a PCA-10).")+
+    '<div class="kpis">'+k.map(function(x){return '<div class="kpi"><div class="n">'+x[0]+'</div><div class="l">'+x[1]+'</div></div>';}).join("")+'</div>';
+  if(!S.activos.length&&!S.personas.length)h+='<div class="banner info">Proyecto vacío. Empieza importando los activos desde Red OT (Menú → Importar activos desde Red OT) o carga el caso de ejemplo <a href="#" data-act="etap">ETAP El Lomo</a>.</div>';
+  if(P.modoPractica){
+    h+='<div class="banner info"><b>Modo práctica activado:</b> el diagnóstico automático está oculto. Revisa tú los accesos y anota los incumplimientos; cuando termines, compara con la herramienta.</div><div class="row" style="margin-top:12px"><button class="btn pri" data-act="revelar">Mostrar el diagnóstico</button></div></div>';
+    return h;
+  }
+  var A=diagnostico(),by={crit:0,alta:0,media:0,aviso:0};A.forEach(function(a){by[a.sev]++;});
+  h+='<h3>Diagnóstico · '+A.length+' hallazgo(s)</h3><div class="row" style="margin-bottom:10px">'+["crit","alta","media","aviso"].map(function(s){return '<span class="tag '+(s==="aviso"?"info":s)+'">'+SEVN[s]+': '+by[s]+'</span>';}).join(" ")+'</div>';
+  h+=A.length?A.map(function(a){return '<div class="alert '+a.sev+'"><div style="flex:1"><div class="t">'+esc(a.t)+'</div><div class="d">'+esc(a.d)+'</div></div><div class="ref"><b>'+a.req+'</b> · '+esc(REQ[a.req]||"")+'<br>'+esc(a.ref)+'<br><a href="#" data-go="'+a.tab+'">Ir a '+a.tab+' →</a></div></div>';}).join(""):'<div class="banner info" style="background:var(--okb);border-color:var(--ok)">Sin hallazgos: las credenciales registradas cumplen la política.</div>';
+  return h+'</div>';
+};
+VIEWS.activos=function(){
+  var rows=S.activos.map(function(a){var n=S.cuentas.filter(function(c){return c.activoId===a.id&&c.estado!=="deshabilitada";}).length;var zl=byId("zonasLogicas",a.zonaLogica);
+    return '<tr><td><b>'+esc(a.nombre)+'</b>'+(a.origen==="redot"?' <span class="tag info">Red OT</span>':"")+(a.modelo?'<div class="hint">'+esc(a.modelo)+(a.firmware?' · '+esc(a.firmware):'')+'</div>':'')+'</td><td>'+esc(a.tipo)+'</td><td>'+esc(a.ip||"")+'</td><td>'+esc(zl?zl.nombre:"—")+'</td><td><span class="tag">'+esc(a.zonaFisica||"—")+'</span></td><td>'+esc(a.ubicacion||"")+'</td><td>'+n+'</td>'+btns("activos",a.id)+'</tr>';});
+  return '<div class="card">'+head("Activos","Equipos sobre los que existen credenciales. Se importan desde Red OT; aquí se completa su zona física y ubicación.","activos",'<button class="btn" data-act="redot">🔌 Importar de Red OT</button>')+
+    tbl(["Activo","Tipo","IP","Zona lógica","Zona física","Ubicación","Cuentas",""],rows,"Importa el esquema de Red OT o añade los activos a mano.")+'</div>'+cardFisicos();
+};
+function cardFisicos(){
+  var rows=(S.fisicos||[]).map(function(f){var pt=FIS_PUNTOS.indexOf(f.tipo)>=0,sin=pt&&(!f.proteccion||f.proteccion==="Ninguna");
+    return '<tr><td><b>'+esc(f.nombre)+'</b><div class="hint">'+esc(FIS_TIPOS[f.tipo]||f.tipo)+'</div></td><td>'+(pt?'<span class="tag media">Punto de acceso</span>':'<span class="tag ok">Control</span>')+'</td><td><span class="tag">'+esc(f.zonaFisica||"—")+'</span></td><td>'+esc(f.ubicacion||"")+'</td><td>'+(pt?(sin?'<span class="tag crit">Ninguna</span>':esc(f.proteccion)):"—")+'</td><td>'+esc((f.vinculados||[]).map(actN).join(", ")||"—")+'</td></tr>';});
+  return '<div class="card">'+head("Elementos físicos","Puntos de acceso físico y controles dibujados en la capa física de Red OT (pestaña «Físico» de su paleta). Se actualizan al importar el esquema.")+
+    tbl(["Elemento","Clase","Zona física","Ubicación","Protección","Relacionado con"],rows,"Sin elementos físicos. En Red OT, añádelos desde la pestaña «Físico» de la paleta y conéctalos a sus equipos.")+'</div>';
+}
+VIEWS.roles=function(){
+  var rows=S.roles.slice().sort(function(a,b){return a.nivel-b.nivel;}).map(function(r){
+    return '<tr><td><b>'+esc(r.nombre)+'</b></td><td>'+r.nivel+'</td><td>'+(r.privilegiado?'<span class="tag alta">Privilegiado</span>':'<span class="tag">No</span>')+'</td><td>'+esc(r.descripcion||"")+'</td><td>'+S.personas.filter(function(p){return p.rol===r.id&&p.estado!=="baja";}).length+'</td>'+btns("roles",r.id)+'</tr>';});
+  return '<div class="card">'+head("Roles","Los permisos se asignan a roles, no a personas (PCA-02, IEC 62443-3-3 SR 2.1). El nivel permite detectar cuentas con más privilegio que el rol de su titular.","roles")+tbl(["Rol","Nivel","Tipo","Permisos","Personas",""],rows)+'</div>';
+};
+VIEWS.personas=function(){
+  var al=alertsFor(function(a){return a.tab==="personas";});
+  var rows=S.personas.map(function(p){
+    var n=cuentasActivas().filter(function(c){return c.titular===p.id;}).length, k=cuentasActivas().filter(function(c){return (c.conocen||[]).indexOf(p.id)>=0;}).length;
+    var fe=finEf(p),fin=fe?fmt(fe)+(daysTo(fe)<0?' <span class="tag crit">vencida</span>':""):"—";
+    return '<tr'+(p.estado==="baja"?' style="opacity:.6"':"")+'><td><b>'+esc(p.nombre)+'</b><div class="hint">'+esc(p.puesto||"")+(p.empresa?" · "+esc(p.empresa):"")+(p.proveedorId?' · <span class="tag info">'+esc(prvN(p.proveedorId)||"proveedor")+'</span>':"")+'</div></td><td>'+(p.tipo==="tercero"?'<span class="tag media">Tercero</span>':'<span class="tag">Propio</span>')+'</td><td>'+esc(rolN(p.rol))+'</td><td>'+fin+'</td><td>'+n+' / '+k+'</td><td>'+fmt(p.ultimaRevision)+'</td><td>'+(p.estado==="baja"?'<span class="tag crit">Baja '+fmt(p.fechaBaja)+'</span>':'<span class="tag ok">Activa</span>')+'</td>'+btns("personas",p.id)+'</tr>';});
+  return '<div class="card">'+head("Personas","Plantilla propia y terceros. «Cuentas» muestra nominales / compartidas que conoce.","personas",'<button class="btn" data-act="revisar">✔ Registrar revisión de hoy</button>')+
+    (al.length?'<div class="banner warn">'+al.length+' hallazgo(s) en personas. <a href="#" data-go="panel">Ver en el panel</a></div>':"")+
+    tbl(["Persona","Tipo","Rol","Fin","Cuentas","Última revisión","Estado",""],rows,"Añade la plantilla de la instalación.")+'</div>'+cardProveedores();
+};
+function cardProveedores(){
+  var L=S.proveedores||[];
+  var rows=L.map(function(v){var ps=S.personas.filter(function(p){return p.proveedorId===v.id&&p.estado!=="baja";});
+    var nc=cuentasActivas().filter(function(c){return c.proveedorId===v.id||ps.some(function(p){return c.titular===p.id||(c.conocen||[]).indexOf(p.id)>=0;});}).length;
+    var est={"Homologado":"ok","Homologado con condiciones":"media","En evaluación":"info","No homologado":"crit","Baja":"crit"}[v.estado]||"";
+    return '<tr><td><b>'+esc(v.nombre)+'</b><div class="hint">'+esc(v.tipo||"")+'</div></td><td><span class="tag '+est+'">'+esc(v.estado||"")+'</span></td><td>'+(v.acceso&&v.acceso.remoto?'<span class="tag media">Sí</span>':'<span class="tag">No</span>')+'</td><td>'+fmt(v.finContrato)+(v.finContrato&&daysTo(v.finContrato)<0?' <span class="tag crit">vencido</span>':"")+'</td><td>'+(v.activos||[]).length+'</td><td>'+ps.length+'</td><td>'+nc+'</td></tr>';});
+  return '<div class="card">'+head("Proveedores","Importados de Proveedores OT. El estado de homologación, el acceso remoto autorizado, el alcance (activos) y el fin del contrato se usan en el diagnóstico (PSF-02).","",'<button class="btn" data-act="prov">🤝 Importar de Proveedores OT</button>')+
+    tbl(["Proveedor","Homologación","Remoto autorizado","Fin del contrato","Activos","Personas","Credenciales"],rows,"Sin proveedores. Importa el proyecto JSON de Proveedores OT.")+'</div>';
+}
+var FILT={activo:"",tipo:"",estado:"activa"};
+VIEWS.cuentas=function(){
+  var L=S.cuentas.filter(function(c){return (!FILT.activo||c.activoId===FILT.activo)&&(!FILT.tipo||c.tipo===FILT.tipo)&&(!FILT.estado||(c.estado||"activa")===FILT.estado);});
+  L.sort(function(a,b){return actN(a.activoId).localeCompare(actN(b.activoId));});
+  var rows=L.map(function(c){
+    var tcls={fabrica:"crit",compartida:"alta",emergencia:"media",servicio:"info",nominal:"ok"}[c.tipo]||"";
+    var quien=c.tipo==="nominal"?esc(perN(c.titular)):(c.conocen||[]).map(function(id){var p=per(id);return p?'<span'+(p.estado==="baja"?' style="color:var(--crit);text-decoration:line-through"':"")+'>'+esc(p.nombre)+'</span>':"";}).join(", ")||"—";
+    return '<tr'+(c.estado==="deshabilitada"?' style="opacity:.55"':"")+'><td><b>'+esc(actN(c.activoId))+'</b></td><td>'+esc(c.nombre)+(c.pendienteCambio?' <span class="tag alta" title="'+esc(c.motivoPendiente||"")+'">cambiar</span>':"")+'</td><td><span class="tag '+tcls+'">'+TIPOS_CUENTA[c.tipo]+'</span></td><td>'+esc(rolN(c.rol))+'</td><td>'+quien+'</td><td>'+esc(c.mecanismo||"")+(c.mfa?" + MFA":"")+(c.remoto?' <span class="tag info">remoto</span>':"")+'</td><td>'+fmt(c.ultimoCambio)+'</td>'+
+      '<td class="act">'+((c.tipo!=="nominal")?'<button class="btn sm" data-cambio="'+c.id+'" title="Registrar cambio de credencial">🔑</button> ':"")+'<button class="btn sm" data-edit="cuentas" data-id="'+c.id+'">Editar</button> <button class="btn sm danger" data-del="cuentas" data-id="'+c.id+'">✕</button></td></tr>';});
+  var sel=function(id,opts,v){return '<select class="t" style="width:auto" id="'+id+'">'+opts.map(function(o){return '<option value="'+esc(o[0])+'"'+(o[0]===v?" selected":"")+'>'+esc(o[1])+'</option>';}).join("")+'</select>';};
+  var filtros='<div class="row" style="margin-bottom:10px">'+sel("fAct",[["","Todos los equipos"]].concat(optsActivos()),FILT.activo)+sel("fTipo",[["","Todos los tipos"]].concat(Object.keys(TIPOS_CUENTA).map(function(k){return [k,TIPOS_CUENTA[k]];})),FILT.tipo)+sel("fEst",[["activa","Activas"],["deshabilitada","Deshabilitadas"],["","Todas"]],FILT.estado)+'</div>';
+  return '<div class="card">'+head("Inventario de cuentas","Todas las cuentas de cada equipo, incluidas las locales y las de fábrica. Es la base de las bajas y de la revisión periódica.","cuentas")+
+    '<div class="banner warn" style="margin:0 0 12px">Registra qué cuentas existen y quién las conoce, <b>nunca las contraseñas</b>.</div>'+filtros+
+    tbl(["Equipo","Cuenta","Tipo","Rol","Titular / la conocen","Autenticación","Último cambio",""],rows,S.activos.length?"No hay cuentas con este filtro.":"Primero añade o importa activos.")+'</div>';
+};
+AFTER.cuentas=function(){
+  [["fAct","activo"],["fTipo","tipo"],["fEst","estado"]].forEach(function(p){var e=document.getElementById(p[0]);if(e)e.onchange=function(){FILT[p[1]]=e.value;render();};});
+};
+var MXMODE="roles";
+VIEWS.matriz=function(){
+  var ca=cuentasActivas(),h='<div class="card">'+head("Matriz de accesos","Quién puede entrar en cada equipo. Útil para la revisión periódica y para preparar una baja.","",'<div class="row"><button class="btn'+(MXMODE==="roles"?" pri":"")+'" data-mx="roles">Activos × roles</button><button class="btn'+(MXMODE==="personas"?" pri":"")+'" data-mx="personas">Personas × activos</button></div>');
+  if(!S.activos.length)return h+'<div class="empty">Sin activos.</div></div>';
+  if(MXMODE==="roles"){
+    var R=S.roles.slice().sort(function(a,b){return a.nivel-b.nivel;});
+    h+='<div class="tablewrap"><table class="mx"><thead><tr><th>Activo</th>'+R.map(function(r){return '<th>'+esc(r.nombre)+'</th>';}).join("")+'<th>Compartidas</th><th>Fábrica</th></tr></thead><tbody>'+
+    S.activos.map(function(a){var cs=ca.filter(function(c){return c.activoId===a.id;});
+      return '<tr><td><b>'+esc(a.nombre)+'</b> <span class="hint">'+esc(a.zonaFisica||"")+'</span></td>'+R.map(function(r){var n=cs.filter(function(c){return c.rol===r.id;}).length;return '<td>'+(n?'<span class="cell" style="background:var(--infob);color:var(--info)">'+n+'</span>':'<span class="hint">·</span>')+'</td>';}).join("")+
+      '<td>'+cellBad(cs.filter(function(c){return c.tipo==="compartida";}).length,"alta")+'</td><td>'+cellBad(cs.filter(function(c){return c.tipo==="fabrica";}).length,"crit")+'</td></tr>';}).join("")+'</tbody></table></div>';
+  }else{
+    var Pp=S.personas.filter(function(p){return p.estado!=="baja"||ca.some(function(c){return c.titular===p.id||(c.conocen||[]).indexOf(p.id)>=0;});});
+    h+='<p class="hint">N = cuenta nominal propia · C = conoce una credencial compartida o de emergencia. En rojo, personas dadas de baja que aún tienen acceso.</p><div class="tablewrap"><table class="mx"><thead><tr><th>Persona</th>'+S.activos.map(function(a){return '<th title="'+esc(a.nombre)+'">'+esc(a.nombre.length>14?a.nombre.slice(0,13)+"…":a.nombre)+'</th>';}).join("")+'</tr></thead><tbody>'+
+    Pp.map(function(p){var bad=p.estado==="baja";return '<tr><td'+(bad?' style="color:var(--crit)"':"")+'><b>'+esc(p.nombre)+'</b> <span class="hint">'+esc(rolN(p.rol))+'</span></td>'+S.activos.map(function(a){
+      var n=ca.some(function(c){return c.activoId===a.id&&c.titular===p.id;}),k=ca.some(function(c){return c.activoId===a.id&&(c.conocen||[]).indexOf(p.id)>=0;});
+      var t=(n?"N":"")+(k?(n?"+":"")+"C":"");return '<td>'+(t?'<span class="cell" style="background:'+(bad?"var(--critb);color:var(--crit)":"var(--infob);color:var(--info)")+'">'+t+'</span>':'<span class="hint">·</span>')+'</td>';}).join("")+'</tr>';}).join("")+'</tbody></table></div>';
+  }
+  return h+'</div>';
+};
+function cellBad(n,cls){return n?'<span class="cell" style="background:var(--'+cls+'b);color:var(--'+cls+')">'+n+'</span>':'<span class="hint">·</span>';}
+
+/* ---------- simulador de bajas y cambios de puesto */
+var SIM={persona:"",tipo:"baja",nuevoRol:"",items:null};
+VIEWS.bajas=function(){
+  var h='<div class="card">'+head("Bajas y cambios de puesto","Genera la lista de comprobación completa de una salida, un cambio de puesto o el fin de una intervención de un tercero (PCA-08). Al aplicarla, los cambios quedan en el registro.")+
+  '<div class="grid2"><div class="field"><label class="f">Persona</label><select class="t" id="sPer"><option value="">— elige —</option>'+optsPersonas(true).map(function(o){return '<option value="'+o[0]+'"'+(o[0]===SIM.persona?" selected":"")+'>'+esc(o[1])+'</option>';}).join("")+'</select></div>'+
+  '<div class="field"><label class="f">Motivo</label><select class="t" id="sTipo">'+[["baja","Deja la organización"],["fin","Fin de intervención (tercero)"],["cambio","Cambio de puesto"]].map(function(o){return '<option value="'+o[0]+'"'+(o[0]===SIM.tipo?" selected":"")+'>'+o[1]+'</option>';}).join("")+'</select></div>'+
+  (SIM.tipo==="cambio"?'<div class="field"><label class="f">Nuevo rol</label><select class="t" id="sRol">'+optsRoles().map(function(o){return '<option value="'+o[0]+'"'+(o[0]===SIM.nuevoRol?" selected":"")+'>'+esc(o[1])+'</option>';}).join("")+'</select></div>':"")+
+  '</div><div class="row"><button class="btn pri" id="sGen">Generar lista de comprobación</button></div>';
+  if(SIM.items){
+    var p=per(SIM.persona),hechos=SIM.items.filter(function(i){return i.ok;}).length;
+    h+='<h3>Lista de comprobación · '+esc(p?p.nombre:"")+' · '+({baja:"baja",fin:"fin de intervención",cambio:"cambio a "+rolN(SIM.nuevoRol)})[SIM.tipo]+'</h3>';
+    h+=SIM.items.length?SIM.items.map(function(it,i){return '<div class="chk'+(it.ok?" done":"")+'"><input type="checkbox" data-chk="'+i+'"'+(it.ok?" checked":"")+'><div><div class="g">'+esc(it.g)+'</div><div class="x">'+esc(it.t)+'</div>'+(it.n?'<div class="hint">'+esc(it.n)+'</div>':"")+'</div></div>';}).join(""):'<div class="empty">No hay credenciales registradas para esta persona.</div>';
+    h+='<div class="row" style="margin-top:14px"><span class="hint">'+hechos+' de '+SIM.items.length+' completados</span><div class="spacer"></div><button class="btn" id="sPrint">🖨 Imprimir lista</button><button class="btn pri" id="sApply">Aplicar en el inventario</button></div>';
+    h+='<p class="hint">«Aplicar» deshabilita sus cuentas nominales, marca para cambio las credenciales compartidas que conocía (en un cambio de puesto, lo retira de las que hayas marcado como no necesarias), revoca sus certificados y actualiza su estado o rol. Los pasos físicos (tarjetas, llaves) y los que se hacen en cada equipo debes realizarlos tú y marcarlos.</p>';
+  }
+  return h+'</div>';
+};
+function genSim(){
+  var p=per(SIM.persona);if(!p)return alert("Elige una persona.");
+  var I=[],ca=cuentasActivas(),nuevoNivel=SIM.tipo==="cambio"?rolNivel(SIM.nuevoRol):0;
+  ca.filter(function(c){return c.titular===p.id;}).forEach(function(c){
+    var a=act(c.activoId);
+    if(SIM.tipo==="cambio"&&c.rol===SIM.nuevoRol)return;
+    I.push({g:"Cuenta nominal · "+(a?a.nombre:""),t:(SIM.tipo==="cambio"?"Ajustar al nuevo rol o deshabilitar":"Deshabilitar")+" la cuenta «"+c.nombre+"» ("+rolN(c.rol)+")",n:c.mecanismo==="RADIUS"?"Se gestiona en el servidor RADIUS (SINEC INS)":(c.mecanismo==="Clave SSH"?"Retirar su clave de authorized_keys y bloquear: usermod -L -e 1":""),k:"nom",id:c.id});
+  });
+  ca.filter(function(c){return (c.conocen||[]).indexOf(p.id)>=0;}).forEach(function(c){
+    if(SIM.tipo==="cambio"&&c.rol===SIM.nuevoRol)return;
+    if(SIM.tipo==="cambio"&&rolNivel(c.rol)<=nuevoNivel){
+      I.push({g:"Credencial compartida · "+actN(c.activoId),t:"Retirar a "+p.nombre+" de quienes conocen «"+c.nombre+"» si su nuevo puesto ya no la necesita",n:"Es de rol "+rolN(c.rol)+": no da más privilegio que el nuevo rol, así que no hace falta cambiarla.",k:"quitar",id:c.id});return;}
+    I.push({g:"Credencial compartida · "+actN(c.activoId),t:"Cambiar la credencial «"+c.nombre+"» ("+TIPOS_CUENTA[c.tipo]+") y comunicarla a quien la necesite",n:"La conocía "+p.nombre+". Custodia: "+(c.custodia||"sin indicar"),k:"comp",id:c.id});
+  });
+  S.certificados.filter(function(k){return k.personaId===p.id&&!k.revocado;}).forEach(function(k){I.push({g:"Certificado",t:"Revocar el certificado «"+k.sujeto+"» ("+(k.uso||"")+") y publicar la CRL",k:"cert",id:k.id});});
+  if(SIM.tipo==="cambio"){
+    var otros=S.personas.filter(function(x){return x.id!==p.id&&x.rol===SIM.nuevoRol&&x.estado!=="baja";}).map(function(x){return x.id;});
+    var eq={};ca.forEach(function(c){if(otros.indexOf(c.titular)>=0&&c.rol===SIM.nuevoRol)eq[c.activoId]=1;});
+    Object.keys(eq).forEach(function(aid){if(!ca.some(function(c){return c.activoId===aid&&c.titular===p.id&&c.rol===SIM.nuevoRol;}))I.push({g:"Alta por el nuevo puesto · "+actN(aid),t:"Valorar el alta de una cuenta "+rolN(SIM.nuevoRol)+" (con solicitud aprobada)",k:"alta"});});
+    I.push({g:"Solicitud",t:"Registrar la solicitud aprobada del nuevo rol",k:"doc"});
+  }else{
+    I.push({g:"Físico",t:"Recuperar y anular tarjeta, llaves, token y equipos"+(p.fisicas?": "+p.fisicas:""),k:"fis"});
+    I.push({g:"Accesos remotos",t:"Comprobar que no tiene VPN, escritorio remoto ni cuentas en servicios externos de la planta",k:"rem"});
+    I.push({g:"Registros",t:"Revisar sus últimos accesos por si hay actividad anómala",k:"log"});
+  }
+  I.push({g:"Registro",t:"Anotar la "+(SIM.tipo==="cambio"?"modificación":"baja")+" con fecha, hora y quién la ejecuta",k:"reg"});
+  SIM.items=I;render();
+}
+function applySim(){
+  var p=per(SIM.persona);if(!p||!SIM.items)return;
+  if(!confirm("Se aplicarán los cambios en el inventario. ¿Continuar?"))return;
+  var n=0;
+  SIM.items.forEach(function(it){
+    var c=it.id?byId("cuentas",it.id):null;
+    if(it.k==="nom"&&c){c.estado="deshabilitada";n++;}
+    if(it.k==="comp"&&c){c.pendienteCambio=true;c.motivoPendiente="La conocía "+p.nombre+" ("+({baja:"baja",fin:"fin de intervención",cambio:"cambio de puesto"})[SIM.tipo]+" "+fmt(hoy())+")";c.conocen=c.conocen.filter(function(x){return x!==p.id;});n++;}
+    if(it.k==="quitar"&&c&&it.ok){c.conocen=c.conocen.filter(function(x){return x!==p.id;});n++;}
+    if(it.k==="cert"){var k=byId("certificados",it.id);if(k){k.revocado=true;n++;}}
+  });
+  if(SIM.tipo==="cambio"){var ant=rolN(p.rol);p.rol=SIM.nuevoRol;log("Cambio de puesto",p.nombre+": "+ant+" → "+rolN(p.rol)+" · "+n+" credenciales ajustadas");}
+  else{p.estado="baja";p.fechaBaja=hoy();log(SIM.tipo==="fin"?"Fin de intervención":"Baja",p.nombre+" · "+n+" credenciales retiradas o marcadas para cambio");}
+  SIM={persona:"",tipo:"baja",nuevoRol:"",items:null};toast("Cambios aplicados");render();
+}
+function printSim(){
+  var p=per(SIM.persona);
+  printHTML('<h1>Lista de comprobación · '+esc(p?p.nombre:"")+'</h1><p>'+esc(S.proyecto.nombre)+' · '+fmt(hoy())+'</p><table><tr><th>✓</th><th>Ámbito</th><th>Acción</th><th>Hecho por / fecha</th></tr>'+SIM.items.map(function(i){return '<tr><td>'+(i.ok?"☑":"☐")+'</td><td>'+esc(i.g)+'</td><td>'+esc(i.t)+(i.n?"<br><i>"+esc(i.n)+"</i>":"")+'</td><td style="width:30%"></td></tr>';}).join("")+'</table>');
+}
+
+VIEWS.certificados=function(){
+  var rows=S.certificados.slice().sort(function(a,b){return (a.caduca||"").localeCompare(b.caduca||"");}).map(function(k){
+    var d=daysTo(k.caduca),st=k.revocado?'<span class="tag">Revocado</span>':d<0?'<span class="tag crit">Caducado</span>':d<=S.proyecto.avisoCertDias?'<span class="tag media">'+d+' días</span>':'<span class="tag ok">Vigente</span>';
+    return '<tr><td><b>'+esc(k.sujeto)+'</b></td><td>'+esc(k.emisor||"")+'</td><td>'+esc(k.activoId?actN(k.activoId):perN(k.personaId))+'</td><td>'+esc(k.uso||"")+'</td><td>'+fmt(k.caduca)+'</td><td>'+st+'</td>'+btns("certificados",k.id)+'</tr>';});
+  return '<div class="card">'+head("Certificados","Inventario de caducidades: en una planta, un certificado caducado puede cortar una VPN u OPC UA (IEC 62443-3-3 SR 1.8).","certificados")+tbl(["Sujeto","Emisor","Titular","Uso","Caduca","Estado",""],rows,"Sin certificados registrados.")+'</div>';
+};
+VIEWS.excepciones=function(){
+  var rows=S.excepciones.map(function(e){var n=S.cuentas.filter(function(c){return c.excepcionId===e.id;}).length;
+    return '<tr><td><b>'+esc(e.titulo)+'</b></td><td><span class="tag">'+esc(e.requisito)+'</span></td><td>'+esc(e.motivo||"")+'</td><td>'+esc(e.compensatoria||"")+'</td><td>'+esc(e.aprueba||"")+'</td><td>'+fmt(e.caduca)+'</td><td>'+n+'</td>'+btns("excepciones",e.id)+'</tr>';});
+  return '<div class="card">'+head("Excepciones","Cuando un equipo no puede cumplir un requisito (p. ej. el S7-1200 solo tiene una contraseña por nivel), se documenta la excepción con su medida compensatoria.","excepciones")+tbl(["Excepción","Requisito","Motivo","Medida compensatoria","Aprueba","Revisar antes de","Cuentas",""],rows,"Sin excepciones.")+'</div>';
+};
+VIEWS.registro=function(){
+  var rows=S.registro.map(function(r){return '<tr><td style="white-space:nowrap">'+esc(r.fecha)+'</td><td><b>'+esc(r.accion)+'</b></td><td>'+esc(r.detalle)+'</td></tr>';});
+  return '<div class="card">'+head("Registro de cambios","Trazabilidad de altas, bajas, cambios y revisiones hechas en esta aplicación (IEC 62443-3-3 SR 2.8).")+tbl(["Fecha","Acción","Detalle"],rows,"Aún no hay movimientos.")+'</div>';
+};
+VIEWS.proyecto=function(){
+  var P=S.proyecto,f=[["nombre","Nombre del proyecto","text"],["organizacion","Organización / instalación","text"],["autor","Autor","text"],["revisionPrivMeses","Revisión de cuentas privilegiadas (meses)","number"],["revisionRestoMeses","Revisión del resto (meses)","number"],["avisoCertDias","Aviso de caducidad de certificados (días)","number"],["avisoTerceroDias","Aviso de fin de intervención de terceros (días)","number"]];
+  return '<div class="card">'+head("Proyecto","Datos generales y parámetros de la política que usa el diagnóstico.")+'<div class="grid2">'+f.map(function(x){return '<div class="field"><label class="f">'+x[1]+'</label><input class="t" data-p="'+x[0]+'" type="'+x[2]+'" value="'+esc(P[x[0]])+'"></div>';}).join("")+
+  '<div class="field"><label class="f"><input type="checkbox" data-p="modoPractica"'+(P.modoPractica?" checked":"")+'> Modo práctica: ocultar el diagnóstico automático</label><div class="hint">Para que el alumnado busque los incumplimientos antes de ver la solución.</div></div></div>'+
+  '<h3>Zonas físicas</h3><p class="hint">Se usan en la ficha de cada activo. En una próxima versión llegarán desde la capa física de Red OT.</p>'+tbl(["Id","Nombre"],S.zonasFisicas.map(function(z){return '<tr><td><b>'+esc(z.id)+'</b></td><td>'+esc(z.nombre)+'</td></tr>';}))+
+  '<h3>Requisitos de la política usados en el diagnóstico</h3>'+tbl(["Id","Requisito"],Object.keys(REQ).map(function(k){return '<tr><td><b>'+k+'</b></td><td>'+REQ[k]+'</td></tr>';}))+'</div>';
+};
+AFTER.proyecto=function(){Array.prototype.forEach.call(document.querySelectorAll("[data-p]"),function(el){el.onchange=function(){var k=el.getAttribute("data-p");S.proyecto[k]=el.type==="checkbox"?el.checked:(el.type==="number"?Number(el.value)||0:el.value);renderTabs();save();};});};
+
+/* ================================================================ importación / exportación */
+function download(name,text,type){var b=new Blob([text],{type:type||"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},500);}
+function slug(s){return (s||"proyecto").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-zA-Z0-9]+/g,"_").replace(/^_|_$/g,"");}
+function exportJSON(){download("accesos_"+slug(S.proyecto.nombre)+".json",JSON.stringify(S,null,1));}
+var REDOT_TIPO={plc:"PLC",hmi:"HMI",scada:"SCADA",historian:"Servidor",mes:"Servidor",server:"Servidor",database:"Servidor",eng_ws:"Estación de ingeniería",
+  laptop:"Portátil",pc:"PC",switch_ind:"Switch",switch_it:"Switch",firewall:"Firewall",firewall_ot:"Firewall",router:"Router / módem",router_ot:"Router / módem",modem:"Router / módem",
+  vpn:"Servicio VPN",gateway:"Pasarela",gw_otot:"Pasarela",vfd:"Variador",io_remote:"E/S remota",rtu:"RTU",ids:"IDS",ids_probe:"IDS",ap:"Punto de acceso",webcam:"Cámara IP",
+  raspberry:"Otro",arduino:"Otro",printer:"Otro",printer_ind:"Otro",phone:"Otro"};
+/* dispositivos sin credenciales propias (sensores, actuadores, redes externas): no se importan */
+var REDOT_PASIVOS=["sensor","level","flow","pressure","temp","motor_ac","motor_dc","valve_a","valve_m","encoder","estop","cap_det","ind_det","barcode","cloud","net_gsm","net_fo"];
+var ZF_POR_TIPO={HMI:"Z1",Portátil:"Z1",PC:"Z1","Cámara IP":"Z1",SCADA:"Z2","Estación de ingeniería":"Z2",RTU:"REM"};
+function importRedOT(d){
+  if(!d||!Array.isArray(d.devices))return alert("No parece un esquema de Red OT (falta «devices»).");
+  var nz=0,na=0,nu=0,np=0;
+  (d.zonas||[]).forEach(function(z){if(!byId("zonasLogicas",z.id)){S.zonasLogicas.push({id:z.id,nombre:z.nombre,slt:z.slt});nz++;}});
+  d.devices.forEach(function(dv){
+    var t=(dv.type||"").toLowerCase();if(REDOT_PASIVOS.indexOf(t)>=0){np++;return;}
+    var p=dv.props||{},ex=S.activos.filter(function(a){return a.srcId===dv.id&&a.origen==="redot";})[0];
+    var zl=(d.zonas||[]).filter(function(z){return (z.devices||[]).indexOf(dv.id)>=0;})[0],zlid=zl?zl.id:"";
+    if(!zl&&p.zone){zlid="Z:"+p.zone;if(!byId("zonasLogicas",zlid)){S.zonasLogicas.push({id:zlid,nombre:"Zona "+p.zone,slt:""});nz++;}}
+    var tipo=REDOT_TIPO[t]||"Otro";
+    var base={nombre:p.name||dv.type,tipo:tipo,ip:p.ip||p.ip_wan||"",zonaLogica:zlid,modelo:[p.manufacturer,p.model].filter(Boolean).join(" "),firmware:p.firmware||""};
+    if(p.zona_fisica)base.zonaFisica=p.zona_fisica;if(p.ubicacion)base.ubicacion=p.ubicacion;
+    if(ex){Object.assign(ex,base);nu++;}
+    else{S.activos.push(Object.assign({id:uid("A"),origen:"redot",srcId:dv.id,zonaFisica:ZF_POR_TIPO[tipo]||"Z3",ubicacion:""},base));na++;}
+  });
+  var nf=0;
+  if(Array.isArray(d.fisico)){
+    var porSrc={};S.activos.forEach(function(a){if(a.srcId)porSrc[a.srcId]=a.id;});
+    S.fisicos=d.fisico.map(function(f){var p=f.props||{};nf++;
+      var vin=(d.fisico_conexiones||[]).filter(function(c){return c.from===f.id||c.to===f.id;}).map(function(c){return porSrc[c.from===f.id?c.to:c.from];}).filter(Boolean);
+      return {id:f.id,tipo:f.type,nombre:p.name||FIS_TIPOS[f.type]||f.type,zonaFisica:p.zona_fisica||"",ubicacion:p.ubicacion||"",proteccion:p.proteccion||"Ninguna",notas:p.notes||"",vinculados:vin};});
+  }
+  log("Importación Red OT",(d.nombre||"esquema")+": "+na+" activos nuevos, "+nu+" actualizados, "+nz+" zonas, "+nf+" elementos físicos, "+np+" dispositivos de campo sin credenciales omitidos");
+  toast(na+" activos importados, "+nu+" actualizados"+(np?" · "+np+" de campo omitidos":""));render();
+}
+function importProveedores(d){
+  if(!d||!Array.isArray(d.proveedores))return alert("No parece un proyecto de Proveedores OT (falta «proveedores»).");
+  var antes={};(S.proveedores||[]).forEach(function(v){antes[v.id]=1;});
+  S.proveedores=d.proveedores.map(function(v){return {id:v.id,nombre:v.nombre||v.id,tipo:v.tipo||"",estado:v.estado||"En evaluación",acceso:v.acceso||{},activos:Array.isArray(v.activos)?v.activos.slice():[],finContrato:v.finContrato||"",proximaRev:v.proximaRev||""};});
+  var nl=0;S.personas.forEach(function(p){if(p.tipo!=="tercero"||p.proveedorId||!p.empresa)return;var e=p.empresa.toLowerCase();
+    var m=S.proveedores.filter(function(v){var n=v.nombre.toLowerCase();return n===e||n.indexOf(e)===0||e.indexOf(n.split(",")[0])===0;})[0];if(m){p.proveedorId=m.id;nl++;}});
+  log("Importación Proveedores OT",((d.proyecto||{}).nombre||"proyecto")+": "+S.proveedores.length+" proveedores, "+nl+" terceros enlazados por su empresa");
+  toast(S.proveedores.length+" proveedores importados"+(nl?" · "+nl+" terceros enlazados":""));render();
+}
+function onFile(e){
+  var f=e.target.files[0];if(!f)return;var mode=e.target._mode;e.target.value="";
+  var r=new FileReader();r.onload=function(){
+    var d;try{d=JSON.parse(r.result);}catch(x){return alert("El archivo no es un JSON válido.");}
+    if(mode==="redot")return importRedOT(d);
+    if(mode==="prov"||d.formato==="toolbox-ot/proveedores")return importProveedores(d);
+    if(d.schema&&String(d.schema).indexOf("red-ot")===0){if(confirm("Es un esquema de Red OT. ¿Importar sus activos en el proyecto actual?"))importRedOT(d);return;}
+    if(!d.schema||String(d.schema).indexOf("ot-accesos")!==0)return alert("No es un proyecto de Accesos OT (schema ot-accesos).");
+    if(!confirm("Se sustituirá el proyecto actual por «"+((d.proyecto||{}).nombre||"importado")+"». ¿Continuar?"))return;
+    S=d;sanitize();TAB="panel";toast("Proyecto importado");render();
+  };r.readAsText(f);
+}
+function pick(mode){var i=document.getElementById("fileIn");i._mode=mode;i.click();}
+function csvCell(s){s=String(s==null?"":s);return /[;"\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;}
+function exportCSV(){
+  var H=["Equipo","Zona física","Cuenta","Tipo","Rol","Titular","La conocen","Autenticación","MFA","Remoto","Último cambio","Estado","¿Sigue siendo necesaria? (S/N)","¿Rol correcto? (S/N)","Observaciones","Revisado por / fecha"];
+  var L=S.cuentas.map(function(c){var a=act(c.activoId)||{};return [a.nombre,a.zonaFisica,c.nombre,TIPOS_CUENTA[c.tipo],rolN(c.rol),c.tipo==="nominal"?perN(c.titular):"",(c.conocen||[]).map(perN).join(", "),c.mecanismo,c.mfa?"Sí":"No",c.remoto?"Sí":"No",fmt(c.ultimoCambio),c.estado||"activa","","","",""];});
+  download("revision_accesos_"+slug(S.proyecto.nombre)+"_"+hoy()+".csv","﻿"+[H].concat(L).map(function(r){return r.map(csvCell).join(";");}).join("\r\n"),"text/csv;charset=utf-8");
+}
+function printHTML(html){var p=document.getElementById("print");p.innerHTML=html;window.print();}
+function printReport(){
+  var A=diagnostico(),P=S.proyecto;
+  printHTML('<h1>Informe de accesos · '+esc(P.nombre)+'</h1><p>'+esc(P.organizacion||"")+' · '+fmt(hoy())+(P.autor?" · "+esc(P.autor):"")+'</p>'+
+  '<h2>Diagnóstico ('+A.length+')</h2><table><tr><th>Severidad</th><th>Hallazgo</th><th>Requisito</th></tr>'+A.map(function(a){return '<tr><td>'+SEVN[a.sev]+'</td><td>'+esc(a.t)+'<br><i>'+esc(a.d)+'</i></td><td>'+a.req+' '+esc(a.ref)+'</td></tr>';}).join("")+'</table>'+
+  '<h2>Personas</h2><table><tr><th>Persona</th><th>Tipo</th><th>Rol</th><th>Fin</th><th>Revisión</th><th>Estado</th></tr>'+S.personas.map(function(p){return '<tr><td>'+esc(p.nombre)+'</td><td>'+(p.tipo==="tercero"?"Tercero":"Propio")+'</td><td>'+esc(rolN(p.rol))+'</td><td>'+fmt(p.fechaFin)+'</td><td>'+fmt(p.ultimaRevision)+'</td><td>'+(p.estado==="baja"?"Baja":"Activa")+'</td></tr>';}).join("")+'</table>'+
+  '<h2>Cuentas</h2><table><tr><th>Equipo</th><th>Cuenta</th><th>Tipo</th><th>Rol</th><th>Titular / conocen</th><th>Autenticación</th><th>Estado</th></tr>'+S.cuentas.map(function(c){return '<tr><td>'+esc(actN(c.activoId))+'</td><td>'+esc(c.nombre)+'</td><td>'+TIPOS_CUENTA[c.tipo]+'</td><td>'+esc(rolN(c.rol))+'</td><td>'+esc(c.tipo==="nominal"?perN(c.titular):(c.conocen||[]).map(perN).join(", "))+'</td><td>'+esc(c.mecanismo||"")+(c.mfa?" + MFA":"")+'</td><td>'+(c.estado||"activa")+'</td></tr>';}).join("")+'</table>'+
+  '<h2>Elementos físicos</h2><table><tr><th>Elemento</th><th>Zona</th><th>Protección</th><th>Relacionado con</th></tr>'+(S.fisicos||[]).map(function(f){return '<tr><td>'+esc(f.nombre)+' ('+esc(FIS_TIPOS[f.tipo]||f.tipo)+')</td><td>'+esc(f.zonaFisica||"")+'</td><td>'+esc(FIS_PUNTOS.indexOf(f.tipo)>=0?f.proteccion:"—")+'</td><td>'+esc((f.vinculados||[]).map(actN).join(", "))+'</td></tr>';}).join("")+'</table>'+
+  '<h2>Excepciones</h2><table><tr><th>Excepción</th><th>Requisito</th><th>Medida compensatoria</th><th>Aprueba</th></tr>'+S.excepciones.map(function(e){return '<tr><td>'+esc(e.titulo)+'</td><td>'+esc(e.requisito)+'</td><td>'+esc(e.compensatoria)+'</td><td>'+esc(e.aprueba||"")+'</td></tr>';}).join("")+'</table>');
+}
+
+/* ================================================================ caso de ejemplo ETAP El Lomo */
+function casoETAP(){
+  /* Activos y srcId alineados con etap_el_lomo_v2_0.json (Red OT): al reimportar ese esquema se actualizan, no se duplican */
+  var s=emptyState(),T=hoy();
+  s.proyecto=Object.assign(s.proyecto,{nombre:"ETAP El Lomo · control de acceso lógico",organizacion:"ETAP El Lomo (caso del módulo)",autor:""});
+  s.zonasLogicas=[{id:"Z:OT",nombre:"Zona OT",slt:""},{id:"Z:IT",nombre:"Zona IT",slt:""}];
+  var A=[["n7","PLC Bombeo y Filtración","PLC","192.168.0.10","Z3","Armario de bombeo y filtración","Siemens S7-1500 CPU 1513-1 PN","V2.6"],
+    ["n8","PLC Dosificación","PLC","192.168.0.11","Z3","Cuadro de dosificación","Siemens S7-1200 CPU 1214C DC/DC/DC","V4.2"],
+    ["n9","Panel Local","HMI","192.168.0.40","Z1","Frente del cuadro de dosificación","Siemens KTP700 Basic PN","V16"],
+    ["n10","Servidor SCADA 1","SCADA","192.168.0.50","Z2","Sala de control","WinCC V7.5 SP2 · Windows 10 LTSC",""],
+    ["n11","Estación de Ingeniería","Estación de ingeniería","192.168.0.60","Z2","Sala de control","TIA Portal V16 · Windows 10",""],
+    ["n12","SW-XC208","Switch","192.168.0.2","Z3","Rack de la sala técnica","Siemens SCALANCE XC208","V4.1"],
+    ["n13","Firewall OT 1","Firewall","192.168.0.1","Z3","Rack de la sala técnica","Siemens SCALANCE S615","V6.2"],
+    ["n21","Servicio VPN 1","Servicio VPN","","Z3","Servicio en el firewall","",""],
+    ["n23","Módem 1","Router / módem","192.168.0.254","Z3","Rack de la sala técnica","TELTONIKA",""],
+    ["n25","Portátil técnico","Portátil","192.168.0.99","Z1","Taller de mantenimiento","HP",""]];
+  s.activos=A.map(function(a){return {id:"A-"+a[0],srcId:a[0],origen:"redot",nombre:a[1],tipo:a[2],ip:a[3],zonaLogica:"Z:OT",zonaFisica:a[4],ubicacion:a[5],modelo:a[6],firmware:a[7]};});
+  s.activos.push({id:"A-UB",origen:"manual",nombre:"Servidor de ingeniería (Ubuntu)",tipo:"Servidor",ip:"192.168.0.70",zonaLogica:"Z:OT",zonaFisica:"Z3",ubicacion:"Rack de la sala técnica",modelo:"Ubuntu Server 24.04 (Prácticas 1 y 2)",firmware:""});
+  var rev=addDays(T,-30),old=addDays(T,-240);
+  var P=[["P1","Ana Pérez","Operadora turno de mañana","","propio","R-OP","",rev],["P2","Luis Hernández","Operador turno de tarde","","propio","R-OP","",rev],
+    ["P3","Marta Díaz","Técnica de mantenimiento","","propio","R-MA","",rev],["P4","Iván Rodríguez","Ingeniero de control","","propio","R-IN","",old],
+    ["P5","Carmen Suárez","Responsable de ciberseguridad OT","","propio","R-AD","",rev],["P6","Jorge Martín","Técnico del integrador","Hidrocontrol Integración, S.L.","tercero","R-IN",addMonths(T,4),rev],
+    ["P7","Pedro Gil","Operador del turno de noche","","propio","R-OP","",rev],["P8","Rosa León","Operadora (ya no trabaja aquí)","","propio","R-OP","",old],
+    ["P9","Técnico de ElecMant","Mantenimiento eléctrico e instrumentación","ElecMant Canarias, S.L.","tercero","R-MA",addDays(T,-50),old],["P10","Auditoría externa","Auditora de la certificación","Certifica S.L.","tercero","R-AU",addDays(T,14),T]];
+  s.personas=P.map(function(p,i){return {id:p[0],nombre:p[1],puesto:p[2],empresa:p[3],tipo:p[4],rol:p[5],fechaFin:p[6],ultimaRevision:p[7],estado:"activa",solicitud:i===8?"":"SOL-2026-0"+(10+i),fisicas:p[4]==="propio"?"Tarjeta de acceso":""};});
+  var rosa=s.personas[7];rosa.estado="baja";rosa.fechaBaja=addDays(T,-38);
+  s.personas[5].proveedorId="P-INT";s.personas[8].proveedorId="P-MAN";
+  /* resumen de los proveedores del caso ETAP de Proveedores OT (mismos ids) */
+  s.proveedores=[{id:"P-INT",nombre:"Hidrocontrol Integración, S.L.",tipo:"integrador",estado:"En evaluación",acceso:{logico:true,remoto:true,software:true,conectado:true,datos:true,fisico:true},activos:["n7","n8","n9","n10","n11","n12","n13","n21","n23"],finContrato:addMonths(T,4)},
+    {id:"P-MAN",nombre:"ElecMant Canarias, S.L.",tipo:"mantenedor",estado:"En evaluación",acceso:{logico:true,remoto:false,software:false,conectado:true,datos:true,fisico:true},activos:["n1","n2","n3","n4","n5","n6","n8","n15","n16","n25","n26"],finContrato:addDays(T,-50)},
+    {id:"P-RMT",nombre:"Servicio de control remoto en la nube (TeamViewer)",tipo:"nube",estado:"No homologado",acceso:{logico:true,remoto:true,software:true,conectado:false,datos:true,fisico:false},activos:["n10","n23"],finContrato:""}];
+  s.fisicos=[{id:"f1",tipo:"toma_red",nombre:"Toma libre del taller",zonaFisica:"Z1",ubicacion:"Taller de mantenimiento",proteccion:"Ninguna",notas:"",vinculados:["A-n12"]},
+    {id:"f2",tipo:"usb_port",nombre:"USB frontal de la estación de ingeniería",zonaFisica:"Z2",ubicacion:"Sala de control",proteccion:"Ninguna",notas:"",vinculados:["A-n11"]},
+    {id:"f3",tipo:"selector",nombre:"Selector RUN/STOP del PLC Dosificación",zonaFisica:"Z3",ubicacion:"Cuadro de dosificación",proteccion:"Llave retirada",notas:"",vinculados:["A-n8"]},
+    {id:"f4",tipo:"cerradura",nombre:"Puerta del cuadro de dosificación",zonaFisica:"Z3",ubicacion:"Cuadro de dosificación",proteccion:"",notas:"Llave triangular universal",vinculados:["A-n8"]},
+    {id:"f5",tipo:"cctv",nombre:"Cámara del acceso",zonaFisica:"Z0",ubicacion:"Acceso único",proteccion:"",notas:"",vinculados:[]}];
+  s.excepciones=[{id:"E1",titulo:"Contraseña de nivel compartida en los PLC",requisito:"PCA-01",motivo:"El S7-1200 y el S7-1500 con firmware anterior a V3.1 no admiten usuarios individuales: una contraseña por nivel de acceso.",compensatoria:"Acceso de ingeniería solo desde la estación de ingeniería; el IDS alerta de cada descarga; la contraseña se cambia cuando un ingeniero deja de necesitarla.",aprueba:"Carmen Suárez",caduca:addMonths(T,10)},
+    {id:"E2",titulo:"Cuenta de turno en el SCADA y en el panel",requisito:"PCA-01",motivo:"Cambio rápido de operador.",compensatoria:"Solo permisos de operación; libro de turnos y registro de acceso físico a la sala.",aprueba:"Jefe de planta",caduca:addMonths(T,10)}];
+  var C=[
+    ["C1","A-UB","carmen_suarez","nominal","R-AD","P5",[],"Clave SSH",false,true],["C2","A-UB","ivan_rodriguez","nominal","R-IN","P4",[],"Clave SSH",false,true],
+    ["C3","A-UB","marta_diaz","nominal","R-MA","P3",[],"Clave SSH",false,true],["C4","A-UB","rosa_leon","nominal","R-OP","P8",[],"Contraseña",false,false],
+    ["C5","A-UB","jorge_martin","nominal","R-IN","P6",[],"Clave SSH",false,true],["C6","A-UB","auditor_ext","nominal","R-AU","P10",[],"Clave SSH",false,true],
+    ["C7","A-n11","Iván (Windows)","nominal","R-IN","P4",[],"Contraseña",false,false],["C8","A-n11","Jorge (Windows)","nominal","R-IN","P6",[],"Contraseña",true,false],
+    ["C9","A-n10","Turno_A (WinCC)","compartida","R-OP","",["P1","P2","P7"],"Contraseña",false,false,"E2"],["C10","A-n10","Marta (WinCC)","nominal","R-MA","P3",[],"Contraseña",false,false],
+    ["C11","A-n10","Ana (WinCC)","nominal","R-IN","P1",[],"Contraseña",false,false],
+    ["C12","A-n10","Programa de control remoto","compartida","R-OP","",["P7"],"Contraseña",false,true],
+    ["C13","A-n7","Acceso completo","compartida","R-IN","",["P4","P6"],"Contraseña de nivel (PLC)",false,false,"E1"],
+    ["C14","A-n8","Acceso completo","compartida","R-IN","",["P4","P6","P8"],"Contraseña de nivel (PLC)",false,false,"E1"],
+    ["C15","A-n8","Acceso HMI","compartida","R-OP","",["P1","P2","P7"],"Contraseña de nivel (PLC)",false,false,"E1"],
+    ["C16","A-n9","Administrator","fabrica","R-AD","",[],"Contraseña",false,false],
+    ["C17","A-n9","Turno","compartida","R-OP","",["P1","P2","P7"],"Contraseña",false,false,"E2"],
+    ["C18","A-n12","admin","emergencia","R-AD","",["P5"],"Contraseña",false,false],
+    ["C19","A-n13","carmen.admin","nominal","R-AD","P5",[],"RADIUS",true,false],["C20","A-n13","vpn-integrador","nominal","R-IN","P6",[],"Certificado",false,true],
+    ["C21","A-n13","vpn-elecmant","nominal","R-MA","P9",[],"Certificado",false,true],
+    ["C22","A-n21","vpn-mantenimiento","compartida","R-MA","",["P3","P6","P9"],"Contraseña",false,true],
+    ["C23","A-n23","admin","fabrica","R-AD","",[],"Contraseña",false,true],
+    ["C24","A-n25","PORTATIL-MANT (local)","compartida","R-IN","",["P3","P6","P9"],"Contraseña",false,false]
+  ];
+  s.cuentas=C.map(function(c){return {id:c[0],activoId:c[1],nombre:c[2],tipo:c[3],rol:c[4],titular:c[5],conocen:c[6],mecanismo:c[7],mfa:c[8],remoto:c[9],excepcionId:c[10]||"",estado:"activa",custodia:c[3]==="nominal"?"":"Sobre lacrado en caja fuerte de jefatura",ultimoCambio:addDays(T,-120)};});
+  var c12=s.cuentas.filter(function(c){return c.id==="C12";})[0];c12.notas="Instalado en 2024 a petición del operador de noche para ver el SCADA desde casa (nota del esquema Red OT).";c12.proveedorId="P-RMT";
+  s.cuentas.filter(function(c){return c.id==="C16";})[0].notas="Nota del esquema Red OT: «Contraseña de fábrica».";
+  s.cuentas.filter(function(c){return c.id==="C22";})[0].notas="Nota del esquema Red OT: «Cuenta compartida».";
+  s.certificados=[{id:"K1",sujeto:"fw-ot1.etap.local",emisor:"CiberOT Sub CA OT",activoId:"A-n13",personaId:"",uso:"VPN IPsec (servidor)",caduca:addDays(T,10)},
+    {id:"K2",sujeto:"jorge.martin",emisor:"CiberOT Sub CA OT",activoId:"",personaId:"P6",uso:"VPN IPsec (usuario)",caduca:addMonths(T,4)},
+    {id:"K3",sujeto:"elecmant",emisor:"CiberOT Sub CA OT",activoId:"",personaId:"P9",uso:"VPN IPsec (usuario)",caduca:addMonths(T,6)},
+    {id:"K4",sujeto:"opcua-scada1",emisor:"CiberOT Sub CA OT",activoId:"A-n10",personaId:"",uso:"OPC UA",caduca:addDays(T,-3)},
+    {id:"K5",sujeto:"rosa.leon",emisor:"CiberOT Sub CA OT",activoId:"",personaId:"P8",uso:"Usuario",caduca:addMonths(T,8)}];
+  s.registro=[{fecha:T+" 00:00",accion:"Caso cargado",detalle:"ETAP El Lomo (esquema Red OT v2.0): situación de partida con incumplimientos por descubrir"}];
+  s.proyecto.modoPractica=true;
+  return s;
+}
+
+/* ================================================================ ayuda */
+function help(){
+  modal("Accesos OT · ayuda",'<p>Herramienta de Toolbox-OT para el <b>RA4</b>: identidades, cuentas y credenciales de una instalación industrial.</p><ol>'+
+  '<li><b>Activos:</b> impórtalos desde el JSON de Red OT y completa su zona física y ubicación.</li>'+
+  '<li><b>Roles y personas:</b> define los roles (con su nivel de privilegio) y la plantilla, incluidos los terceros con su fecha de fin.</li>'+
+  '<li><b>Cuentas:</b> registra todas las cuentas de cada equipo: nominales, compartidas, de servicio, de emergencia y de fábrica. Indica quién conoce cada credencial compartida. <b>Nunca escribas contraseñas.</b></li>'+
+  '<li><b>Panel:</b> el diagnóstico compara el inventario con la política PCA-01 a PCA-10 y con IEC 62443-3-3. En modo práctica está oculto.</li>'+
+  '<li><b>Bajas y cambios:</b> genera la lista de comprobación de una salida o un cambio de puesto y, al aplicarla, actualiza el inventario.</li>'+
+  '<li><b>Exportar:</b> JSON del proyecto, hoja CSV para la revisión trimestral e informe imprimible.</li></ol>'+
+  '<p class="hint">Los datos se guardan solo en este navegador (localStorage). Exporta el JSON para entregarlo o llevarlo a otro equipo.</p>');
+}
+
+/* ================================================================ eventos */
+function menuAct(a){
+  document.getElementById("menuPop").hidden=true;
+  if(a==="nuevo"){if(confirm("¿Empezar un proyecto vacío? Exporta antes el actual si lo quieres conservar.")){S=emptyState();log("Proyecto nuevo","");TAB="panel";render();}}
+  else if(a==="etap"){if(confirm("Se cargará el caso ETAP El Lomo y se sustituirá el proyecto actual. ¿Continuar?")){S=casoETAP();sanitize();TAB="panel";render();toast("Caso ETAP El Lomo cargado (modo práctica)");}}
+  else if(a==="import")pick("json");else if(a==="redot")pick("redot");else if(a==="prov")pick("prov");else if(a==="export")exportJSON();else if(a==="csv")exportCSV();
+  else if(a==="print")printReport();else if(a==="theme")toggleTheme();else if(a==="help")help();
+  else if(a==="revelar"){S.proyecto.modoPractica=false;log("Diagnóstico mostrado","Fin del modo práctica");render();}
+  else if(a==="revisar"){var n=0;S.personas.forEach(function(p){if(p.estado!=="baja"){p.ultimaRevision=hoy();n++;}});log("Revisión de accesos",n+" personas revisadas");render();toast("Revisión registrada para "+n+" personas");}
+}
+function cambioCred(id){
+  var c=byId("cuentas",id);if(!c)return;
+  var html='<p>Registra que la credencial «'+esc(c.nombre)+'» de '+esc(actN(c.activoId))+' se ha cambiado. Marca quién conoce la nueva.</p>'+field({k:"conocen",l:"Conocen la nueva credencial",t:"multi",o:function(){return optsPersonas(true);}},c.conocen)+field({k:"custodia",l:"Custodia"},c.custodia);
+  modal("Cambio de credencial",html,function(){c.conocen=readField({k:"conocen",t:"multi"});c.custodia=readField({k:"custodia"});c.ultimoCambio=hoy();c.pendienteCambio=false;c.motivoPendiente="";if(c.tipo==="fabrica")c.tipo="compartida";log("Cambio de credencial",c.nombre+" en "+actN(c.activoId));render();},"Registrar cambio");
+}
+document.addEventListener("click",function(e){
+  var t=e.target.closest("[data-tab],[data-new],[data-edit],[data-del],[data-act],[data-go],[data-mx],[data-cambio],#btnMenu,#btnSave,#sGen,#sApply,#sPrint,[data-chk]");
+  if(!t){if(!e.target.closest(".menu"))document.getElementById("menuPop").hidden=true;return;}
+  if(t.id==="btnMenu"){var m=document.getElementById("menuPop");m.hidden=!m.hidden;return;}
+  if(t.id==="btnSave")return exportJSON();
+  if(t.hasAttribute("data-tab"))return go(t.getAttribute("data-tab"));
+  if(t.hasAttribute("data-go")){e.preventDefault();return go(t.getAttribute("data-go"));}
+  if(t.hasAttribute("data-act")){e.preventDefault();return menuAct(t.getAttribute("data-act"));}
+  if(t.hasAttribute("data-new"))return editItem(t.getAttribute("data-new"));
+  if(t.hasAttribute("data-edit"))return editItem(t.getAttribute("data-edit"),t.getAttribute("data-id"));
+  if(t.hasAttribute("data-del"))return delItem(t.getAttribute("data-del"),t.getAttribute("data-id"));
+  if(t.hasAttribute("data-mx")){MXMODE=t.getAttribute("data-mx");return render();}
+  if(t.hasAttribute("data-cambio"))return cambioCred(t.getAttribute("data-cambio"));
+  if(t.hasAttribute("data-chk")){SIM.items[+t.getAttribute("data-chk")].ok=t.checked;return render();}
+  if(t.id==="sGen"){SIM.persona=document.getElementById("sPer").value;SIM.tipo=document.getElementById("sTipo").value;var r=document.getElementById("sRol");if(r)SIM.nuevoRol=r.value;return genSim();}
+  if(t.id==="sApply")return applySim();
+  if(t.id==="sPrint")return printSim();
+});
+document.addEventListener("change",function(e){
+  if(e.target.id==="sTipo"){SIM.tipo=e.target.value;SIM.persona=document.getElementById("sPer").value;SIM.items=null;if(SIM.tipo==="cambio"&&!SIM.nuevoRol)SIM.nuevoRol="R-MA";render();}
+  if(e.target.id==="sPer"){SIM.persona=e.target.value;SIM.items=null;}
+});
+document.getElementById("fileIn").addEventListener("change",onFile);
+document.addEventListener("keydown",function(e){if(e.key==="Escape"){var m=document.querySelector(".modal-bg");if(m)m.remove();document.getElementById("menuPop").hidden=true;}});
+
+window.addEventListener("storage",function(e){if(e.key==="toolbox_theme")applyTheme(loadTheme());});
+load();applyTheme(loadTheme());render();
+</script>
+</body>
+</html>

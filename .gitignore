@@ -1,0 +1,8 @@
+# Material solo para el profesorado (no publicar)
+*notas_profesor*
+*solucionario*
+# Sistema
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc

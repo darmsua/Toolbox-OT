@@ -1,11 +1,18 @@
-TOOLBOX-OT v1.0
+TOOLBOX-OT v1.9
 Caja de herramientas para ciberseguridad en Tecnologías de la Operación (OT/ICS)
 
 CONTENIDO
   index.html            Lanzador de la suite (ábrelo primero)
   redot.html            Editor Red OT (esquemas Purdue)
   riesgo.html           Análisis de Riesgo OT/ICS (IEC 62443 + MAGERIT + ATT&CK ICS)
+  proveedores.html      Proveedores OT: cadena de suministro, homologación y documentos
   ejemplo_red_ot.json   Esquema de ejemplo para importar en el Análisis de Riesgo
+  verificacion.html     Verificación OT (BETA): línea base de una célula y resultados
+  verificar_celda.py    Script de verificación (solo lectura) que se ejecuta en la VLAN de la célula
+  ejemplo_linea_base.json  Línea base de ejemplo (célula «Picadora» de ejemplo_red_ot.json)
+  ejemplo_resultado.json   Resultado SIMULADO para practicar sin equipos
+  accesos.html          Accesos OT: identidades, cuentas y credenciales (RA4)
+  etap_el_lomo_v2_0.json  Esquema Red OT de la ETAP El Lomo (también vale para Proveedores OT y Accesos OT)
   LICENCIA.txt          Términos de uso (CC BY 4.0)
 
 CÓMO USARLO
@@ -22,6 +29,68 @@ FLUJO DE TRABAJO
      ejemplo_red_ot.json). Se crean activos, zonas y conductos.
   3. Valora los activos (MAGERIT), define amenazas (ATT&CK ICS) y revisa el riesgo
      por zona frente al SL-T.
+  4. En Proveedores OT: Proyecto -> Importar activos desde JSON (el mismo esquema).
+     Clasifica a los proveedores por criticidad, rellena el cuestionario de
+     homologación, registra los riesgos de la cadena de suministro y genera los
+     documentos (pliego, NDA, SLA, acceso de terceros, FAT/SAT, baja) en Word o PDF.
+     Incluye dos proyectos de ejemplo: Envasados del Sur y ETAP El Lomo
+     (Proyecto -> Cargar ejemplo).
+  5. En Verificación OT (beta): Importar Red OT, elegir la zona de la célula y crear
+     su línea base (firmware mínimo, avisos SSA/CVE, puertos, SNMP, PUT/GET, IO-Link,
+     reglas del switch). Exportarla y, en un PC de la VLAN de la célula:
+        python verificar_celda.py linea_base_<celda>.json --plan   (no toca la red)
+        python verificar_celda.py linea_base_<celda>.json
+     Cargar el resultado en la pestaña Resultados. "Actualizar inventario Red OT"
+     devuelve firmware y hallazgos al esquema para importarlo en Análisis de Riesgo.
+  6. En Accesos OT: Menú -> Importar activos desde Red OT (se omiten sensores y
+     actuadores sin credenciales). Completa la zona física (Z0-Z3, REM) y registra
+     roles, personas y todas las cuentas de cada equipo. NUNCA escribas contraseñas:
+     solo qué cuenta existe, quién la conoce y dónde se custodia. El Panel compara el
+     inventario con la política (PCA-01 a PCA-10) e IEC 62443-3-3; "Bajas y cambios"
+     genera la lista de comprobación de una salida o un cambio de puesto.
+     Menú -> Importar proveedores enlaza a los terceros con su proveedor (homologación,
+     acceso remoto autorizado, alcance y fin del contrato).
+     Caso de ejemplo: Menú -> Cargar caso ETAP El Lomo (abre en modo práctica).
+
+NOVEDADES v1.9
+  - Red OT: capa física. Cada equipo tiene "Zona física" (Z0 perímetro, Z1 edificios,
+    Z2 sala de control, Z3 sala técnica/armarios, REM remota). Nueva pestaña "Físico"
+    en la paleta: puntos de acceso (toma de red libre, USB accesible, selector
+    RUN/STOP) con su protección, y controles (cerradura, lector de tarjeta, contacto
+    de puerta, cámara). Vista -> Capa física los muestra en el lienzo y avisa de los
+    puntos sin proteger. Se exportan aparte ("fisico"), así que el Análisis de
+    Riesgo, Proveedores y Verificación siguen leyendo el JSON igual que antes.
+  - Proveedores OT: nuevo campo "Fin del contrato / del acceso" en cada proveedor.
+  - Accesos OT: importa la capa física de Red OT y los proveedores de Proveedores OT.
+    Los terceros y las cuentas de servicios externos se enlazan con su proveedor y el
+    diagnóstico comprueba fin de contrato, estado de homologación, acceso remoto
+    autorizado y alcance (activos) del proveedor, además de los puntos de acceso
+    físico sin proteger.
+
+NOVEDADES v1.8
+  - Nueva herramienta Accesos OT (RA4 de Sistemas de Control Industrial Seguros,
+    criterios b y c): inventario de cuentas por equipo, roles con nivel de
+    privilegio, personas y terceros con caducidad, certificados, excepciones,
+    matriz de accesos, simulador de bajas y cambios de puesto, registro de cambios,
+    hoja CSV para la revisión periódica e informe imprimible.
+  - Caso ETAP El Lomo alineado con etap_el_lomo_v2_0.json, con incumplimientos
+    escondidos y modo práctica (diagnóstico oculto hasta que se pide).
+  - Enlaces a Accesos OT desde el lanzador, los menús y las cintas.
+
+NOVEDADES v1.7
+  - Nueva herramienta Verificación OT, en fase BETA (RA2, criterio g: automatizar la
+    verificación de la configuración de dispositivos y sistemas).
+    Perfiles: PLC S7, SINAMICS G120, HMI, maestro IO-Link ifm, switch Cisco, SCALANCE.
+    El script es de SOLO LECTURA; las contraseñas van en variables de entorno.
+    Probado con equipos simulados: antes de usarlo en una célula real, ejecutarlo
+    con --plan y revisar los resultados. Requiere Python 3.9+; bibliotecas opcionales:
+    pip install python-snap7 asyncua netmiko pnio_dcp
+  - Enlaces a Verificación OT desde los menús y cintas de las demás herramientas.
+
+NOVEDADES v1.6
+  - Nueva herramienta Proveedores OT (RA2 de Ciberseguridad en Proyectos Industriales).
+  - Enlaces entre las tres herramientas desde sus menús y cintas.
+  - Tema claro/oscuro común: se elige una vez y se aplica en todas las páginas.
 
 DATOS Y PRIVACIDAD
   El trabajo se guarda en el navegador (localStorage) del propio equipo.

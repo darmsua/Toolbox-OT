@@ -1,0 +1,2644 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proveedores-OT · Toolbox-OT</title>
+<meta name="description" content="Gestión de proveedores y riesgos de la cadena de suministro en entornos OT. Toolbox-OT.">
+<meta name="author" content="David de Armas Suárez (inspirador) · Propulsada por Claude.ai">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230b6e74'/%3E%3Cpath d='M7 22h18M9 22V12l7-4 7 4v10M13 22v-5h6v5' stroke='white' stroke-width='2' fill='none' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#f4f5f7; --panel:#ffffff; --ink:#1d2330; --muted:#5d6676; --line:#d9dde4; --line2:#eceef2;
+  --acc:#0b6e74; --acc-soft:#e3f1f2; --acc-ink:#ffffff;
+  --alta:#b42318; --alta-bg:#fde8e6; --media:#a15c07; --media-bg:#fdf1dc; --baja:#2f6f3e; --baja-bg:#e5f3e8;
+  --info-bg:#eef2f8; --radius:8px; --shadow:0 1px 2px rgba(16,24,40,.06);
+  --font: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+:root[data-theme="dark"]{
+    --bg:#14171c; --panel:#1c2027; --ink:#e7e9ee; --muted:#9aa3b2; --line:#323844; --line2:#272c35;
+    --acc:#3fb1b8; --acc-soft:#173538; --acc-ink:#0d1114;
+    --alta:#ff8b7e; --alta-bg:#3d1d1a; --media:#f3b35b; --media-bg:#3a2b14; --baja:#7fcf92; --baja-bg:#1a3222;
+    --info-bg:#222a36; --shadow:none;
+  }
+*{box-sizing:border-box}
+html,body{margin:0}
+body{min-height:100vh}
+body{font-family:var(--font);font-size:14px;color:var(--ink);background:var(--bg);line-height:1.45}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--acc)}
+
+/* cabecera */
+header.top{display:flex;align-items:center;gap:16px;padding:0 18px;height:54px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.brand{display:flex;flex-direction:column;line-height:1.1;min-width:150px}
+.brand b{font-size:16px;letter-spacing:.2px}
+.brand span{font-size:11px;color:var(--muted)}
+nav.tabs{display:flex;gap:2px;flex:1;overflow-x:auto}
+nav.tabs button{background:none;border:0;padding:8px 12px;border-radius:6px;cursor:pointer;color:var(--muted);white-space:nowrap}
+nav.tabs button:hover{background:var(--line2);color:var(--ink)}
+nav.tabs button.on{background:var(--acc-soft);color:var(--acc);font-weight:600}
+.proj{font-size:12px;color:var(--muted);text-align:right;max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+main{padding:18px;max-width:1500px;margin:0 auto}
+h1{font-size:20px;margin:0 0 4px} h2{font-size:16px;margin:0 0 10px} h3{font-size:14px;margin:14px 0 8px}
+.sub{color:var(--muted);margin:0 0 16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:16px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))} .g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px}
+.kpi .v{font-size:26px;font-weight:700;line-height:1.1}
+.kpi .l{font-size:12px;color:var(--muted)}
+.kpi.warn .v{color:var(--alta)}
+
+/* diseño con lista lateral */
+.split{display:grid;grid-template-columns:270px minmax(0,1fr);gap:16px;align-items:start}
+.side{position:sticky;top:72px}
+.plist{list-style:none;margin:0;padding:0;max-height:calc(100vh - 210px);overflow:auto}
+.plist li{padding:9px 10px;border-radius:6px;cursor:pointer;border:1px solid transparent;margin-bottom:2px}
+.plist li:hover{background:var(--line2)}
+.plist li.on{background:var(--acc-soft);border-color:var(--acc)}
+.plist .n{font-weight:600;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.plist .m{font-size:12px;color:var(--muted);display:flex;gap:6px;align-items:center;margin-top:2px}
+
+/* formularios */
+label.f{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted)}
+label.f > span{font-weight:600}
+input[type=text],input[type=email],input[type=date],input[type=search],select,textarea{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:7px 9px;width:100%;font-size:14px;color:var(--ink)}
+textarea{resize:vertical;min-height:64px;line-height:1.45}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--acc);outline-offset:-1px;border-color:var(--acc)}
+.chk{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--line2);cursor:pointer}
+.chk input{margin-top:3px;width:16px;height:16px;accent-color:var(--acc)}
+.chk:last-child{border-bottom:0}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row.end{justify-content:flex-end}
+.spacer{flex:1}
+
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--panel);padding:7px 12px;border-radius:6px;cursor:pointer;font-size:13px;white-space:nowrap}
+.btn:hover{border-color:var(--acc);color:var(--acc)}
+.btn.pri{background:var(--acc);border-color:var(--acc);color:var(--acc-ink);font-weight:600}
+.btn.pri:hover{filter:brightness(1.08);color:var(--acc-ink)}
+.btn.danger{color:var(--alta)} .btn.danger:hover{border-color:var(--alta)}
+.btn.sm{padding:4px 8px;font-size:12px}
+.btn.ghost{border-color:transparent;background:none}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+
+/* insignias */
+.b{display:inline-block;font-size:11px;font-weight:700;padding:2px 7px;border-radius:999px;letter-spacing:.2px;white-space:nowrap}
+.b.alta{color:var(--alta);background:var(--alta-bg)} .b.media{color:var(--media);background:var(--media-bg)} .b.baja{color:var(--baja);background:var(--baja-bg)}
+.b.n{color:var(--muted);background:var(--line2);font-weight:600}
+.b.acc{color:var(--acc);background:var(--acc-soft)}
+
+/* tablas */
+.tw{overflow-x:auto}
+table.t{width:100%;border-collapse:collapse;font-size:13px}
+table.t th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);font-weight:700;padding:8px;border-bottom:1px solid var(--line);white-space:nowrap}
+table.t td{padding:7px 8px;border-bottom:1px solid var(--line2);vertical-align:top}
+table.t tr.click{cursor:pointer} table.t tr.click:hover td{background:var(--line2)}
+table.t td input,table.t td select,table.t td textarea{font-size:13px;padding:5px 7px}
+table.t td textarea{min-height:38px}
+.c{text-align:center} .nw{white-space:nowrap} .mut{color:var(--muted)} .sm{font-size:12px}
+.overdue{color:var(--alta);font-weight:600}
+
+/* matriz de riesgo */
+table.t.risk{min-width:1040px}
+table.t.risk td:first-child{min-width:230px}
+table.t td select.pi,table.t.risk td select{min-width:52px}
+.plist .m{flex-wrap:wrap}
+.hm{display:inline-grid;grid-template-columns:auto repeat(3,64px);grid-template-rows:repeat(3,52px) auto;gap:4px;align-items:center}
+.hm .cell{height:52px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px}
+.hm .ax{font-size:11px;color:var(--muted);text-align:center}
+.hm .ay{font-size:11px;color:var(--muted);text-align:right;padding-right:6px}
+.lv1{background:var(--baja-bg);color:var(--baja)} .lv2{background:var(--media-bg);color:var(--media)} .lv3{background:var(--alta-bg);color:var(--alta)}
+.hm .cell.zero{opacity:.45;font-weight:400}
+
+.note{background:var(--info-bg);border-radius:6px;padding:10px 12px;font-size:13px}
+.note.warn{background:var(--alta-bg);color:var(--alta)}
+.note.ok{background:var(--baja-bg);color:var(--baja)}
+.empty{color:var(--muted);text-align:center;padding:36px 12px}
+.sec-tabs{display:flex;gap:4px;margin-bottom:14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.sec-tabs button{background:none;border:0;border-bottom:2px solid transparent;padding:8px 12px;cursor:pointer;color:var(--muted);margin-bottom:-1px}
+.sec-tabs button.on{color:var(--acc);border-bottom-color:var(--acc);font-weight:600}
+
+/* editor de documentos */
+.blk{border:1px solid var(--line);border-radius:var(--radius);padding:10px 12px;margin-bottom:8px;background:var(--panel)}
+.blk .bh{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.blk .bh .k{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.blk.sec{background:var(--acc-soft);border-color:transparent}
+.params{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin-top:8px}
+.addbar{border:1px dashed var(--line);border-radius:var(--radius);padding:10px 12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.addbar select{width:auto;max-width:320px}
+
+/* vista de documento (pantalla e impresión) */
+.docv{background:#fff;color:#111;border:1px solid var(--line);border-radius:4px;padding:48px 56px;max-width:820px;margin:0 auto;font-family:Georgia,"Times New Roman",serif;font-size:11.5pt;line-height:1.5}
+.docv h1{font-size:18pt;margin:0 0 4px;font-family:var(--font)}
+.docv .meta{color:#555;font-size:9.5pt;margin:0 0 22px;font-family:var(--font);border-bottom:1px solid #ccc;padding-bottom:10px}
+.docv h2{font-size:13pt;margin:22px 0 8px;font-family:var(--font)}
+.docv h3{font-size:11pt;margin:16px 0 6px;font-family:var(--font)}
+.docv p{margin:0 0 9px}
+.docv table{width:100%;border-collapse:collapse;font-size:9.5pt;margin:6px 0 12px;font-family:var(--font)}
+.docv th,.docv td{border:1px solid #999;padding:5px 6px;vertical-align:top;text-align:left}
+.docv th{background:#eef0f2}
+.docv .firmas{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:40px;font-family:var(--font);font-size:10pt}
+.docv .firmas div{border-top:1px solid #333;padding-top:6px}
+.docv .pie{margin-top:30px;color:#777;font-size:8pt;font-family:var(--font)}
+
+#print-area{display:none}
+@media print{
+  body.printing > *:not(#print-area){display:none !important}
+  body.printing #print-area{display:block}
+  body.printing{background:#fff}
+  #print-area .docv{border:0;padding:0;max-width:none}
+  @page{size:A4;margin:20mm 18mm}
+  .docv table{page-break-inside:auto} .docv tr{page-break-inside:avoid}
+}
+
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--panel);padding:9px 16px;border-radius:6px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:20}
+.toast.show{opacity:1}
+footer.foot{color:var(--muted);font-size:11px;text-align:center;padding:16px}
+@media (max-width:900px){ .split{grid-template-columns:1fr} .side{position:static} .g2,.g3{grid-template-columns:1fr} .proj{display:none} }
+
+/* ordenación y modal de la biblioteca */
+th.sortable{cursor:pointer;user-select:none}
+th.sortable:hover{color:var(--acc)}
+th.sortable .arr{font-size:10px;opacity:.6}
+.modal-bg{position:fixed;inset:0;background:rgba(10,14,20,.45);display:flex;align-items:flex-start;justify-content:center;padding:6vh 16px;z-index:30;overflow:auto}
+.modal{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px;width:min(720px,100%);box-shadow:0 12px 40px rgba(0,0,0,.25)}
+
+/* menú de la suite Toolbox-OT */
+.suite{position:relative}
+#menubtn{font-size:12.5px;color:var(--muted);border:1px solid var(--line);background:none;border-radius:6px;padding:6px 10px;cursor:pointer;white-space:nowrap}
+#menubtn:hover,#menubtn[aria-expanded=true]{color:var(--acc);border-color:var(--acc)}
+.dropdown{position:absolute;right:0;top:calc(100% + 6px);min-width:220px;background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.18);padding:6px;z-index:40}
+.dropdown a,.dropdown button{display:block;width:100%;text-align:left;padding:8px 10px;border-radius:6px;font-size:13px;color:var(--ink);text-decoration:none;background:none;border:0;cursor:pointer}
+.dropdown a:hover,.dropdown button:hover,.dropdown a:focus,.dropdown button:focus{background:var(--acc-soft);color:var(--acc);outline:none}
+.dd-sec{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);padding:6px 10px 4px}
+.dd-sep{height:1px;background:var(--line);margin:6px 4px}
+.ver{font-size:10px;font-weight:700;background:var(--acc-soft);color:var(--acc);padding:1px 6px;border-radius:10px;margin-left:4px}
+
+/* ayuda de la matriz */
+details.ayuda > summary{cursor:pointer;list-style:none;display:flex;gap:10px;align-items:baseline}
+details.ayuda > summary::-webkit-details-marker{display:none}
+details.ayuda > summary::before{content:"▸";color:var(--acc);font-size:12px}
+details.ayuda[open] > summary::before{content:"▾"}
+details.ayuda{scroll-margin-top:70px}
+.lvchip{display:inline-block;font-weight:700;font-size:12px;padding:2px 8px;border-radius:6px;white-space:nowrap}
+
+/* Biblioteca: cabecera, pestañas, barra de botones y encabezados de tabla fijos */
+.bib-top{position:sticky;top:var(--h-hdr,54px);z-index:8;background:var(--bg);margin:-18px -18px 0;padding:18px 18px 0}
+.bib-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.bib-head h1{margin:0}
+.bib-top .sub{margin:0 0 10px;font-size:13px}
+.bib-tabs{margin-bottom:0;background:var(--bg)}
+.bib-body{border-top-left-radius:0;border-top-right-radius:0;padding-top:0}
+.bib-bar{position:sticky;top:calc(var(--h-hdr,54px) + var(--h-bibtop,0px));z-index:7;background:var(--panel);padding:12px 0 10px;border-bottom:1px solid var(--line)}
+table.t.stick thead th{position:sticky;top:calc(var(--h-hdr,54px) + var(--h-bibtop,0px) + var(--h-bibbar,0px));z-index:6;background:var(--panel);box-shadow:0 1px 0 var(--line)}
+
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><b>Proveedores-OT<span class="ver">v1.6</span></b><span>Toolbox-OT · cadena de suministro</span></div>
+  <nav class="tabs">
+    <button data-vista="proyecto">Proyecto</button>
+    <button data-vista="panel">Panel</button>
+    <button data-vista="proveedores">Proveedores</button>
+    <button data-vista="evaluacion">Evaluación</button>
+    <button data-vista="documentos">Documentos</button>
+    <button data-vista="biblioteca">Biblioteca</button>
+  </nav>
+  <div class="suite">
+    <button id="menubtn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="suitemenu" title="Toolbox-OT y tema">🧰 Toolbox-OT ▾</button>
+    <div class="dropdown" id="suitemenu" role="menu" hidden>
+      <div class="dd-sec">Toolbox-OT</div>
+      <a role="menuitem" href="index.html">🧰 Inicio (Toolbox-OT)</a>
+      <a role="menuitem" href="redot.html">🔌 Editor Red OT</a>
+      <a role="menuitem" href="riesgo.html">🛡️ Análisis de Riesgo</a>
+      <a role="menuitem" href="verificacion.html">✅ Verificación OT (beta)</a>
+      <a role="menuitem" href="accesos.html">🔐 Accesos OT</a>
+      <div class="dd-sep"></div>
+      <button role="menuitem" id="themebtn" type="button">🌙 Tema oscuro</button>
+    </div>
+  </div>
+  <div class="proj" id="proj-name"></div>
+</header>
+<main id="main"></main>
+<footer class="foot">Proveedores-OT · Toolbox-OT v1.9 · Inspirador: David de Armas Suárez (conecta3@hotmail.com) · Propulsada por Claude.ai · CC BY 4.0</footer>
+<div id="print-area"></div>
+<div class="toast" id="toast"></div>
+<script>
+/* tema compartido con el resto de Toolbox-OT (clave "toolbox_theme") */
+(function(){
+  function get(){try{return localStorage.getItem("toolbox_theme")||"light";}catch(e){return "light";}}
+  function apply(t){if(t==="dark")document.documentElement.setAttribute("data-theme","dark");else document.documentElement.removeAttribute("data-theme");var b=document.getElementById("themebtn");if(b)b.textContent=t==="dark"?"☀️ Tema claro":"🌙 Tema oscuro";}
+  apply(get());
+  window.addEventListener("storage",function(e){if(e.key==="toolbox_theme")apply(get());});
+  document.getElementById("themebtn").onclick=function(){var n=get()==="dark"?"light":"dark";try{localStorage.setItem("toolbox_theme",n);}catch(e){}apply(n);};
+  /* menú desplegable de la suite */
+  var mb=document.getElementById("menubtn"), mm=document.getElementById("suitemenu");
+  function cerrar(){mm.hidden=true;mb.setAttribute("aria-expanded","false");}
+  mb.onclick=function(e){e.stopPropagation();var abrir=mm.hidden;mm.hidden=!abrir;mb.setAttribute("aria-expanded",abrir?"true":"false");if(abrir){var f=mm.querySelector("[role=menuitem]");if(f)f.focus();}};
+  document.addEventListener("click",function(e){if(!mm.hidden&&!mm.contains(e.target)&&e.target!==mb)cerrar();});
+  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!mm.hidden){cerrar();mb.focus();}});
+})();
+/* Biblioteca por defecto de Proveedores-OT.
+   Se puede exportar desde la app como biblioteca.json, editar y volver a importar. */
+const BIBLIOTECA_DEFECTO = {
+  "formato": "toolbox-ot/proveedores-biblioteca",
+  "version": "1.0",
+  "nombre": "Biblioteca base Proveedores-OT",
+
+  "tiposProveedor": [
+    { "id": "fabricante", "nombre": "Fabricante de equipos o máquinas" },
+    { "id": "integrador", "nombre": "Integrador de sistemas" },
+    { "id": "mantenedor", "nombre": "Mantenedor / servicio técnico" },
+    { "id": "distribuidor", "nombre": "Distribuidor de componentes y repuestos" },
+    { "id": "nube", "nombre": "Servicio en la nube / software" },
+    { "id": "otro", "nombre": "Otro (sin acceso al sistema de control)" }
+  ],
+
+  "preguntasCriticidad": [
+    { "id": "logico", "texto": "¿Tendrá acceso lógico (cuentas, programación, configuración) al sistema de control?", "nivel": "alta" },
+    { "id": "remoto", "texto": "¿Accederá en remoto a la planta?", "nivel": "alta" },
+    { "id": "software", "texto": "¿Suministra software o firmware que se ejecuta en el sistema de control?", "nivel": "alta" },
+    { "id": "conectado", "texto": "¿Suministra hardware que se conectará a la red OT?", "nivel": "media" },
+    { "id": "datos", "texto": "¿Tratará datos de producción, esquemas o información técnica de la planta?", "nivel": "media" },
+    { "id": "fisico", "texto": "¿Accederá físicamente a la planta?", "nivel": "baja" }
+  ],
+
+  "amenazas": [
+    { "id": "T01", "nombre": "Acceso de terceros comprometido",
+      "descripcion": "El atacante entra con las credenciales o la conexión remota de un proveedor.",
+      "caso": "Target (2013): entrada con credenciales robadas a su contratista de climatización.",
+      "tipos": ["mantenedor", "integrador", "fabricante"],
+      "medidas": ["Acceso remoto bajo demanda a través de servidor de salto", "Autenticación multifactor", "Cuentas nominales por técnico", "Grabación de sesiones"] },
+    { "id": "T02", "nombre": "Software o actualización troyanizada",
+      "descripcion": "El instalador o la actualización oficial del fabricante trae código malicioso.",
+      "caso": "Havex (2014): instaladores troyanizados en webs de fabricantes ICS. SolarWinds (2020).",
+      "tipos": ["fabricante", "nube", "integrador"],
+      "medidas": ["Exigir firmware y software firmados", "Verificar hash y firma antes de instalar", "Probar actualizaciones en entorno de pruebas"] },
+    { "id": "T03", "nombre": "Herramienta del proveedor de servicios comprometida",
+      "descripcion": "Se compromete la plataforma con la que el proveedor gestiona a sus clientes y el ataque llega a todos.",
+      "caso": "Kaseya (2021): ransomware distribuido por la herramienta de gestión remota.",
+      "tipos": ["mantenedor", "nube"],
+      "medidas": ["Prohibir herramientas de acceso remoto propias del proveedor", "Segmentar y monitorizar conexiones salientes"] },
+    { "id": "T04", "nombre": "Configuración insegura entregada",
+      "descripcion": "El equipo llega con contraseñas por defecto, servicios innecesarios o expuesto a internet.",
+      "caso": "PLC Unitronics en plantas de agua de EE. UU. (2023), expuestos con la contraseña por defecto.",
+      "tipos": ["fabricante", "integrador"],
+      "medidas": ["Requisito de bastionado en el pliego", "Verificación en FAT/SAT", "Cambio de todas las credenciales en la recepción"] },
+    { "id": "T05", "nombre": "Infección a través de medios del integrador",
+      "descripcion": "El malware llega con portátiles, memorias USB o proyectos del personal externo.",
+      "caso": "Stuxnet: infección inicial en empresas contratistas de la instalación objetivo.",
+      "tipos": ["integrador", "mantenedor"],
+      "medidas": ["Estación de descontaminación de USB", "Equipos de ingeniería de la planta", "Requisito de endpoint protegido"] },
+    { "id": "T06", "nombre": "Hardware falsificado o del mercado gris",
+      "descripcion": "Componentes sin trazabilidad, con firmware alterado o sin soporte del fabricante.",
+      "caso": "Switches Cisco falsificados analizados por F-Secure (2020).",
+      "tipos": ["distribuidor", "fabricante"],
+      "medidas": ["Comprar solo a distribuidores autorizados", "Verificar número de serie y firmware en la recepción"] },
+    { "id": "T07", "nombre": "Producto sin soporte de seguridad",
+      "descripcion": "El fabricante deja de publicar parches o desaparece durante la vida útil del equipo.",
+      "caso": "PLC y HMI con sistemas operativos obsoletos en planta.",
+      "tipos": ["fabricante", "distribuidor", "nube"],
+      "medidas": ["Periodo de soporte mínimo por contrato", "Plan de obsolescencia", "Controles compensatorios de red"] },
+    { "id": "T08", "nombre": "Fuga de información en el proveedor",
+      "descripcion": "Planos, esquemas de red, proyectos o contraseñas robados en la empresa del proveedor.",
+      "caso": "Habitual en ataques de ransomware a ingenierías.",
+      "tipos": ["integrador", "mantenedor", "fabricante", "nube"],
+      "medidas": ["Acuerdo de confidencialidad", "Compartir la mínima información necesaria", "Devolución o destrucción al finalizar"] },
+    { "id": "T09", "nombre": "Abuso de privilegios por personal del proveedor",
+      "descripcion": "Un técnico del proveedor usa sus accesos de forma indebida, por error o de forma intencionada.",
+      "caso": "Incidentes de insiders en instalaciones de agua y energía.",
+      "tipos": ["mantenedor", "integrador"],
+      "medidas": ["Mínimo privilegio", "Registro y revisión de cambios", "Supervisión de intervenciones críticas"] },
+    { "id": "T10", "nombre": "Dependencia de un único proveedor",
+      "descripcion": "La planta no puede operar o recuperarse si el proveedor falla, cierra o deja de atender.",
+      "caso": "Paradas prolongadas por falta de repuestos o conocimiento del sistema.",
+      "tipos": ["fabricante", "integrador", "mantenedor", "distribuidor", "nube"],
+      "medidas": ["Documentación y proyectos en poder del cliente", "Proveedor alternativo identificado", "Repuestos críticos en almacén"] },
+    { "id": "T11", "nombre": "Subcontratista no controlado",
+      "descripcion": "El proveedor subcontrata parte del trabajo a terceros que no cumplen los requisitos.",
+      "caso": "Cadenas de subcontratación en proyectos de integración.",
+      "tipos": ["integrador", "mantenedor"],
+      "medidas": ["Cláusula de subcontratación", "Lista de subcontratistas aprobada"] },
+    { "id": "T12", "nombre": "Indisponibilidad o brecha del servicio en la nube",
+      "descripcion": "El servicio en la nube cae o sufre una brecha que expone datos de producción.",
+      "caso": "Caídas de proveedores de software como servicio.",
+      "tipos": ["nube"],
+      "medidas": ["La planta produce sin el servicio", "Registro local de respaldo", "Plan de salida y cifrado"] }
+  ],
+
+  "cuestionario": [
+    { "id": "A1", "bloque": "Organización", "texto": "¿Tiene un programa de ciberseguridad certificado (IEC 62443-2-4, IEC 62443-4-1, ISO 27001)?", "tipos": "todos", "peso": 2 },
+    { "id": "A2", "bloque": "Organización", "texto": "¿Hay un responsable de ciberseguridad identificado en su empresa?", "tipos": "todos", "peso": 1 },
+    { "id": "A3", "bloque": "Organización", "texto": "¿El personal que trabajará en planta tiene formación en ciberseguridad OT?", "tipos": ["integrador", "mantenedor", "fabricante"], "peso": 1 },
+    { "id": "A4", "bloque": "Organización", "texto": "¿Exige a sus subcontratistas los mismos requisitos de seguridad?", "tipos": "todos", "peso": 1 },
+    { "id": "A5", "bloque": "Organización", "texto": "¿Dispone de un procedimiento de gestión de incidentes probado?", "tipos": "todos", "peso": 1 },
+    { "id": "A6", "bloque": "Organización", "texto": "¿Se compromete a notificar incidentes que afecten al cliente en 24 horas o menos?", "tipos": "todos", "peso": 2, "eliminatoria": ["alta"] },
+    { "id": "A7", "bloque": "Producto", "texto": "¿Publica avisos de seguridad sobre sus productos?", "tipos": ["fabricante", "nube"], "peso": 1 },
+    { "id": "A8", "bloque": "Producto", "texto": "¿Garantiza parches de seguridad durante la vida útil prevista del producto?", "tipos": ["fabricante", "nube"], "peso": 2 },
+    { "id": "A9", "bloque": "Producto", "texto": "¿El producto permite cambiar todas las credenciales y tiene cuentas con roles?", "tipos": ["fabricante"], "peso": 2, "eliminatoria": ["alta", "media"] },
+    { "id": "A10", "bloque": "Producto", "texto": "¿El firmware y las actualizaciones están firmados digitalmente?", "tipos": ["fabricante"], "peso": 2 },
+    { "id": "A11", "bloque": "Producto", "texto": "¿Entrega lista de componentes de software (SBOM) y guía de bastionado?", "tipos": ["fabricante"], "peso": 1 },
+    { "id": "A12", "bloque": "Producto", "texto": "¿El producto tiene certificado un nivel de seguridad (SL) según IEC 62443-4-2?", "tipos": ["fabricante"], "peso": 1 },
+    { "id": "A13", "bloque": "Servicio", "texto": "¿Acepta realizar el mantenimiento remoto solo a través de la solución del cliente, sin herramientas propias?", "tipos": ["mantenedor", "integrador", "fabricante"], "peso": 2, "eliminatoria": ["alta"] },
+    { "id": "A14", "bloque": "Servicio", "texto": "¿Controla y protege los portátiles y memorias USB de sus técnicos?", "tipos": ["integrador", "mantenedor"], "peso": 1 },
+    { "id": "A15", "bloque": "Servicio", "texto": "¿Custodia de forma segura la información de sus clientes (proyectos, contraseñas, esquemas)?", "tipos": ["integrador", "mantenedor", "fabricante"], "peso": 2 },
+    { "id": "D1", "bloque": "Suministro", "texto": "¿Es distribuidor autorizado del fabricante de los productos que suministra?", "tipos": ["distribuidor"], "peso": 2, "eliminatoria": ["alta", "media"] },
+    { "id": "D2", "bloque": "Suministro", "texto": "¿Garantiza la trazabilidad (número de serie, origen) de los componentes?", "tipos": ["distribuidor"], "peso": 2 },
+    { "id": "N1", "bloque": "Nube", "texto": "¿Los datos se alojan en la Unión Europea?", "tipos": ["nube"], "peso": 2 },
+    { "id": "N2", "bloque": "Nube", "texto": "¿Los datos se cifran en tránsito y en reposo?", "tipos": ["nube"], "peso": 2 },
+    { "id": "N3", "bloque": "Nube", "texto": "¿La conexión se inicia siempre desde planta, sin puertos abiertos hacia dentro?", "tipos": ["nube"], "peso": 2, "eliminatoria": ["alta", "media"] },
+    { "id": "N4", "bloque": "Nube", "texto": "¿Ofrece un plan de salida con devolución de los datos en formato abierto?", "tipos": ["nube"], "peso": 1 }
+  ],
+
+  "requisitos": [
+    { "id": "R-ORG-01", "categoria": "Organizativos", "texto": "Disponer de un programa de seguridad reconocido (IEC 62443-2-4, IEC 62443-4-1 o ISO/IEC 27001).", "verificacion": "Certificado o evidencias en el cuestionario", "ref": "IEC 62443-2-4", "tipos": "todos", "criticidadMin": "alta" },
+    { "id": "R-ORG-02", "categoria": "Organizativos", "texto": "Asignar al proyecto personal con formación acreditada en ciberseguridad OT.", "verificacion": "Relación de personal y formación", "ref": "IEC 62443-2-4", "tipos": ["integrador", "mantenedor", "fabricante"], "criticidadMin": "alta" },
+    { "id": "R-ORG-03", "categoria": "Organizativos", "texto": "Mantener la confidencialidad de la información de la planta (esquemas, contraseñas, proyectos).", "verificacion": "Acuerdo de confidencialidad firmado", "ref": "ISO/IEC 27001 A.5.20", "tipos": "todos", "criticidadMin": "media" },
+    { "id": "R-ORG-04", "categoria": "Organizativos", "texto": "Trasladar estos requisitos a los subcontratistas e informar de quiénes son.", "verificacion": "Cláusula contractual y lista de subcontratistas", "ref": "ISO/IEC 27036", "tipos": "todos", "criticidadMin": "alta" },
+    { "id": "R-ORG-05", "categoria": "Organizativos", "texto": "Notificar al cliente los incidentes que puedan afectarle en el plazo acordado.", "verificacion": "SLA", "ref": "NIS2 art. 21", "tipos": "todos", "criticidadMin": "media" },
+    { "id": "R-ORG-06", "categoria": "Organizativos", "texto": "Notificar las vulnerabilidades de sus productos y publicar avisos de seguridad.", "verificacion": "SLA y página de avisos", "ref": "CRA (UE) 2024/2847", "tipos": ["fabricante", "nube"], "criticidadMin": "media" },
+
+    { "id": "R-PRO-01", "categoria": "Producto", "texto": "Sin contraseñas fijas en el código; todas las credenciales se pueden cambiar.", "verificacion": "Documentación y prueba en FAT", "ref": "IEC 62443-4-2 CR 1.5", "tipos": ["fabricante"], "criticidadMin": "media" },
+    { "id": "R-PRO-02", "categoria": "Producto", "texto": "Cuentas de usuario con roles y permisos diferenciados.", "verificacion": "Prueba en FAT", "ref": "IEC 62443-4-2 CR 2.1", "tipos": ["fabricante"], "criticidadMin": "media" },
+    { "id": "R-PRO-03", "categoria": "Producto", "texto": "Registro de eventos de seguridad: accesos, cambios de programa y de configuración.", "verificacion": "Prueba en FAT", "ref": "IEC 62443-4-2 CR 2.8", "tipos": ["fabricante"], "criticidadMin": "alta" },
+    { "id": "R-PRO-04", "categoria": "Producto", "texto": "Firmware y actualizaciones firmados digitalmente.", "verificacion": "Documentación técnica", "ref": "IEC 62443-4-2 CR 3.4", "tipos": ["fabricante"], "criticidadMin": "media" },
+    { "id": "R-PRO-05", "categoria": "Producto", "texto": "Posibilidad de desactivar puertos y servicios no usados.", "verificacion": "Guía de bastionado y prueba en FAT", "ref": "IEC 62443-4-2 CR 7.7", "tipos": ["fabricante"], "criticidadMin": "media" },
+    { "id": "R-PRO-06", "categoria": "Producto", "texto": "Entrega de la lista de componentes de software (SBOM).", "verificacion": "Entrega documental", "ref": "CRA (UE) 2024/2847", "tipos": ["fabricante"], "criticidadMin": "alta" },
+    { "id": "R-PRO-07", "categoria": "Producto", "texto": "Periodo de soporte de seguridad (parches) acorde con la vida útil prevista.", "verificacion": "Compromiso escrito en la oferta", "ref": "IEC 62443-4-1 SUM", "tipos": ["fabricante", "nube"], "criticidadMin": "media" },
+    { "id": "R-PRO-08", "categoria": "Producto", "texto": "Parches probados por el fabricante para no afectar al funcionamiento.", "verificacion": "Política de parches del fabricante", "ref": "IEC 62443-4-1 SUM", "tipos": ["fabricante"], "criticidadMin": "alta" },
+    { "id": "R-PRO-09", "categoria": "Producto", "texto": "Equipos nuevos, procedentes de canal autorizado y con trazabilidad.", "verificacion": "Albarán de distribuidor autorizado y número de serie", "ref": "NIST SP 800-161", "tipos": ["distribuidor", "fabricante"], "criticidadMin": "media" },
+
+    { "id": "R-INT-01", "categoria": "Integración", "texto": "Diseño de red por zonas y conductos con el SL objetivo fijado en el pliego.", "verificacion": "Esquema de red entregado y revisado", "ref": "IEC 62443-3-2 / 3-3", "tipos": ["integrador"], "criticidadMin": "media" },
+    { "id": "R-INT-02", "categoria": "Integración", "texto": "Bastionado de todos los equipos según las guías del fabricante.", "verificacion": "Checklist de SAT", "ref": "IEC 62443-2-4 SP.03", "tipos": ["integrador"], "criticidadMin": "media" },
+    { "id": "R-INT-03", "categoria": "Integración", "texto": "Ninguna contraseña por defecto en la entrega; credenciales entregadas de forma segura.", "verificacion": "Prueba en SAT y acta de entrega", "ref": "IEC 62443-2-4 SP.09", "tipos": ["integrador", "fabricante"], "criticidadMin": "media" },
+    { "id": "R-INT-04", "categoria": "Integración", "texto": "Inventario de activos (modelo, firmware, IP, función).", "verificacion": "Entrega documental", "ref": "IEC 62443-2-4 SP.02", "tipos": ["integrador"], "criticidadMin": "media" },
+    { "id": "R-INT-05", "categoria": "Integración", "texto": "Copia de seguridad de proyectos y configuraciones con restauración probada.", "verificacion": "Prueba en SAT", "ref": "IEC 62443-2-4 SP.12", "tipos": ["integrador"], "criticidadMin": "media" },
+    { "id": "R-INT-06", "categoria": "Integración", "texto": "Portátiles y medios extraíbles del personal externo limpios y controlados.", "verificacion": "Procedimiento de acceso de terceros", "ref": "IEC 62443-2-4 SP.10", "tipos": ["integrador", "mantenedor"], "criticidadMin": "media" },
+
+    { "id": "R-MAN-01", "categoria": "Mantenimiento y acceso remoto", "texto": "Acceso remoto solo a través de la solución del cliente (DMZ, servidor de salto), nunca con herramientas propias instaladas en planta.", "verificacion": "Auditoría de red y equipos", "ref": "IEC 62443-2-4 SP.07", "tipos": ["mantenedor", "integrador", "fabricante"], "criticidadMin": "media" },
+    { "id": "R-MAN-02", "categoria": "Mantenimiento y acceso remoto", "texto": "Acceso bajo demanda: se habilita para cada intervención y se cierra al terminar.", "verificacion": "Registro de accesos", "ref": "IEC 62443-2-4 SP.07", "tipos": ["mantenedor"], "criticidadMin": "alta" },
+    { "id": "R-MAN-03", "categoria": "Mantenimiento y acceso remoto", "texto": "Cuentas nominales, una por técnico, con autenticación multifactor.", "verificacion": "Revisión de cuentas", "ref": "IEC 62443-3-3 SR 1.1 RE2", "tipos": ["mantenedor", "integrador"], "criticidadMin": "media" },
+    { "id": "R-MAN-04", "categoria": "Mantenimiento y acceso remoto", "texto": "Mínimo privilegio: acceso solo a los equipos necesarios.", "verificacion": "Revisión de permisos", "ref": "IEC 62443-3-3 SR 2.1", "tipos": ["mantenedor", "integrador"], "criticidadMin": "media" },
+    { "id": "R-MAN-05", "categoria": "Mantenimiento y acceso remoto", "texto": "Sesiones registradas y, en sistemas críticos, grabadas.", "verificacion": "Revisión de registros", "ref": "IEC 62443-3-3 SR 6.1", "tipos": ["mantenedor"], "criticidadMin": "alta" },
+    { "id": "R-MAN-06", "categoria": "Mantenimiento y acceso remoto", "texto": "Todo cambio en PLC o SCADA se documenta y se comunica.", "verificacion": "Registro de cambios", "ref": "IEC 62443-2-4 SP.06", "tipos": ["mantenedor", "integrador"], "criticidadMin": "media" },
+
+    { "id": "R-NUB-01", "categoria": "Servicios en la nube", "texto": "Datos alojados en la UE y cifrados en tránsito y en reposo.", "verificacion": "Contrato y documentación", "ref": "ISO/IEC 27001 A.5.23", "tipos": ["nube"], "criticidadMin": "media" },
+    { "id": "R-NUB-02", "categoria": "Servicios en la nube", "texto": "Conexión iniciada siempre desde planta, sin puertos abiertos hacia dentro.", "verificacion": "Revisión del cortafuegos", "ref": "IEC 62443-3-3 SR 5.1", "tipos": ["nube"], "criticidadMin": "media" },
+    { "id": "R-NUB-03", "categoria": "Servicios en la nube", "texto": "La planta puede seguir produciendo si el servicio falla.", "verificacion": "Prueba de desconexión", "ref": "IEC 62443-3-3 SR 7.1", "tipos": ["nube"], "criticidadMin": "media" },
+    { "id": "R-NUB-04", "categoria": "Servicios en la nube", "texto": "Plan de salida: devolución de los datos en formato abierto al terminar el contrato.", "verificacion": "Cláusula contractual", "ref": "ISO/IEC 27036", "tipos": ["nube"], "criticidadMin": "media" },
+
+    { "id": "R-GEN-01", "categoria": "Organizativos", "texto": "Respetar las normas de acceso físico y acompañamiento en planta.", "verificacion": "Registro de visitas", "ref": "IEC 62443-2-1", "tipos": "todos", "criticidadMin": "baja" }
+  ],
+
+  "clausulas": [
+    { "id": "C-CON-01", "categoria": "Confidencialidad", "titulo": "Objeto",
+      "texto": "El presente acuerdo regula el tratamiento de la información confidencial que {{Organización}} facilite a {{Proveedor}} con motivo de {{Suministro}}." },
+    { "id": "C-CON-02", "categoria": "Confidencialidad", "titulo": "Información confidencial",
+      "texto": "Se considera información confidencial toda la información técnica de la instalación: esquemas de red, direcciones IP, credenciales, proyectos de PLC y SCADA, configuraciones, planos, procedimientos e informes de seguridad, con independencia del soporte en que se facilite." },
+    { "id": "C-CON-03", "categoria": "Confidencialidad", "titulo": "Obligaciones del receptor",
+      "texto": "{{Proveedor}} utilizará la información solo para el fin indicado, la compartirá únicamente con el personal que la necesite, que quedará obligado en los mismos términos, y la protegerá con medidas de seguridad al menos equivalentes a las que aplica a su propia información confidencial." },
+    { "id": "C-CON-04", "categoria": "Confidencialidad", "titulo": "Excepciones",
+      "texto": "No será confidencial la información que sea de dominio público sin incumplimiento de este acuerdo, que el receptor conociera previamente de forma legítima o que deba revelarse por obligación legal, en cuyo caso se avisará previamente a {{Organización}}." },
+    { "id": "C-CON-05", "categoria": "Confidencialidad", "titulo": "Duración",
+      "texto": "Las obligaciones de confidencialidad se mantendrán durante la relación contractual y {{anios_confidencialidad}} años después de su finalización.",
+      "params": { "anios_confidencialidad": { "etiqueta": "Años de confidencialidad tras el contrato", "defecto": "5" } } },
+    { "id": "C-CON-06", "categoria": "Confidencialidad", "titulo": "Devolución y destrucción",
+      "texto": "Al terminar la relación, o cuando {{Organización}} lo solicite, {{Proveedor}} devolverá o destruirá de forma segura toda la información confidencial y sus copias, y lo certificará por escrito en un plazo de {{dias_destruccion}} días.",
+      "params": { "dias_destruccion": { "etiqueta": "Plazo de certificación (días)", "defecto": "15" } } },
+    { "id": "C-CON-07", "categoria": "Confidencialidad", "titulo": "Comunicación de fugas",
+      "texto": "{{Proveedor}} comunicará a {{Organización}} cualquier acceso no autorizado o pérdida de información confidencial en un plazo máximo de {{plazo_incidentes_h}} horas desde que tenga conocimiento.",
+      "params": { "plazo_incidentes_h": { "etiqueta": "Plazo de comunicación (horas)", "defecto": "24" } } },
+
+    { "id": "C-SLA-01", "categoria": "Servicio (SLA)", "titulo": "Tiempos de respuesta",
+      "texto": "{{Proveedor}} atenderá las incidencias con los siguientes tiempos máximos de respuesta: críticas (parada de producción o riesgo para la seguridad) {{t_critica_h}} horas; graves {{t_grave_h}} horas; leves {{t_leve_h}} horas.",
+      "params": { "t_critica_h": { "etiqueta": "Respuesta incidencia crítica (h)", "defecto": "2" }, "t_grave_h": { "etiqueta": "Respuesta incidencia grave (h)", "defecto": "8" }, "t_leve_h": { "etiqueta": "Respuesta incidencia leve (h)", "defecto": "48" } } },
+    { "id": "C-SLA-02", "categoria": "Servicio (SLA)", "titulo": "Notificación de incidentes de seguridad",
+      "texto": "{{Proveedor}} notificará a {{Organización}} cualquier incidente de ciberseguridad que pueda afectar a la instalación en un plazo máximo de {{plazo_incidentes_h}} horas, indicando el alcance conocido y las medidas adoptadas.",
+      "params": { "plazo_incidentes_h": { "etiqueta": "Plazo de notificación de incidentes (h)", "defecto": "24" } } },
+    { "id": "C-SLA-03", "categoria": "Servicio (SLA)", "titulo": "Notificación de vulnerabilidades",
+      "texto": "{{Proveedor}} informará a {{Organización}} de toda vulnerabilidad nueva que afecte a lo suministrado en un plazo de {{plazo_vuln_d}} días laborables, junto con las medidas de mitigación disponibles.",
+      "params": { "plazo_vuln_d": { "etiqueta": "Plazo de notificación de vulnerabilidades (días)", "defecto": "5" } } },
+    { "id": "C-SLA-04", "categoria": "Servicio (SLA)", "titulo": "Parches de seguridad",
+      "texto": "{{Proveedor}} facilitará los parches de seguridad durante al menos {{anios_soporte}} años desde la entrega. Los parches se probarán antes de su publicación y se acompañarán de instrucciones de instalación y vuelta atrás.",
+      "params": { "anios_soporte": { "etiqueta": "Años de soporte de seguridad", "defecto": "10" } } },
+    { "id": "C-SLA-05", "categoria": "Servicio (SLA)", "titulo": "Informes periódicos",
+      "texto": "{{Proveedor}} entregará cada {{periodo_informe}} un informe con las intervenciones realizadas, los accesos utilizados y los cambios efectuados en el sistema.",
+      "params": { "periodo_informe": { "etiqueta": "Periodicidad del informe", "defecto": "trimestre" } } },
+    { "id": "C-SLA-06", "categoria": "Servicio (SLA)", "titulo": "Penalizaciones",
+      "texto": "El incumplimiento de los plazos anteriores dará lugar a una penalización del {{penalizacion_pct}} % de la facturación mensual del servicio por cada incumplimiento, con un máximo del {{penalizacion_max_pct}} %.",
+      "params": { "penalizacion_pct": { "etiqueta": "Penalización por incumplimiento (%)", "defecto": "5" }, "penalizacion_max_pct": { "etiqueta": "Penalización máxima (%)", "defecto": "20" } } },
+
+    { "id": "C-SEG-01", "categoria": "Seguridad técnica", "titulo": "Nivel de seguridad",
+      "texto": "Los equipos y el sistema suministrados alcanzarán el nivel de seguridad {{sl_objetivo}} de IEC 62443-3-3 en la zona {{zona}}, según el esquema de zonas y conductos facilitado por {{Organización}}.",
+      "params": { "sl_objetivo": { "etiqueta": "Nivel de seguridad objetivo", "defecto": "SL 2" }, "zona": { "etiqueta": "Zona", "defecto": "de control de la línea" } } },
+    { "id": "C-SEG-02", "categoria": "Seguridad técnica", "titulo": "Credenciales",
+      "texto": "El suministro se entregará sin contraseñas por defecto. Todas las credenciales podrán cambiarse y se entregarán a {{Organización}} de forma segura en el acta de recepción." },
+    { "id": "C-SEG-03", "categoria": "Seguridad técnica", "titulo": "Bastionado",
+      "texto": "Se desactivarán los puertos, servicios y cuentas no necesarios, según la guía de bastionado del fabricante, que se entregará con la documentación." },
+    { "id": "C-SEG-04", "categoria": "Seguridad técnica", "titulo": "Documentación de seguridad",
+      "texto": "{{Proveedor}} entregará inventario de activos, esquema de red, lista de componentes de software (SBOM), copia de los proyectos y configuraciones, y procedimiento de restauración." },
+    { "id": "C-SEG-05", "categoria": "Seguridad técnica", "titulo": "Pruebas de aceptación",
+      "texto": "El cumplimiento de los requisitos de seguridad se verificará en las pruebas de aceptación en fábrica (FAT) y en planta (SAT) mediante el checklist de ciberseguridad de {{Organización}}. Un resultado no conforme impedirá la aceptación." },
+    { "id": "C-SEG-06", "categoria": "Seguridad técnica", "titulo": "Cumplimiento normativo",
+      "texto": "Los productos con elementos digitales suministrados cumplirán el Reglamento (UE) 2024/2847 de Ciberresiliencia en las fechas en que resulte aplicable y, en su caso, el Reglamento (UE) 2023/1230 relativo a las máquinas." },
+
+    { "id": "C-ACC-01", "categoria": "Acceso de terceros", "titulo": "Procedimiento obligatorio",
+      "texto": "Todo acceso de {{Proveedor}} a la instalación, en planta o en remoto, se realizará según el procedimiento de acceso de terceros de {{Organización}}." },
+    { "id": "C-ACC-02", "categoria": "Acceso de terceros", "titulo": "Herramientas de acceso remoto",
+      "texto": "Queda prohibido instalar o utilizar herramientas de acceso remoto propias de {{Proveedor}}. El acceso remoto se realizará exclusivamente a través de la solución de {{Organización}}, con cuentas nominales y autenticación multifactor." },
+    { "id": "C-ACC-03", "categoria": "Acceso de terceros", "titulo": "Equipos y medios extraíbles",
+      "texto": "Los equipos portátiles y medios extraíbles de {{Proveedor}} se analizarán antes de conectarse a la red de planta. Siempre que sea posible se utilizarán los equipos de ingeniería de {{Organización}}." },
+
+    { "id": "C-GEN-01", "categoria": "Generales", "titulo": "Subcontratación",
+      "texto": "{{Proveedor}} trasladará estas obligaciones a sus subcontratistas y comunicará previamente a {{Organización}} quiénes son. {{Proveedor}} responderá de su cumplimiento." },
+    { "id": "C-GEN-02", "categoria": "Generales", "titulo": "Auditoría",
+      "texto": "{{Organización}} podrá auditar el cumplimiento de estas obligaciones, por sí o mediante un tercero, con un preaviso de {{preaviso_auditoria_d}} días.",
+      "params": { "preaviso_auditoria_d": { "etiqueta": "Preaviso de auditoría (días)", "defecto": "15" } } },
+    { "id": "C-GEN-03", "categoria": "Generales", "titulo": "Fin del contrato",
+      "texto": "Al terminar el contrato, {{Proveedor}} entregará la última versión de proyectos, configuraciones y documentación, colaborará en la retirada de sus accesos y devolverá o destruirá la información de {{Organización}}, certificándolo por escrito." },
+    { "id": "C-GEN-04", "categoria": "Generales", "titulo": "Resolución por incumplimiento",
+      "texto": "El incumplimiento grave de las obligaciones de ciberseguridad será causa de resolución del contrato, sin perjuicio de la reclamación de los daños causados." }
+  ],
+
+  "procedimientos": [
+    { "id": "P-ACC-01", "categoria": "Procedimiento de acceso de terceros", "titulo": "Solicitud",
+      "texto": "El proveedor solicita el acceso con al menos {{antelacion_h}} horas de antelación, salvo urgencia, indicando técnico, motivo, equipos afectados, fecha y duración prevista.",
+      "params": { "antelacion_h": { "etiqueta": "Antelación de la solicitud (h)", "defecto": "24" } } },
+    { "id": "P-ACC-02", "categoria": "Procedimiento de acceso de terceros", "titulo": "Autorización",
+      "texto": "Mantenimiento valida la necesidad y el responsable de ciberseguridad OT aprueba el acceso. Sin aprobación no se habilita ningún acceso." },
+    { "id": "P-ACC-03", "categoria": "Procedimiento de acceso de terceros", "titulo": "Preparación del acceso remoto",
+      "texto": "Se habilita la cuenta nominal del técnico en el servidor de salto, con autenticación multifactor, solo hacia los equipos autorizados y durante la ventana aprobada." },
+    { "id": "P-ACC-04", "categoria": "Procedimiento de acceso de terceros", "titulo": "Preparación del acceso en planta",
+      "texto": "El técnico se registra en recepción y es acompañado. Usa el equipo de ingeniería de la planta o, si usa el suyo, se analiza antes. Los medios extraíbles se analizan en la estación de descontaminación." },
+    { "id": "P-ACC-05", "categoria": "Procedimiento de acceso de terceros", "titulo": "Ejecución",
+      "texto": "La sesión queda registrada. Un responsable de la planta permanece localizable durante toda la intervención y puede interrumpirla." },
+    { "id": "P-ACC-06", "categoria": "Procedimiento de acceso de terceros", "titulo": "Cierre",
+      "texto": "Al terminar se deshabilita el acceso, se registran los cambios realizados y se guarda una copia actualizada de los proyectos y configuraciones modificados." }
+  ],
+
+  "checklists": {
+    "fatsat": [
+      "No queda ninguna contraseña por defecto (PLC, HMI, switches, SCADA, sistema operativo)",
+      "Existen cuentas con roles diferenciados y no hay cuentas genéricas compartidas",
+      "Puertos y servicios no usados desactivados (web, FTP, Telnet, SNMP v1/v2)",
+      "El firmware instalado es el acordado y su firma es válida",
+      "Los PLC tienen protección de acceso al programa y nivel de acceso configurado",
+      "La red sigue el esquema de zonas y conductos; las reglas del cortafuegos coinciden con lo diseñado",
+      "No hay conexiones a internet ni accesos remotos no autorizados",
+      "El registro de eventos está activo y llega al sistema de registro de la planta",
+      "Copias de seguridad realizadas y restauración probada",
+      "Antivirus o lista blanca de aplicaciones en estaciones de ingeniería y SCADA, según el pliego",
+      "Documentación de seguridad entregada (inventario, esquema de red, SBOM, guía de bastionado)",
+      "Credenciales entregadas al cliente de forma segura y cambiadas tras la puesta en marcha"
+    ],
+    "baja": [
+      "Cuentas del proveedor deshabilitadas en todos los sistemas (PLC, SCADA, dominio, servidor de salto)",
+      "Accesos remotos y reglas de cortafuegos asociadas eliminados",
+      "Contraseñas compartidas o conocidas por el proveedor cambiadas",
+      "Certificados o claves VPN del proveedor revocados",
+      "Última versión de proyectos, configuraciones y documentación recibida",
+      "Certificado de devolución o destrucción de la información del cliente recibido",
+      "Equipos o material del proveedor retirados de la planta",
+      "Registro de proveedores actualizado"
+    ]
+  },
+
+  "plantillas": [
+    { "id": "pliego", "nombre": "Pliego técnico de ciberseguridad", "tipo": "texto",
+      "intro": "Este pliego establece los requisitos de ciberseguridad que {{Proveedor}} deberá cumplir en {{Suministro}} para {{Organización}}.",
+      "secciones": [
+        { "titulo": "Condiciones de seguridad", "clausulas": ["C-SEG-01", "C-SEG-02", "C-SEG-03", "C-SEG-04", "C-SEG-05", "C-SEG-06"] },
+        { "titulo": "Requisitos de ciberseguridad", "requisitos": true }
+      ] },
+    { "id": "nda", "nombre": "Acuerdo de confidencialidad (NDA)", "tipo": "texto",
+      "intro": "Acuerdo de confidencialidad entre {{Organización}} y {{Proveedor}}.",
+      "secciones": [ { "titulo": "Cláusulas", "clausulas": ["C-CON-01", "C-CON-02", "C-CON-03", "C-CON-04", "C-CON-05", "C-CON-06", "C-CON-07"] } ],
+      "firmas": true },
+    { "id": "sla", "nombre": "Acuerdo de nivel de servicio (SLA)", "tipo": "texto",
+      "intro": "Compromisos de servicio y de seguridad de {{Proveedor}} para {{Suministro}}.",
+      "secciones": [ { "titulo": "Compromisos", "clausulas": ["C-SLA-01", "C-SLA-02", "C-SLA-03", "C-SLA-04", "C-SLA-05", "C-SLA-06"] } ],
+      "firmas": true },
+    { "id": "anexo", "nombre": "Anexo de ciberseguridad al contrato", "tipo": "texto",
+      "intro": "Este anexo forma parte del contrato entre {{Organización}} y {{Proveedor}} para {{Suministro}}.",
+      "secciones": [
+        { "titulo": "Seguridad técnica", "clausulas": ["C-SEG-01", "C-SEG-02", "C-SEG-03", "C-SEG-04"] },
+        { "titulo": "Acceso de terceros", "clausulas": ["C-ACC-01", "C-ACC-02", "C-ACC-03"] },
+        { "titulo": "Notificaciones", "clausulas": ["C-SLA-02", "C-SLA-03"] },
+        { "titulo": "Condiciones generales", "clausulas": ["C-GEN-01", "C-GEN-02", "C-GEN-03", "C-GEN-04"] }
+      ],
+      "firmas": true },
+    { "id": "acceso", "nombre": "Procedimiento de acceso de terceros", "tipo": "texto",
+      "intro": "Procedimiento que regula el acceso de {{Proveedor}} a la instalación de {{Organización}}, en planta y en remoto.",
+      "secciones": [ { "titulo": "Pasos", "procedimientos": ["P-ACC-01", "P-ACC-02", "P-ACC-03", "P-ACC-04", "P-ACC-05", "P-ACC-06"] } ],
+      "registroAccesos": true },
+    { "id": "fatsat", "nombre": "Checklist de ciberseguridad FAT/SAT", "tipo": "checklist", "modo": "fatsat",
+      "intro": "Verificación de los requisitos de ciberseguridad de {{Suministro}} suministrado por {{Proveedor}}.", "firmas": true },
+    { "id": "baja", "nombre": "Checklist de baja del proveedor", "tipo": "checklist", "modo": "baja",
+      "intro": "Cierre de accesos y recuperación de información al finalizar la relación con {{Proveedor}}.", "firmas": true },
+    { "id": "informe", "nombre": "Informe de evaluación del proveedor", "tipo": "informe",
+      "intro": "Resultado de la evaluación de ciberseguridad de {{Proveedor}}." }
+  ]
+};
+
+/* Proyecto de ejemplo: Envasados del Sur, S.L. (empresa y proveedores ficticios). */
+const PROYECTO_EJEMPLO = {
+  "formato": "toolbox-ot/proveedores",
+  "version": "1.0",
+  "proyecto": {
+    "nombre": "Compra de la nueva línea de llenado",
+    "organizacion": "Envasados del Sur, S.L.",
+    "descripcion": "Caso didáctico ficticio: embotelladora de agua mineral de Tenerife (60 empleados) que compra una nueva línea automatizada de llenado y etiquetado. Todas las empresas son ficticias.",
+    "fecha": "2026-11-20"
+  },
+  "contexto": {
+    "fuente": "Ejemplo incluido",
+    "zonas": ["Nivel 1 · Control", "Nivel 2 · Supervisión", "Nivel 3 · Operaciones", "Nivel 3.5 · DMZ"],
+    "activos": [
+      { "id": "A-PLC-LINEA", "nombre": "PLC de línea S7-1500", "zona": "Nivel 1 · Control" },
+      { "id": "A-PLC-LLEN", "nombre": "PLC de la llenadora", "zona": "Nivel 1 · Control" },
+      { "id": "A-HMI-LLEN", "nombre": "HMI de la llenadora", "zona": "Nivel 2 · Supervisión" },
+      { "id": "A-SCADA", "nombre": "Servidor SCADA", "zona": "Nivel 2 · Supervisión" },
+      { "id": "A-ING", "nombre": "Estación de ingeniería", "zona": "Nivel 2 · Supervisión" },
+      { "id": "A-SW", "nombre": "Switch de planta", "zona": "Nivel 2 · Supervisión" },
+      { "id": "A-MES", "nombre": "Pasarela MES", "zona": "Nivel 3 · Operaciones" },
+      { "id": "A-SALTO", "nombre": "Servidor de salto", "zona": "Nivel 3.5 · DMZ" }
+    ]
+  },
+  "proveedores": [
+    {
+      "id": "P-01", "nombre": "Llenadoras Atlánticas, S.A.", "cif": "A00000001", "tipo": "fabricante",
+      "contacto": "Departamento técnico", "email": "tecnico@llenadoras.example", "telefono": "",
+      "suministra": "Llenadora con PLC y HMI propios",
+      "acceso": { "logico": true, "remoto": false, "software": true, "conectado": true, "datos": false, "fisico": true },
+      "criticidadManual": "", "justificacion": "",
+      "certificaciones": "ISO 9001",
+      "activos": ["A-PLC-LLEN", "A-HMI-LLEN"],
+      "estado": "Homologado con condiciones", "ultimaEval": "2026-10-15", "proximaRev": "2027-10-15",
+      "notas": "Condición: entregar SBOM y guía de bastionado antes de la FAT.",
+      "cuestionario": { "respuestas": {
+        "A1": { "valor": "no", "evidencia": "" },
+        "A2": { "valor": "si", "evidencia": "Responsable de producto designado" },
+        "A3": { "valor": "parcial", "evidencia": "" },
+        "A4": { "valor": "si", "evidencia": "Cláusula en sus contratos" },
+        "A5": { "valor": "parcial", "evidencia": "" },
+        "A6": { "valor": "si", "evidencia": "Compromiso por escrito" },
+        "A7": { "valor": "si", "evidencia": "Página de avisos de seguridad" },
+        "A8": { "valor": "parcial", "evidencia": "Garantiza 5 años" },
+        "A9": { "valor": "si", "evidencia": "Manual de usuario, cap. 4" },
+        "A10": { "valor": "si", "evidencia": "" },
+        "A11": { "valor": "no", "evidencia": "" },
+        "A12": { "valor": "no", "evidencia": "" },
+        "A13": { "valor": "si", "evidencia": "" },
+        "A15": { "valor": "si", "evidencia": "" }
+      }, "resultado": "Homologado con condiciones", "condiciones": "Entregar SBOM y guía de bastionado antes de la FAT; ampliar soporte a 10 años.", "fecha": "2026-10-15" },
+      "riesgos": [
+        { "id": "R1", "amenaza": "T04", "descripcion": "Contraseñas por defecto en la llenadora tras la puesta en marcha", "p": 2, "i": 3, "tratamiento": "Reducir", "medidas": "Requisito en pliego y verificación en SAT", "responsable": "Ingeniería", "pr": 1, "ir": 3 },
+        { "id": "R2", "amenaza": "T07", "descripcion": "Fin del soporte de seguridad antes del fin de la vida útil de la máquina", "p": 2, "i": 2, "tratamiento": "Reducir", "medidas": "Cláusula de soporte de 10 años", "responsable": "Compras", "pr": 1, "ir": 2 }
+      ],
+      "documentos": []
+    },
+    {
+      "id": "P-02", "nombre": "Integra Automatización Canarias, S.L.", "cif": "B00000002", "tipo": "integrador",
+      "contacto": "Jefe de proyecto", "email": "proyectos@integra.example", "telefono": "",
+      "suministra": "Programación del PLC de línea, SCADA y red de planta",
+      "acceso": { "logico": true, "remoto": false, "software": true, "conectado": true, "datos": true, "fisico": true },
+      "criticidadManual": "", "justificacion": "",
+      "certificaciones": "ISO 27001",
+      "activos": ["A-PLC-LINEA", "A-SCADA", "A-ING", "A-SW"],
+      "estado": "Homologado", "ultimaEval": "2026-09-30", "proximaRev": "2027-09-30",
+      "notas": "",
+      "cuestionario": { "respuestas": {
+        "A1": { "valor": "si", "evidencia": "Certificado ISO 27001" },
+        "A2": { "valor": "si", "evidencia": "" },
+        "A3": { "valor": "si", "evidencia": "Formación ISA/IEC 62443" },
+        "A4": { "valor": "si", "evidencia": "" },
+        "A5": { "valor": "si", "evidencia": "" },
+        "A6": { "valor": "si", "evidencia": "" },
+        "A13": { "valor": "si", "evidencia": "" },
+        "A14": { "valor": "parcial", "evidencia": "Antivirus, sin control de USB" },
+        "A15": { "valor": "si", "evidencia": "Repositorio cifrado" }
+      }, "resultado": "Homologado", "condiciones": "", "fecha": "2026-09-30" },
+      "riesgos": [
+        { "id": "R1", "amenaza": "T05", "descripcion": "Portátil del integrador con malware conectado a la red de planta", "p": 2, "i": 3, "tratamiento": "Reducir", "medidas": "Equipo de la planta para conexiones, análisis de USB, endpoint protegido", "responsable": "Ciberseguridad OT", "pr": 1, "ir": 3 },
+        { "id": "R2", "amenaza": "T08", "descripcion": "Robo de proyectos y contraseñas en la ingeniería", "p": 1, "i": 3, "tratamiento": "Reducir", "medidas": "NDA, cambio de credenciales tras la puesta en marcha", "responsable": "Compras", "pr": 1, "ir": 2 }
+      ],
+      "documentos": []
+    },
+    {
+      "id": "P-03", "nombre": "TecnoMant Sur, S.L.", "cif": "B00000003", "tipo": "mantenedor",
+      "contacto": "Coordinador de servicio", "email": "servicio@tecnomant.example", "telefono": "",
+      "suministra": "Mantenimiento preventivo y correctivo de la línea",
+      "acceso": { "logico": true, "remoto": true, "software": false, "conectado": false, "datos": true, "fisico": true },
+      "criticidadManual": "", "justificacion": "",
+      "certificaciones": "",
+      "activos": ["A-PLC-LINEA", "A-PLC-LLEN", "A-SCADA", "A-SALTO"],
+      "estado": "En evaluación", "ultimaEval": "", "proximaRev": "",
+      "notas": "Pide mantener su TeamViewer permanente en la estación de ingeniería.",
+      "cuestionario": { "respuestas": {
+        "A1": { "valor": "no", "evidencia": "" },
+        "A2": { "valor": "si", "evidencia": "" },
+        "A3": { "valor": "parcial", "evidencia": "" },
+        "A4": { "valor": "si", "evidencia": "" },
+        "A5": { "valor": "parcial", "evidencia": "" },
+        "A6": { "valor": "si", "evidencia": "" },
+        "A13": { "valor": "no", "evidencia": "Usa su propio TeamViewer" },
+        "A14": { "valor": "parcial", "evidencia": "" },
+        "A15": { "valor": "si", "evidencia": "" }
+      }, "resultado": "", "condiciones": "", "fecha": "" },
+      "riesgos": [
+        { "id": "R1", "amenaza": "T01", "descripcion": "Acceso remoto permanente del mantenedor usado por un atacante", "p": 3, "i": 3, "tratamiento": "Reducir", "medidas": "Acceso bajo demanda por servidor de salto, MFA, sesión grabada, cuenta nominal", "responsable": "Ciberseguridad OT", "pr": 1, "ir": 3 },
+        { "id": "R2", "amenaza": "T03", "descripcion": "Compromiso de la herramienta de acceso remoto del mantenedor", "p": 2, "i": 3, "tratamiento": "Evitar", "medidas": "Prohibir herramientas propias por contrato", "responsable": "Compras", "pr": 1, "ir": 3 }
+      ],
+      "documentos": []
+    },
+    {
+      "id": "P-04", "nombre": "Suministros Industriales Teide, S.L.", "cif": "B00000004", "tipo": "distribuidor",
+      "contacto": "Comercial", "email": "ventas@sumteide.example", "telefono": "",
+      "suministra": "PLC, módulos de E/S y switches de reserva",
+      "acceso": { "logico": false, "remoto": false, "software": false, "conectado": true, "datos": false, "fisico": false },
+      "criticidadManual": "", "justificacion": "",
+      "certificaciones": "Distribuidor autorizado",
+      "activos": ["A-SW"],
+      "estado": "Homologado", "ultimaEval": "2026-06-01", "proximaRev": "2026-11-01",
+      "notas": "Revisión anual vencida.",
+      "cuestionario": { "respuestas": {
+        "A1": { "valor": "no", "evidencia": "" },
+        "A2": { "valor": "no", "evidencia": "" },
+        "A4": { "valor": "na", "evidencia": "" },
+        "A5": { "valor": "parcial", "evidencia": "" },
+        "A6": { "valor": "si", "evidencia": "" },
+        "D1": { "valor": "si", "evidencia": "Certificado del fabricante" },
+        "D2": { "valor": "si", "evidencia": "" }
+      }, "resultado": "Homologado", "condiciones": "", "fecha": "2026-06-01" },
+      "riesgos": [
+        { "id": "R1", "amenaza": "T06", "descripcion": "Repuesto de PLC de origen desconocido", "p": 1, "i": 3, "tratamiento": "Reducir", "medidas": "Solo distribuidores autorizados, verificar firmware al recibir", "responsable": "Almacén", "pr": 1, "ir": 2 }
+      ],
+      "documentos": []
+    },
+    {
+      "id": "P-05", "nombre": "NubeProd MES, S.L.", "cif": "B00000005", "tipo": "nube",
+      "contacto": "Soporte", "email": "soporte@nubeprod.example", "telefono": "",
+      "suministra": "Software MES en la nube para registro de producción y trazabilidad",
+      "acceso": { "logico": false, "remoto": false, "software": false, "conectado": false, "datos": true, "fisico": false },
+      "criticidadManual": "", "justificacion": "",
+      "certificaciones": "ISO 27001, ISO 27017",
+      "activos": ["A-MES"],
+      "estado": "En evaluación", "ultimaEval": "", "proximaRev": "",
+      "notas": "",
+      "cuestionario": { "respuestas": {}, "resultado": "", "condiciones": "", "fecha": "" },
+      "riesgos": [
+        { "id": "R1", "amenaza": "T12", "descripcion": "Caída o brecha del MES en la nube", "p": 2, "i": 1, "tratamiento": "Aceptar", "medidas": "La línea funciona sin el MES; registro local de respaldo", "responsable": "Producción", "pr": 2, "ir": 1 }
+      ],
+      "documentos": []
+    },
+    {
+      "id": "P-06", "nombre": "Etiquetas Insulares, S.L.", "cif": "B00000006", "tipo": "otro",
+      "contacto": "", "email": "", "telefono": "",
+      "suministra": "Etiquetas y material de envasado",
+      "acceso": { "logico": false, "remoto": false, "software": false, "conectado": false, "datos": false, "fisico": true },
+      "criticidadManual": "", "justificacion": "",
+      "certificaciones": "",
+      "activos": [],
+      "estado": "Homologado", "ultimaEval": "2026-03-10", "proximaRev": "2027-03-10",
+      "notas": "",
+      "cuestionario": { "respuestas": {}, "resultado": "", "condiciones": "", "fecha": "" },
+      "riesgos": [],
+      "documentos": []
+    }
+  ]
+};
+
+/* Proyecto de ejemplo: ETAP El Lomo (contexto de Red OT). */
+const PROYECTO_ETAP = {
+ "formato": "toolbox-ot/proveedores",
+ "version": "1.0",
+ "proyecto": {
+  "nombre": "Revisión de proveedores tras el análisis de red",
+  "organizacion": "ETAP El Lomo",
+  "descripcion": "Caso didáctico: estación de tratamiento de agua potable. Contexto importado del esquema Red OT «ETAP El Lomo V2.0»; integrador y mantenedor son empresas ficticias.",
+  "fecha": "2026-11-20"
+ },
+ "contexto": {
+  "fuente": "ETAP El Lomo V2.0 (etap_el_lomo_v2_0.json)",
+  "zonas": [
+   "Nivel 0 · Proceso",
+   "Nivel 1 · Control",
+   "Nivel 2 · Supervisión",
+   "Nivel 3 · Operaciones",
+   "Nivel 4 · Empresa"
+  ],
+  "activos": [
+   {
+    "id": "n4",
+    "ref": "A004",
+    "nombre": "Caudalímetro de salida",
+    "zona": "Nivel 0 · Proceso",
+    "nivel": 0,
+    "zonaRed": "Campo",
+    "tipo": "flow",
+    "fabricante": "SIEMENS",
+    "modelo": "SITRANS F M MAG 5000",
+    "ip": "",
+    "firmware": "",
+    "clase": [
+     "HW"
+    ]
+   },
+   {
+    "id": "n5",
+    "ref": "A005",
+    "nombre": "Analizador Cloro",
+    "zona": "Nivel 0 · Proceso",
+    "nivel": 0,
+    "zonaRed": "Campo",
+    "tipo": "sensor",
+    "fabricante": "Genérico",
+    "modelo": "",
+    "ip": "",
+    "firmware": "",
+    "clase": [
+     "HW"
+    ]
+   },
+   {
+    "id": "n6",
+    "ref": "A006",
+    "nombre": "Dosificador Hipoclorito",
+    "zona": "Nivel 0 · Proceso",
+    "nivel": 0,
+    "zonaRed": "Campo",
+    "tipo": "motor_ac",
+    "fabricante": "Genérico",
+    "modelo": "",
+    "ip": "",
+    "firmware": "",
+    "clase": [
+     "HW"
+    ]
+   },
+   {
+    "id": "n15",
+    "ref": "A015",
+    "nombre": "Sensor Nivel 1",
+    "zona": "Nivel 0 · Proceso",
+    "nivel": 0,
+    "zonaRed": "Campo",
+    "tipo": "level",
+    "fabricante": "SIEMENS",
+    "modelo": "SITRANS LR",
+    "ip": "",
+    "firmware": "",
+    "clase": [
+     "HW"
+    ]
+   },
+   {
+    "id": "n16",
+    "ref": "A016",
+    "nombre": "Sensor Nivel 2",
+    "zona": "Nivel 0 · Proceso",
+    "nivel": 0,
+    "zonaRed": "Campo",
+    "tipo": "level",
+    "fabricante": "SIEMENS",
+    "modelo": "SITRANS LR",
+    "ip": "",
+    "firmware": "",
+    "clase": [
+     "HW"
+    ]
+   },
+   {
+    "id": "n17",
+    "ref": "A017",
+    "nombre": "Motor AC 2",
+    "zona": "Nivel 0 · Proceso",
+    "nivel": 0,
+    "zonaRed": "Campo",
+    "tipo": "motor_ac",
+    "fabricante": "",
+    "modelo": "",
+    "ip": "",
+    "firmware": "",
+    "clase": [
+     "HW"
+    ]
+   },
+   {
+    "id": "n18",
+    "ref": "A018",
+    "nombre": "Motor AC 3",
+    "zona": "Nivel 0 · Proceso",
+    "nivel": 0,
+    "zonaRed": "Campo",
+    "tipo": "motor_ac",
+    "fabricante": "",
+    "modelo": "",
+    "ip": "",
+    "firmware": "",
+    "clase": [
+     "HW"
+    ]
+   },
+   {
+    "id": "n19",
+    "ref": "A019",
+    "nombre": "Motor AC 4",
+    "zona": "Nivel 0 · Proceso",
+    "nivel": 0,
+    "zonaRed": "Campo",
+    "tipo": "motor_ac",
+    "fabricante": "",
+    "modelo": "",
+    "ip": "",
+    "firmware": "",
+    "clase": [
+     "HW"
+    ]
+   },
+   {
+    "id": "n1",
+    "ref": "A001",
+    "nombre": "VFD Bomba Pozo",
+    "zona": "Nivel 1 · Control",
+    "nivel": 1,
+    "zonaRed": "OT",
+    "tipo": "vfd",
+    "fabricante": "Siemens",
+    "modelo": "SINAMICS G120",
+    "ip": "192.168.0.31",
+    "firmware": "V4.7",
+    "clase": [
+     "HW"
+    ]
+   },
+   {
+    "id": "n2",
+    "ref": "A002",
+    "nombre": "VFD Red 1",
+    "zona": "Nivel 1 · Control",
+    "nivel": 1,
+    "zonaRed": "OT",
+    "tipo": "vfd",
+    "fabricante": "Siemens",
+    "modelo": "SINAMICS G120",
+    "ip": "192.168.0.32",
+    "firmware": "V4.7",
+    "clase": [
+     "HW"
+    ]
+   },
+   {
+    "id": "n3",
+    "ref": "A003",
+    "nombre": "VFD Red 2",
+    "zona": "Nivel 1 · Control",
+    "nivel": 1,
+    "zonaRed": "OT",
+    "tipo": "vfd",
+    "fabricante": "Siemens",
+    "modelo": "SINAMICS G120",
+    "ip": "192.168.0.33",
+    "firmware": "V4.7",
+    "clase": [
+     "HW"
+    ]
+   },
+   {
+    "id": "n7",
+    "ref": "A007",
+    "nombre": "PLC Bombeo y Filtración",
+    "zona": "Nivel 1 · Control",
+    "nivel": 1,
+    "zonaRed": "OT",
+    "tipo": "plc",
+    "fabricante": "Siemens S7-1500",
+    "modelo": "CPU 1513-1 PN",
+    "ip": "192.168.0.10",
+    "firmware": "V2.6",
+    "clase": [
+     "HW",
+     "SW"
+    ]
+   },
+   {
+    "id": "n8",
+    "ref": "A008",
+    "nombre": "PLC Dosificación",
+    "zona": "Nivel 1 · Control",
+    "nivel": 1,
+    "zonaRed": "OT",
+    "tipo": "plc",
+    "fabricante": "Siemens S7-1200",
+    "modelo": "CPU 1214C DC/DC/DC",
+    "ip": "192.168.0.11",
+    "firmware": "V4.2",
+    "clase": [
+     "HW",
+     "SW"
+    ]
+   },
+   {
+    "id": "n14",
+    "ref": "A014",
+    "nombre": "Periferia descentralizada",
+    "zona": "Nivel 1 · Control",
+    "nivel": 1,
+    "zonaRed": "OT",
+    "tipo": "io_remote",
+    "fabricante": "Siemens",
+    "modelo": "ET 200SP",
+    "ip": "192.168.0.20",
+    "firmware": "V4.2",
+    "clase": [
+     "HW"
+    ]
+   },
+   {
+    "id": "n9",
+    "ref": "A009",
+    "nombre": "Panel Local",
+    "zona": "Nivel 2 · Supervisión",
+    "nivel": 2,
+    "zonaRed": "OT",
+    "tipo": "hmi",
+    "fabricante": "Siemens",
+    "modelo": "KTP700 Basic PN",
+    "ip": "192.168.0.40",
+    "firmware": "V16",
+    "clase": [
+     "HW",
+     "SW"
+    ]
+   },
+   {
+    "id": "n11",
+    "ref": "A011",
+    "nombre": "Estación de Ingeniería",
+    "zona": "Nivel 2 · Supervisión",
+    "nivel": 2,
+    "zonaRed": "OT",
+    "tipo": "eng_ws",
+    "fabricante": "Genérico",
+    "modelo": "",
+    "ip": "192.168.0.60",
+    "firmware": "",
+    "clase": [
+     "HW",
+     "SW"
+    ]
+   },
+   {
+    "id": "n12",
+    "ref": "A012",
+    "nombre": "SW-XC208",
+    "zona": "Nivel 2 · Supervisión",
+    "nivel": 2,
+    "zonaRed": "OT",
+    "tipo": "switch_ind",
+    "fabricante": "Siemens",
+    "modelo": "SCALANCE XC208",
+    "ip": "192.168.0.2",
+    "firmware": "V4.1",
+    "clase": [
+     "HW",
+     "COM"
+    ]
+   },
+   {
+    "id": "n23",
+    "ref": "A023",
+    "nombre": "Módem 1",
+    "zona": "Nivel 2 · Supervisión",
+    "nivel": 2,
+    "zonaRed": "OT",
+    "tipo": "modem",
+    "fabricante": "TELTONIKA",
+    "modelo": "",
+    "ip": "",
+    "firmware": "",
+    "clase": [
+     "HW",
+     "COM"
+    ]
+   },
+   {
+    "id": "n25",
+    "ref": "A025",
+    "nombre": "Portátil técnico",
+    "zona": "Nivel 2 · Supervisión",
+    "nivel": 2,
+    "zonaRed": "OT",
+    "tipo": "laptop",
+    "fabricante": "HP",
+    "modelo": "",
+    "ip": "192.168.0.99",
+    "firmware": "",
+    "clase": [
+     "HW",
+     "SW"
+    ]
+   },
+   {
+    "id": "n26",
+    "ref": "A026",
+    "nombre": "Switch Industrial 2",
+    "zona": "Nivel 2 · Supervisión",
+    "nivel": 2,
+    "zonaRed": "OT",
+    "tipo": "switch_ind",
+    "fabricante": "Siemens",
+    "modelo": "",
+    "ip": "",
+    "firmware": "",
+    "clase": [
+     "HW",
+     "COM"
+    ]
+   },
+   {
+    "id": "n10",
+    "ref": "A010",
+    "nombre": "Servidor SCADA 1",
+    "zona": "Nivel 3 · Operaciones",
+    "nivel": 3,
+    "zonaRed": "OT",
+    "tipo": "scada",
+    "fabricante": "Genérico",
+    "modelo": "",
+    "ip": "192.168.0.50",
+    "firmware": "",
+    "clase": [
+     "HW",
+     "SW",
+     "S",
+     "D"
+    ]
+   },
+   {
+    "id": "n13",
+    "ref": "A013",
+    "nombre": "Firewall OT 1",
+    "zona": "Nivel 3 · Operaciones",
+    "nivel": 3,
+    "zonaRed": "OT",
+    "tipo": "firewall_ot",
+    "fabricante": "Siemens",
+    "modelo": "SCALANCE S615",
+    "ip": "192.168.0.1",
+    "firmware": "V6.2",
+    "clase": [
+     "HW",
+     "COM"
+    ]
+   },
+   {
+    "id": "n21",
+    "ref": "A021",
+    "nombre": "Servicio VPN 1",
+    "zona": "Nivel 3 · Operaciones",
+    "nivel": 3,
+    "zonaRed": "OT",
+    "tipo": "vpn",
+    "fabricante": "",
+    "modelo": "",
+    "ip": "",
+    "firmware": "",
+    "clase": [
+     "S",
+     "COM"
+    ]
+   },
+   {
+    "id": "n20",
+    "ref": "A020",
+    "nombre": "Jefe de Planta",
+    "zona": "Nivel 4 · Empresa",
+    "nivel": 4,
+    "zonaRed": "IT",
+    "tipo": "pc",
+    "fabricante": "Dell",
+    "modelo": "",
+    "ip": "10.10.0.21",
+    "firmware": "",
+    "clase": [
+     "HW",
+     "SW"
+    ]
+   },
+   {
+    "id": "n22",
+    "ref": "A022",
+    "nombre": "Internet",
+    "zona": "Nivel 4 · Empresa",
+    "nivel": 4,
+    "zonaRed": "IT",
+    "tipo": "cloud",
+    "fabricante": "",
+    "modelo": "",
+    "ip": "",
+    "firmware": "",
+    "clase": [
+     "COM",
+     "S"
+    ]
+   },
+   {
+    "id": "n24",
+    "ref": "A024",
+    "nombre": "Red GSM 4G/5G 1",
+    "zona": "Nivel 4 · Empresa",
+    "nivel": 4,
+    "zonaRed": "IT",
+    "tipo": "net_gsm",
+    "fabricante": "",
+    "modelo": "",
+    "ip": "",
+    "firmware": "",
+    "clase": [
+     "COM"
+    ]
+   }
+  ]
+ },
+ "proveedores": [
+  {
+   "id": "P-INT",
+   "nombre": "Hidrocontrol Integración, S.L.",
+   "cif": "B00000011",
+   "tipo": "integrador",
+   "contacto": "Jefe de proyecto",
+   "email": "proyectos@hidrocontrol.example",
+   "telefono": "",
+   "suministra": "Integración y soporte del sistema de control: PLC, SCADA, red y acceso remoto",
+   "acceso": {
+    "logico": true,
+    "remoto": true,
+    "software": true,
+    "conectado": true,
+    "datos": true,
+    "fisico": true
+   },
+   "certificaciones": "",
+   "activos": [
+    "n7",
+    "n8",
+    "n9",
+    "n10",
+    "n11",
+    "n12",
+    "n13",
+    "n21",
+    "n23"
+   ],
+   "estado": "En evaluación",
+   "ultimaEval": "",
+   "proximaRev": "",
+   "finContrato": "2027-03-31",
+   "notas": "Entra por VPN con cuenta compartida que termina en el cortafuegos. Dejó un módem 4G en el armario de control «para soporte urgente». Habilitó PUT/GET en los PLC. Las reglas del cortafuegos son heredadas y no hay documentación.",
+   "cuestionario": {
+    "respuestas": {
+     "A1": {
+      "valor": "no",
+      "evidencia": ""
+     },
+     "A2": {
+      "valor": "parcial",
+      "evidencia": "Lo asume el jefe de proyecto"
+     },
+     "A3": {
+      "valor": "parcial",
+      "evidencia": ""
+     },
+     "A4": {
+      "valor": "si",
+      "evidencia": ""
+     },
+     "A5": {
+      "valor": "no",
+      "evidencia": ""
+     },
+     "A6": {
+      "valor": "parcial",
+      "evidencia": "Sin plazo comprometido"
+     },
+     "A13": {
+      "valor": "no",
+      "evidencia": "Usa cuenta VPN compartida y dejó un módem con TeamViewer"
+     },
+     "A14": {
+      "valor": "no",
+      "evidencia": ""
+     },
+     "A15": {
+      "valor": "parcial",
+      "evidencia": "Contraseñas en hoja de cálculo"
+     }
+    },
+    "resultado": "",
+    "condiciones": "",
+    "fecha": ""
+   },
+   "riesgos": [
+    {
+     "id": "R1",
+     "amenaza": "T01",
+     "descripcion": "VPN del integrador con cuenta compartida que termina en el cortafuegos: cualquiera con la contraseña entra a la red OT",
+     "p": 3,
+     "i": 3,
+     "tratamiento": "Reducir",
+     "medidas": "Cuentas nominales con MFA, acceso bajo demanda por servidor de salto en DMZ, registro de sesiones",
+     "responsable": "Responsable de ciberseguridad OT",
+     "pr": 1,
+     "ir": 3
+    },
+    {
+     "id": "R2",
+     "amenaza": "T03",
+     "descripcion": "Módem 4G dejado por el integrador con TeamViewer: el SCADA sale a internet por 4G saltándose el SCALANCE S615",
+     "p": 3,
+     "i": 3,
+     "tratamiento": "Evitar",
+     "medidas": "Retirar el módem, pasarela del SCADA a 192.168.0.1, prohibir por contrato accesos propios del proveedor",
+     "responsable": "Jefe de planta",
+     "pr": 1,
+     "ir": 3
+    },
+    {
+     "id": "R3",
+     "amenaza": "T04",
+     "descripcion": "PUT/GET habilitado en los PLC a petición del integrador: lectura y escritura S7comm sin autenticar",
+     "p": 2,
+     "i": 3,
+     "tratamiento": "Reducir",
+     "medidas": "Deshabilitar PUT/GET, nivel de protección de acceso en la CPU, requisito en el pliego y verificación en SAT",
+     "responsable": "Integrador / Ingeniería",
+     "pr": 1,
+     "ir": 3
+    },
+    {
+     "id": "R4",
+     "amenaza": "T04",
+     "descripcion": "Panel local KTP700 entregado con la contraseña de fábrica",
+     "p": 2,
+     "i": 3,
+     "tratamiento": "Reducir",
+     "medidas": "Cambio de credenciales y usuarios por rol; punto del checklist SAT",
+     "responsable": "Integrador",
+     "pr": 1,
+     "ir": 2
+    },
+    {
+     "id": "R5",
+     "amenaza": "T10",
+     "descripcion": "Reglas del cortafuegos heredadas sin documentación: dependencia del integrador para entender la red",
+     "p": 2,
+     "i": 2,
+     "tratamiento": "Reducir",
+     "medidas": "Exigir esquema de red, inventario y reglas documentadas como entregable",
+     "responsable": "Compras",
+     "pr": 1,
+     "ir": 2
+    }
+   ],
+   "documentos": []
+  },
+  {
+   "id": "P-MAN",
+   "nombre": "ElecMant Canarias, S.L.",
+   "cif": "B00000012",
+   "tipo": "mantenedor",
+   "contacto": "Técnico de mantenimiento",
+   "email": "servicio@elecmant.example",
+   "telefono": "",
+   "suministra": "Mantenimiento eléctrico e instrumentación; cambios menores en el programa del PLC",
+   "acceso": {
+    "logico": true,
+    "remoto": false,
+    "software": false,
+    "conectado": true,
+    "datos": true,
+    "fisico": true
+   },
+   "certificaciones": "",
+   "activos": [
+    "n1",
+    "n2",
+    "n3",
+    "n4",
+    "n5",
+    "n6",
+    "n8",
+    "n15",
+    "n16",
+    "n25",
+    "n26"
+   ],
+   "estado": "En evaluación",
+   "ultimaEval": "",
+   "proximaRev": "",
+   "finContrato": "2026-10-03",
+   "notas": "El técnico conecta su portátil (HP, PORTATIL-MANT) al switch del cuadro de dosificación para descargar cambios. Añadió un switch no gestionable porque no quedaban bocas libres.",
+   "cuestionario": {
+    "respuestas": {
+     "A1": {
+      "valor": "no",
+      "evidencia": ""
+     },
+     "A2": {
+      "valor": "no",
+      "evidencia": ""
+     },
+     "A3": {
+      "valor": "no",
+      "evidencia": ""
+     },
+     "A4": {
+      "valor": "na",
+      "evidencia": "No subcontrata"
+     },
+     "A5": {
+      "valor": "no",
+      "evidencia": ""
+     },
+     "A6": {
+      "valor": "parcial",
+      "evidencia": ""
+     },
+     "A13": {
+      "valor": "si",
+      "evidencia": "Trabaja siempre en planta"
+     },
+     "A14": {
+      "valor": "no",
+      "evidencia": "Portátil personal sin control"
+     },
+     "A15": {
+      "valor": "parcial",
+      "evidencia": ""
+     }
+    },
+    "resultado": "",
+    "condiciones": "",
+    "fecha": ""
+   },
+   "riesgos": [
+    {
+     "id": "R1",
+     "amenaza": "T05",
+     "descripcion": "Portátil propio del técnico conectado al switch del cuadro de dosificación (s7comm-plus) sin control previo",
+     "p": 3,
+     "i": 3,
+     "tratamiento": "Reducir",
+     "medidas": "Usar la estación de ingeniería de planta, análisis de USB, procedimiento de acceso de terceros",
+     "responsable": "Responsable de ciberseguridad OT",
+     "pr": 1,
+     "ir": 3
+    },
+    {
+     "id": "R2",
+     "amenaza": "T09",
+     "descripcion": "Cambios en el programa de dosificación sin registro ni copia previa",
+     "p": 2,
+     "i": 3,
+     "tratamiento": "Reducir",
+     "medidas": "Registro de cambios, copia del proyecto antes y después, aprobación previa",
+     "responsable": "Jefe de planta",
+     "pr": 1,
+     "ir": 3
+    },
+    {
+     "id": "R3",
+     "amenaza": "T04",
+     "descripcion": "Switch no gestionable añadido en el cuadro de dosificación sin pasar por compras ni por ingeniería",
+     "p": 2,
+     "i": 2,
+     "tratamiento": "Reducir",
+     "medidas": "Sustituir por switch gestionable, actualizar inventario y esquema",
+     "responsable": "Ingeniería",
+     "pr": 1,
+     "ir": 1
+    }
+   ],
+   "documentos": []
+  },
+  {
+   "id": "P-SIE",
+   "nombre": "Siemens",
+   "cif": "",
+   "tipo": "fabricante",
+   "contacto": "",
+   "email": "",
+   "telefono": "",
+   "suministra": "PLC S7-1500 y S7-1200, ET 200SP, SINAMICS G120, KTP700, SCALANCE XC208 y S615, instrumentación SITRANS",
+   "acceso": {
+    "logico": false,
+    "remoto": false,
+    "software": true,
+    "conectado": true,
+    "datos": false,
+    "fisico": false
+   },
+   "certificaciones": "IEC 62443-4-1 (proceso de desarrollo)",
+   "activos": [
+    "n1",
+    "n2",
+    "n3",
+    "n4",
+    "n7",
+    "n8",
+    "n9",
+    "n12",
+    "n13",
+    "n14",
+    "n15",
+    "n16",
+    "n26"
+   ],
+   "estado": "Homologado",
+   "ultimaEval": "2026-09-15",
+   "proximaRev": "2027-09-15",
+   "notas": "Fabricante principal. Se compra a través de distribuidor autorizado.",
+   "cuestionario": {
+    "respuestas": {
+     "A1": {
+      "valor": "si",
+      "evidencia": "Certificación IEC 62443-4-1"
+     },
+     "A2": {
+      "valor": "si",
+      "evidencia": ""
+     },
+     "A3": {
+      "valor": "si",
+      "evidencia": ""
+     },
+     "A4": {
+      "valor": "si",
+      "evidencia": ""
+     },
+     "A5": {
+      "valor": "si",
+      "evidencia": ""
+     },
+     "A6": {
+      "valor": "si",
+      "evidencia": ""
+     },
+     "A7": {
+      "valor": "si",
+      "evidencia": "Avisos de seguridad públicos del fabricante"
+     },
+     "A8": {
+      "valor": "parcial",
+      "evidencia": "Según ciclo de vida de cada producto"
+     },
+     "A9": {
+      "valor": "si",
+      "evidencia": ""
+     },
+     "A10": {
+      "valor": "si",
+      "evidencia": ""
+     },
+     "A11": {
+      "valor": "parcial",
+      "evidencia": "Guías de bastionado; SBOM no para todos los productos"
+     },
+     "A12": {
+      "valor": "parcial",
+      "evidencia": "Solo algunos productos"
+     },
+     "A13": {
+      "valor": "si",
+      "evidencia": ""
+     },
+     "A15": {
+      "valor": "si",
+      "evidencia": ""
+     }
+    },
+    "resultado": "Homologado",
+    "condiciones": "",
+    "fecha": "2026-09-15"
+   },
+   "riesgos": [
+    {
+     "id": "R1",
+     "amenaza": "T07",
+     "descripcion": "Firmware y software de ingeniería en versiones antiguas (SCALANCE XC208 V4.1, TIA Portal V16, KTP700 V16) sin revisar frente a los avisos del fabricante",
+     "p": 2,
+     "i": 3,
+     "tratamiento": "Reducir",
+     "medidas": "Revisar avisos de seguridad del fabricante, plan de actualización probado, controles compensatorios de red",
+     "responsable": "Ingeniería",
+     "pr": 1,
+     "ir": 3
+    }
+   ],
+   "documentos": []
+  },
+  {
+   "id": "P-TEL",
+   "nombre": "Teltonika",
+   "cif": "",
+   "tipo": "fabricante",
+   "contacto": "",
+   "email": "",
+   "telefono": "",
+   "suministra": "Módem 4G/5G (A023)",
+   "acceso": {
+    "logico": false,
+    "remoto": false,
+    "software": true,
+    "conectado": true,
+    "datos": false,
+    "fisico": false
+   },
+   "certificaciones": "",
+   "activos": [
+    "n23"
+   ],
+   "estado": "En evaluación",
+   "ultimaEval": "",
+   "proximaRev": "",
+   "notas": "Equipo instalado por el integrador sin pasar por compras: nunca se evaluó, por eso el cuestionario está vacío. Modelo y firmware desconocidos.",
+   "cuestionario": {
+    "respuestas": {},
+    "resultado": "",
+    "condiciones": "",
+    "fecha": ""
+   },
+   "riesgos": [
+    {
+     "id": "R1",
+     "amenaza": "T06",
+     "descripcion": "Equipo de comunicaciones sin trazabilidad de compra, con modelo y firmware desconocidos",
+     "p": 2,
+     "i": 3,
+     "tratamiento": "Evitar",
+     "medidas": "Retirar el equipo; cualquier comunicación externa pasa por compras y por el cortafuegos",
+     "responsable": "Compras",
+     "pr": 1,
+     "ir": 2
+    }
+   ],
+   "documentos": []
+  },
+  {
+   "id": "P-RMT",
+   "nombre": "Servicio de control remoto en la nube (TeamViewer)",
+   "cif": "",
+   "tipo": "nube",
+   "contacto": "",
+   "email": "",
+   "telefono": "",
+   "suministra": "Software de control remoto instalado en el servidor SCADA en 2024/02 a petición del operador de noche",
+   "acceso": {
+    "logico": true,
+    "remoto": true,
+    "software": true,
+    "conectado": false,
+    "datos": true,
+    "fisico": false
+   },
+   "certificaciones": "",
+   "activos": [
+    "n10",
+    "n23"
+   ],
+   "estado": "No homologado",
+   "ultimaEval": "2026-11-20",
+   "proximaRev": "",
+   "notas": "Lo instaló el operador por su cuenta, sin contrato ni evaluación: el cuestionario está incompleto a propósito. El SCADA inicia la conexión (puerto 5938) hacia la nube del servicio a través del módem 4G.",
+   "cuestionario": {
+    "respuestas": {
+     "N1": {
+      "valor": "no",
+      "evidencia": "Nube fuera de control del cliente"
+     },
+     "N2": {
+      "valor": "si",
+      "evidencia": ""
+     },
+     "N3": {
+      "valor": "si",
+      "evidencia": "Conexión saliente desde el SCADA"
+     },
+     "N4": {
+      "valor": "no",
+      "evidencia": ""
+     }
+    },
+    "resultado": "No homologado",
+    "condiciones": "",
+    "fecha": "2026-11-20"
+   },
+   "riesgos": [
+    {
+     "id": "R1",
+     "amenaza": "T03",
+     "descripcion": "Escritorio remoto del SCADA accesible desde internet con credenciales del servicio; compromiso de la cuenta o del servicio da control del proceso",
+     "p": 3,
+     "i": 3,
+     "tratamiento": "Evitar",
+     "medidas": "Desinstalar el software del SCADA; acceso remoto solo por la solución del cliente con MFA",
+     "responsable": "Jefe de planta",
+     "pr": 1,
+     "ir": 3
+    }
+   ],
+   "documentos": []
+  }
+ ]
+};
+
+/* Proveedores-OT · Toolbox-OT
+   Gestión de proveedores y cadena de suministro en entornos OT.
+   Licencia CC BY 4.0 · Inspirador: David de Armas Suárez (conecta3@hotmail.com) · Propulsada por Claude.ai */
+"use strict";
+
+const KEY_PROY = "toolbox-ot.proveedores.proyecto";
+const KEY_BIB = "toolbox-ot.proveedores.biblioteca";
+const ESTADOS = ["En evaluación", "Homologado", "Homologado con condiciones", "No homologado", "Baja"];
+const TRATAMIENTOS = ["Reducir", "Evitar", "Compartir", "Aceptar"];
+const ORDEN = { baja: 1, media: 2, alta: 3 };
+const RESP = { si: "Sí", parcial: "Parcial", no: "No", na: "N/A" };
+
+const S = { data: null, bib: null, vista: "panel", sel: null, selDoc: null, evalTab: "cuestionario", ayudaMatriz: false, bibTab: "amenazas", bibSort: {}, modal: null, filtro: "", preview: false, hmModo: "inherente", amenazasTodas: false };
+
+/* ---------- utilidades ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const esc = v => String(v ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+const clone = o => JSON.parse(JSON.stringify(o));
+const hoy = () => new Date().toISOString().slice(0, 10);
+const uid = p => p + "-" + Math.random().toString(36).slice(2, 8).toUpperCase();
+const fechaES = d => d ? d.split("-").reverse().join("/") : "";
+function sumarMeses(d, m) { const x = new Date(d + "T12:00:00"); x.setMonth(x.getMonth() + m); return x.toISOString().slice(0, 10); }
+function toast(t) { const el = $("#toast"); el.textContent = t; el.classList.add("show"); clearTimeout(toast._t); toast._t = setTimeout(() => el.classList.remove("show"), 2200); }
+function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { } }
+let _saveT;
+function guardarYa() { clearTimeout(_saveT); _saveT = null; if (S.data) { lsSet(KEY_PROY, JSON.stringify(S.data)); lsSet(KEY_BIB, JSON.stringify(S.bib)); } }
+function guardar() { clearTimeout(_saveT); _saveT = setTimeout(guardarYa, 250); }
+window.addEventListener("pagehide", () => { if (_saveT) guardarYa(); });
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden" && _saveT) guardarYa(); });
+function descargar(nombre, contenido, tipo) {
+  const blob = contenido instanceof Blob ? contenido : new Blob([contenido], { type: tipo || "application/json" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = nombre;
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+function slug(t) { return String(t || "documento").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-|-$/g, "").toLowerCase().slice(0, 60); }
+function setPath(obj, path, val) {
+  const ks = path.split("."); let o = obj;
+  for (let i = 0; i < ks.length - 1; i++) { const k = ks[i]; if (o[k] === undefined || o[k] === null) o[k] = /^\d+$/.test(ks[i + 1]) ? [] : {}; o = o[k]; }
+  o[ks[ks.length - 1]] = val;
+}
+function getPath(obj, path) { return path.split(".").reduce((o, k) => (o == null ? undefined : o[k]), obj); }
+
+/* ---------- modelo ---------- */
+function proyectoVacio() {
+  return { formato: "toolbox-ot/proveedores", version: "1.0", proyecto: { nombre: "Nuevo proyecto", organizacion: "Mi organización", descripcion: "", fecha: hoy() }, contexto: { fuente: "", zonas: [], activos: [] }, proveedores: [] };
+}
+function normalizarProveedor(p) {
+  p.acceso = Object.assign({ logico: false, remoto: false, software: false, conectado: false, datos: false, fisico: false }, p.acceso || {});
+  p.cuestionario = Object.assign({ respuestas: {}, resultado: "", condiciones: "", fecha: "" }, p.cuestionario || {});
+  p.riesgos = p.riesgos || []; p.documentos = p.documentos || []; p.activos = p.activos || [];
+  ["nombre", "cif", "tipo", "contacto", "email", "telefono", "suministra", "criticidadManual", "justificacion", "certificaciones", "estado", "ultimaEval", "proximaRev", "finContrato", "notas"].forEach(k => { if (p[k] == null) p[k] = ""; });
+  if (!p.tipo) p.tipo = "otro"; if (!p.estado) p.estado = "En evaluación";
+  return p;
+}
+function normalizar(d) {
+  d.proyecto = Object.assign({ nombre: "", organizacion: "", descripcion: "", fecha: hoy() }, d.proyecto || {});
+  d.contexto = Object.assign({ fuente: "", zonas: [], activos: [] }, d.contexto || {});
+  d.proveedores = (d.proveedores || []).map(normalizarProveedor);
+  d.formato = "toolbox-ot/proveedores"; d.version = d.version || "1.0";
+  return d;
+}
+const prov = () => S.data.proveedores.find(p => p.id === S.sel) || null;
+const docAct = () => { const p = prov(); return p ? p.documentos.find(d => d.id === S.selDoc) || null : null; };
+const tipoNombre = id => (S.bib.tiposProveedor.find(t => t.id === id) || {}).nombre || id;
+const aplica = (item, p) => item.tipos === "todos" || !item.tipos || item.tipos.includes(p.tipo);
+
+function criticidadCalc(p) {
+  const motivos = { alta: [], media: [], baja: [] };
+  S.bib.preguntasCriticidad.forEach(q => { if (p.acceso[q.id]) motivos[q.nivel].push(q.id); });
+  const nivel = motivos.alta.length ? "alta" : motivos.media.length ? "media" : "baja";
+  return { nivel, motivos: motivos[nivel] };
+}
+const criticidad = p => p.criticidadManual || criticidadCalc(p).nivel;
+const badgeCrit = n => `<span class="b ${n}">${n.toUpperCase()}</span>`;
+
+function preguntasDe(p) { return S.bib.cuestionario.filter(q => aplica(q, p)); }
+function evaluarCuestionario(p) {
+  const qs = preguntasDe(p), crit = criticidad(p), R = p.cuestionario.respuestas;
+  let pts = 0, max = 0, resp = 0; const elim = [];
+  qs.forEach(q => {
+    const v = (R[q.id] || {}).valor || "";
+    if (v) resp++;
+    if (v && v !== "na") { max += 2 * q.peso; pts += (v === "si" ? 2 : v === "parcial" ? 1 : 0) * q.peso; }
+    if (v === "no" && (q.eliminatoria || []).includes(crit)) elim.push(q);
+  });
+  const pct = max ? Math.round(100 * pts / max) : 0;
+  const umbral = { alta: [75, 50], media: [60, 40], baja: [40, 20] }[crit];
+  let sug = "";
+  if (!qs.length) sug = "Sin preguntas aplicables";
+  else if (elim.length) sug = "No homologado";
+  else if (resp < qs.length) sug = "Cuestionario incompleto";
+  else sug = pct >= umbral[0] ? "Homologado" : pct >= umbral[1] ? "Homologado con condiciones" : "No homologado";
+  return { qs, total: qs.length, resp, pct, elim, sug, umbral, crit };
+}
+const nivelR = (p, i) => (Number(p) || 0) * (Number(i) || 0);
+const claseR = n => n >= 6 ? 3 : n >= 3 ? 2 : n >= 1 ? 1 : 0;
+const textoR = n => ["—", "Aceptable", "A vigilar", "Inaceptable"][claseR(n)];
+const badgeR = n => n ? `<span class="b ${["", "baja", "media", "alta"][claseR(n)]}">${n} · ${textoR(n)}</span>` : `<span class="b n">—</span>`;
+const maxRiesgo = p => p.riesgos.reduce((m, r) => Math.max(m, nivelR(r.p, r.i)), 0);
+function requisitosRecomendados(p) { const c = ORDEN[criticidad(p)]; return S.bib.requisitos.filter(r => aplica(r, p) && c >= ORDEN[r.criticidadMin || "baja"]); }
+const vencida = p => p.proximaRev && p.proximaRev < hoy() && p.estado !== "Baja";
+
+/* ---------- arranque ---------- */
+function cargar() {
+  let d = null, b = null;
+  try { d = JSON.parse(lsGet(KEY_PROY) || "null"); } catch (e) { }
+  try { b = JSON.parse(lsGet(KEY_BIB) || "null"); } catch (e) { }
+  S.bib = normalizarBib(b && b.formato === BIBLIOTECA_DEFECTO.formato ? b : BIBLIOTECA_DEFECTO);
+  S.data = normalizar(d && d.proveedores ? d : clone(PROYECTO_EJEMPLO));
+  S.sel = (S.data.proveedores[0] || {}).id || null;
+  render();
+}
+
+/* ---------- render general ---------- */
+/* alturas de las zonas fijas de la Biblioteca, para apilar barra y encabezados debajo */
+function medirSticky() {
+  const r = document.documentElement.style, top = $(".bib-top"), bar = $(".bib-bar"), hdr = $("header.top");
+  r.setProperty("--h-hdr", (hdr ? hdr.offsetHeight : 54) + "px");
+  r.setProperty("--h-bibtop", (top ? top.offsetHeight : 0) + "px");
+  r.setProperty("--h-bibbar", (bar ? bar.offsetHeight : 0) + "px");
+}
+window.addEventListener("resize", () => medirSticky());
+function render() {
+  document.querySelectorAll("nav.tabs button").forEach(b => b.classList.toggle("on", b.dataset.vista === S.vista));
+  $("#proj-name").innerHTML = `<b>${esc(S.data.proyecto.organizacion)}</b><br>${esc(S.data.proyecto.nombre)}`;
+  const y = window.scrollY;
+  // conserva el foco (p. ej. al pasar de un campo a otro, el «change» del primero redibuja la vista)
+  const ae = document.activeElement, fb = ae && ae.dataset ? (ae.dataset.bind || ae.dataset.actInput || ae.id) : null;
+  const sel = ae && typeof ae.selectionStart === "number" ? [ae.selectionStart, ae.selectionEnd] : null;
+  const v = { panel: vPanel, proveedores: vProveedores, evaluacion: vEvaluacion, documentos: vDocumentos, biblioteca: vBiblioteca, proyecto: vProyecto }[S.vista];
+  $("#main").innerHTML = v();
+  window.scrollTo(0, y);
+  medirSticky();
+  if (S.modal && S.modal.foco) { S.modal.foco = false; const f = $("#bib-form"); if (f) { const els = [...f.querySelectorAll("input:not([type=hidden]),select,textarea")]; const i = els.findIndex(e => e.name === "id"); const n = els.slice(i + 1).find(e => e.name !== "_lista") || els[0]; if (n) { n.focus(); return; } } }
+  if (fb) { const n = document.querySelector(`[data-bind="${CSS.escape(fb)}"],[data-act-input="${CSS.escape(fb)}"],#${CSS.escape(fb)}`); if (n) { n.focus({ preventScroll: true }); if (sel && typeof n.setSelectionRange === "function") try { n.setSelectionRange(sel[0], sel[1]); } catch (e) { } } }
+}
+
+function listaLateral(titulo, conNuevo) {
+  const f = S.filtro.toLowerCase();
+  const ps = S.data.proveedores.filter(p => !f || (p.nombre + " " + p.suministra + " " + p.tipo).toLowerCase().includes(f));
+  return `<aside class="side card" style="padding:12px">
+    <div class="row" style="margin-bottom:8px"><b>${titulo}</b><span class="spacer"></span>${conNuevo ? `<button class="btn sm pri" data-act="nuevo-prov">+ Nuevo</button>` : ""}</div>
+    <input type="search" placeholder="Buscar proveedor…" value="${esc(S.filtro)}" data-act-input="filtro" style="margin-bottom:8px">
+    <ul class="plist">${ps.map(p => `<li class="${p.id === S.sel ? "on" : ""}" data-act="sel-prov" data-id="${p.id}">
+      <span class="n">${esc(p.nombre || "(sin nombre)")}</span>
+      <span class="m">${badgeCrit(criticidad(p))}<span>${esc(p.estado)}</span>${vencida(p) ? `<span class="overdue">· revisión vencida</span>` : ""}</span></li>`).join("") || `<li class="mut">Sin proveedores</li>`}</ul>
+  </aside>`;
+}
+
+/* ---------- PANEL ---------- */
+function heatmap(lista, residual) {
+  const m = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+  lista.forEach(r => { const P = Number(residual ? r.pr : r.p), I = Number(residual ? r.ir : r.i); if (P && I) m[P - 1][I - 1]++; });
+  let h = `<div class="hm">`;
+  for (let P = 3; P >= 1; P--) {
+    h += `<div class="ay">P${P}</div>`;
+    for (let I = 1; I <= 3; I++) { const n = m[P - 1][I - 1]; h += `<div class="cell lv${claseR(P * I)} ${n ? "" : "zero"}" title="Probabilidad ${P} × Impacto ${I} = ${P * I}">${n}</div>`; }
+  }
+  h += `<div></div><div class="ax">I1</div><div class="ax">I2</div><div class="ax">I3</div></div>`;
+  return h;
+}
+function ayudaMatriz(inac, inacRes) {
+  const cel = (n, txt) => `<span class="lvchip lv${claseR(n)}">${txt}</span>`;
+  return `<details class="card ayuda" data-ayuda="matriz" ${S.ayudaMatriz ? "open" : ""}><summary><b>ℹ Cómo se lee la matriz de riesgos</b> <span class="sm mut">inherente, residual y niveles aceptables</span></summary>
+  <div class="grid g2" style="margin-top:12px;gap:24px">
+    <div>
+      <h3 style="margin-top:0">1. Cada riesgo se puntúa con dos números</h3>
+      <p class="sm"><b>Probabilidad (P)</b> de que ocurra e <b>impacto (I)</b> si ocurre, de 1 (bajo) a 3 (alto). El impacto en OT se valora sobre la seguridad de las personas, el medio ambiente, la producción y la calidad.</p>
+      <p class="sm"><b>Nivel de riesgo = P × I</b>, de 1 a 9. Solo hay seis valores posibles: 1, 2, 3, 4, 6 y 9.</p>
+      <table class="t sm"><thead><tr><th>Nivel</th><th>Clase</th><th>Qué hay que hacer</th></tr></thead><tbody>
+        <tr><td>${cel(1, "1 – 2")}</td><td><b>Aceptable</b></td><td>Se acepta tal cual y se revisa en la próxima evaluación del proveedor.</td></tr>
+        <tr><td>${cel(3, "3 – 4")}</td><td><b>A vigilar</b></td><td>Se puede operar, pero conviene aplicar medidas con plazo y responsable.</td></tr>
+        <tr><td>${cel(6, "6 – 9")}</td><td><b>Inaceptable</b></td><td>No se debe contratar ni poner en marcha así: hay que tratarlo antes.</td></tr>
+      </tbody></table>
+      <h3>2. Cómo se lee la cuadrícula</h3>
+      <p class="sm">Las filas son la probabilidad (P3 arriba) y las columnas el impacto (I3 a la derecha). El número de cada celda es <b>cuántos riesgos</b> de todos los proveedores tienen esa combinación. Cuanto más arriba y a la derecha, peor: la esquina superior derecha (P3 × I3 = 9) es la zona más grave.</p>
+    </div>
+    <div>
+      <h3 style="margin-top:0">3. Inherente y residual</h3>
+      <p class="sm"><b>Riesgo inherente</b>: el que existe hoy, sin aplicar ninguna medida (columnas P e I del registro de riesgos).</p>
+      <p class="sm"><b>Riesgo residual</b>: el que quedaría después de aplicar las medidas del tratamiento (columnas P res. e I res.). Los botones <i>Inherente</i> y <i>Residual</i> cambian la matriz entre los dos momentos.</p>
+      <p class="sm">El indicador <b>«Riesgos inaceptables (inherente → residual)»</b>, ahora <b>${inac} → ${inacRes}</b>, resume el efecto del plan: cuántos riesgos están hoy en rojo y cuántos seguirían en rojo con las medidas propuestas.${inacRes ? " Si el número de la derecha no es 0, las medidas no bastan: hay que reforzarlas, evitar el riesgo (por ejemplo, cambiar de proveedor) o que la dirección lo acepte por escrito con su justificación." : " Un 0 a la derecha significa que, si se aplican las medidas, ningún riesgo queda en rojo."}</p>
+      <h3>4. Qué mueve un riesgo en la matriz</h3>
+      <ul class="sm" style="padding-left:18px;margin:0">
+        <li><b>Reducir</b>: casi siempre baja la <b>probabilidad</b> (MFA, acceso bajo demanda, verificación en el SAT…). El <b>impacto</b> solo baja si se limita lo que el proveedor puede tocar: segmentación, mínimo privilegio o un plan para seguir produciendo.</li>
+        <li><b>Evitar</b>: se elimina la causa (retirar el módem, no contratar). El residual suele quedar muy bajo.</li>
+        <li><b>Compartir</b>: un seguro o una cláusula de responsabilidad compensan el daño económico, pero <b>no mueven el punto</b> en la matriz: la planta se sigue parando.</li>
+        <li><b>Aceptar</b>: el residual es igual al inherente. Solo es razonable en verde, o con aprobación expresa de la dirección.</li>
+      </ul>
+      <p class="sm mut" style="margin-top:10px">Los riesgos se registran y se puntúan en <b>Evaluación → Riesgos de la cadena de suministro</b>.</p>
+    </div>
+  </div></details>`;
+}
+function vPanel() {
+  const ps = S.data.proveedores, act = ps.filter(p => p.estado !== "Baja");
+  const cnt = n => act.filter(p => criticidad(p) === n).length;
+  const riesgos = ps.flatMap(p => p.riesgos);
+  const inac = riesgos.filter(r => nivelR(r.p, r.i) >= 6).length, inacRes = riesgos.filter(r => nivelR(r.pr, r.ir) >= 6).length;
+  const venc = act.filter(vencida).length, enEval = act.filter(p => p.estado === "En evaluación").length;
+  const ord = [...ps].sort((a, b) => ORDEN[criticidad(b)] - ORDEN[criticidad(a)] || a.nombre.localeCompare(b.nombre));
+  const accesos = p => S.bib.preguntasCriticidad.filter(q => p.acceso[q.id]).map(q => ({ logico: "lógico", remoto: "remoto", software: "software", conectado: "hardware en red", datos: "datos", fisico: "físico" }[q.id])).join(", ") || "—";
+  // puntos de entrada por zona
+  const zonas = [...new Set([...(S.data.contexto.zonas || []), ...S.data.contexto.activos.map(a => a.zona).filter(Boolean)])];
+  const filasZona = zonas.map(z => {
+    const acts = S.data.contexto.activos.filter(a => a.zona === z);
+    const provs = ps.filter(p => p.estado !== "Baja" && p.activos.some(id => acts.find(a => a.id === id)));
+    return `<tr><td class="nw"><b>${esc(z)}</b></td><td>${acts.map(a => esc(a.nombre)).join(", ") || "—"}</td><td>${provs.map(p => `${esc(p.nombre)} ${badgeCrit(criticidad(p))}`).join("<br>") || "<span class='mut'>Ninguno</span>"}</td></tr>`;
+  }).join("");
+  return `<h1>Panel</h1><p class="sub">${esc(S.data.proyecto.organizacion)} · ${esc(S.data.proyecto.nombre)}</p>
+  <div class="kpis">
+    <div class="kpi"><div class="v">${act.length}</div><div class="l">Proveedores activos</div></div>
+    <div class="kpi"><div class="v" style="color:var(--alta)">${cnt("alta")}</div><div class="l">Criticidad alta</div></div>
+    <div class="kpi"><div class="v" style="color:var(--media)">${cnt("media")}</div><div class="l">Criticidad media</div></div>
+    <div class="kpi"><div class="v" style="color:var(--baja)">${cnt("baja")}</div><div class="l">Criticidad baja</div></div>
+    <div class="kpi"><div class="v">${enEval}</div><div class="l">En evaluación</div></div>
+    <div class="kpi ${venc ? "warn" : ""}"><div class="v">${venc}</div><div class="l">Revisiones vencidas</div></div>
+    <div class="kpi ${inac ? "warn" : ""}"><div class="v">${inac} → ${inacRes}</div><div class="l">Riesgos inaceptables (inherente → residual)</div></div>
+  </div>
+  <div class="grid" style="grid-template-columns:minmax(0,1fr) 300px">
+    <div class="card"><h2>Registro de proveedores</h2><div class="tw"><table class="t">
+      <thead><tr><th>Proveedor</th><th>Suministra</th><th>Criticidad</th><th>Acceso</th><th>Estado</th><th>Últ. evaluación</th><th>Próx. revisión</th><th>Riesgo máx.</th></tr></thead>
+      <tbody>${ord.map(p => `<tr class="click" data-act="abrir-prov" data-id="${p.id}"><td><b>${esc(p.nombre)}</b><div class="sm mut">${esc(tipoNombre(p.tipo))}</div></td><td>${esc(p.suministra)}</td><td>${badgeCrit(criticidad(p))}</td><td class="sm">${esc(accesos(p))}</td><td>${esc(p.estado)}</td><td class="nw">${fechaES(p.ultimaEval) || "—"}</td><td class="nw ${vencida(p) ? "overdue" : ""}">${fechaES(p.proximaRev) || "—"}</td><td>${badgeR(maxRiesgo(p))}</td></tr>`).join("") || `<tr><td colspan="8" class="empty">Aún no hay proveedores. Créalos en la pestaña Proveedores.</td></tr>`}</tbody></table></div></div>
+    <div class="card"><h2>Matriz de riesgos</h2>
+      <div class="row" style="margin-bottom:10px"><button class="btn sm ${S.hmModo === "inherente" ? "pri" : ""}" data-act="hm" data-m="inherente">Inherente</button><button class="btn sm ${S.hmModo === "residual" ? "pri" : ""}" data-act="hm" data-m="residual">Residual</button></div>
+      ${heatmap(riesgos, S.hmModo === "residual")}
+      <p class="sm mut" style="margin-top:10px">${riesgos.length} riesgos registrados. Nivel = P × I: 1-2 aceptable, 3-4 a vigilar, 6-9 inaceptable.</p>
+      <button class="btn sm ghost" data-act="ayuda-matriz" style="padding-left:0">ℹ ¿Cómo se lee la matriz?</button></div>
+  </div>
+  ${ayudaMatriz(inac, inacRes)}
+  <div class="card"><h2>Puntos de entrada por zona</h2><p class="sub sm">Qué proveedores tocan cada zona según los activos asignados en su ficha. ${S.data.contexto.fuente ? "Contexto: " + esc(S.data.contexto.fuente) + "." : "Importa los activos desde Red OT en la pestaña Proyecto."}</p>
+    ${zonas.length ? `<div class="tw"><table class="t"><thead><tr><th>Zona</th><th>Activos</th><th>Proveedores con acceso</th></tr></thead><tbody>${filasZona}</tbody></table></div>` : `<div class="empty">Sin zonas ni activos de contexto.</div>`}</div>`;
+}
+
+/* ---------- PROVEEDORES ---------- */
+function vProveedores() {
+  const p = prov();
+  if (!p) return `<div class="split">${listaLateral("Proveedores", true)}<div class="card empty">Crea un proveedor para empezar.</div></div>`;
+  const cc = criticidadCalc(p), crit = criticidad(p);
+  const zonas = [...new Set([...(S.data.contexto.zonas || []), ...S.data.contexto.activos.map(a => a.zona || "Sin zona")])].filter(z => S.data.contexto.activos.some(a => (a.zona || "Sin zona") === z));
+  const detalle = a => [a.fabricante, a.modelo, a.ip].filter(Boolean).join(" · ");
+  const activosHTML = S.data.contexto.activos.length ? zonas.map(z => `<div style="margin-bottom:8px"><div class="sm mut" style="font-weight:700;margin-bottom:2px">${esc(z)}</div>${S.data.contexto.activos.filter(a => (a.zona || "Sin zona") === z).map(a => `<label class="chk" style="padding:4px 0;border:0"><input type="checkbox" data-act="toggle-activo" data-id="${esc(a.id)}" ${p.activos.includes(a.id) ? "checked" : ""}><span>${a.ref ? `<b class="sm">${esc(a.ref)}</b> ` : ""}${esc(a.nombre)}${detalle(a) ? `<span class="sm mut"> · ${esc(detalle(a))}</span>` : ""}</span></label>`).join("")}</div>`).join("") : `<p class="sm mut">No hay activos de contexto. Puedes importarlos desde el JSON de Red OT en la pestaña Proyecto.</p>`;
+  return `<div class="split">${listaLateral("Proveedores", true)}<div>
+  <div class="card"><div class="row"><h2 style="margin:0">${esc(p.nombre || "(sin nombre)")}</h2>${badgeCrit(crit)}<span class="spacer"></span>
+    <button class="btn sm" data-act="ir" data-v="evaluacion">Evaluar →</button><button class="btn sm" data-act="ir" data-v="documentos">Documentos →</button><button class="btn sm danger" data-act="borrar-prov">Eliminar</button></div></div>
+  <div class="grid g2">
+    <div class="card"><h2>Datos del proveedor</h2><div class="grid g2" style="gap:10px">
+      <label class="f" style="grid-column:1/-1"><span>Razón social</span><input type="text" data-bind="prov.nombre" data-rr value="${esc(p.nombre)}"></label>
+      <label class="f"><span>CIF / NIF</span><input type="text" data-bind="prov.cif" value="${esc(p.cif)}"></label>
+      <label class="f"><span>Tipo</span><select data-bind="prov.tipo">${S.bib.tiposProveedor.map(t => `<option value="${t.id}" ${p.tipo === t.id ? "selected" : ""}>${esc(t.nombre)}</option>`).join("")}</select></label>
+      <label class="f" style="grid-column:1/-1"><span>Qué suministra</span><input type="text" data-bind="prov.suministra" value="${esc(p.suministra)}"></label>
+      <label class="f"><span>Contacto</span><input type="text" data-bind="prov.contacto" value="${esc(p.contacto)}"></label>
+      <label class="f"><span>Correo</span><input type="email" data-bind="prov.email" value="${esc(p.email)}"></label>
+      <label class="f"><span>Teléfono</span><input type="text" data-bind="prov.telefono" value="${esc(p.telefono)}"></label>
+      <label class="f"><span>Certificaciones</span><input type="text" data-bind="prov.certificaciones" value="${esc(p.certificaciones)}" placeholder="ISO 27001, IEC 62443-2-4…"></label>
+      <label class="f"><span>Estado</span><select data-bind="prov.estado">${ESTADOS.map(e => `<option ${p.estado === e ? "selected" : ""}>${e}</option>`).join("")}</select></label>
+      <label class="f"><span title="Lo usa Accesos OT para caducar las cuentas de su personal">Fin del contrato / del acceso</span><input type="date" data-bind="prov.finContrato" data-rr value="${esc(p.finContrato)}"></label>
+      <label class="f"><span>Última evaluación</span><input type="date" data-bind="prov.ultimaEval" data-rr value="${esc(p.ultimaEval)}"></label>
+      <label class="f"><span>Próxima revisión</span><input type="date" data-bind="prov.proximaRev" data-rr value="${esc(p.proximaRev)}"></label>
+      <label class="f" style="grid-column:1/-1"><span>Notas</span><textarea data-bind="prov.notas">${esc(p.notas)}</textarea></label>
+    </div></div>
+    <div>
+      <div class="card"><h2>Clasificación por criticidad</h2>
+        ${S.bib.preguntasCriticidad.map(q => `<label class="chk"><input type="checkbox" data-bind="prov.acceso.${q.id}" ${p.acceso[q.id] ? "checked" : ""}><span>${esc(q.texto)} <span class="b ${q.nivel}" style="margin-left:4px">${q.nivel}</span></span></label>`).join("")}
+        <div class="note" style="margin-top:12px">Criticidad calculada: ${badgeCrit(cc.nivel)}${cc.motivos.length ? ` <span class="sm">(por: ${cc.motivos.map(m => esc(S.bib.preguntasCriticidad.find(q => q.id === m).texto.replace(/^¿|\?$/g, "").toLowerCase())).join("; ")})</span>` : ""}</div>
+        <div class="grid g2" style="gap:10px;margin-top:12px">
+          <label class="f"><span>Ajuste manual</span><select data-bind="prov.criticidadManual"><option value="">Usar la calculada</option>${["alta", "media", "baja"].map(n => `<option value="${n}" ${p.criticidadManual === n ? "selected" : ""}>${n}</option>`).join("")}</select></label>
+          <label class="f"><span>Justificación del ajuste</span><input type="text" data-bind="prov.justificacion" value="${esc(p.justificacion)}" ${p.criticidadManual ? "" : "disabled"}></label>
+        </div>
+        ${p.criticidadManual && !p.justificacion ? `<div class="note warn" style="margin-top:10px">Un ajuste manual de la criticidad debe justificarse.</div>` : ""}
+      </div>
+      <div class="card"><h2>Activos a los que accede o suministra</h2>${activosHTML}</div>
+    </div>
+  </div></div></div>`;
+}
+
+/* ---------- EVALUACIÓN ---------- */
+function vEvaluacion() {
+  const p = prov();
+  if (!p) return `<div class="split">${listaLateral("Evaluación")}<div class="card empty">Selecciona un proveedor.</div></div>`;
+  const body = S.evalTab === "cuestionario" ? evCuestionario(p) : evRiesgos(p);
+  return `<div class="split">${listaLateral("Evaluación")}<div>
+    <div class="card" style="padding-bottom:0"><div class="row"><h2 style="margin:0">${esc(p.nombre)}</h2>${badgeCrit(criticidad(p))}<span class="b n">${esc(tipoNombre(p.tipo))}</span></div>
+    <div class="sec-tabs" style="margin:14px 0 0;border:0"><button class="${S.evalTab === "cuestionario" ? "on" : ""}" data-act="evtab" data-t="cuestionario">Cuestionario de homologación</button><button class="${S.evalTab === "riesgos" ? "on" : ""}" data-act="evtab" data-t="riesgos">Riesgos de la cadena de suministro (${p.riesgos.length})</button></div></div>
+    ${body}</div></div>`;
+}
+function evCuestionario(p) {
+  const ev = evaluarCuestionario(p), R = p.cuestionario.respuestas;
+  const bloques = [...new Set(ev.qs.map(q => q.bloque))];
+  const filas = bloques.map(bq => `<tr><td colspan="4" style="background:var(--line2);font-weight:700">${esc(bq)}</td></tr>` + ev.qs.filter(q => q.bloque === bq).map(q => {
+    const r = R[q.id] || {};
+    const elimAqui = (q.eliminatoria || []).includes(ev.crit);
+    return `<tr><td class="nw"><b>${q.id}</b></td><td>${esc(q.texto)}${elimAqui ? ` <span class="b alta" title="Una respuesta No impide la homologación con esta criticidad">eliminatoria</span>` : ""}<div class="sm mut">Peso ${q.peso}</div></td>
+      <td style="width:120px"><select data-bind="prov.cuestionario.respuestas.${q.id}.valor"><option value="">—</option>${Object.entries(RESP).map(([k, v]) => `<option value="${k}" ${r.valor === k ? "selected" : ""}>${v}</option>`).join("")}</select></td>
+      <td style="width:32%"><input type="text" data-bind="prov.cuestionario.respuestas.${q.id}.evidencia" value="${esc(r.evidencia)}" placeholder="Evidencia aportada"></td></tr>`;
+  }).join("")).join("");
+  const clsSug = ev.sug === "Homologado" ? "ok" : ev.sug === "No homologado" ? "warn" : "";
+  return `<div class="grid" style="grid-template-columns:minmax(0,1fr) 300px;margin-top:16px">
+    <div class="card"><p class="sub sm">Preguntas que aplican a un proveedor de tipo «${esc(tipoNombre(p.tipo))}». Respuesta: Sí (2 puntos), Parcial (1), No (0), N/A (no cuenta). Toda respuesta «Sí» debería ir con evidencia.</p>
+      <div class="tw"><table class="t"><thead><tr><th>N.º</th><th>Pregunta</th><th>Respuesta</th><th>Evidencia</th></tr></thead><tbody>${filas || `<tr><td colspan="4" class="empty">No hay preguntas aplicables.</td></tr>`}</tbody></table></div></div>
+    <div><div class="card"><h2>Resultado</h2>
+      <p class="sm">Respondidas: <b>${ev.resp} / ${ev.total}</b><br>Puntuación: <b>${ev.pct} %</b><br><span class="mut">Umbrales para criticidad ${ev.crit}: homologado ≥ ${ev.umbral[0]} %, con condiciones ≥ ${ev.umbral[1]} %</span></p>
+      ${ev.elim.length ? `<div class="note warn" style="margin-bottom:10px">Falla ${ev.elim.length === 1 ? "la pregunta eliminatoria" : "las preguntas eliminatorias"} ${ev.elim.map(q => q.id).join(", ")}.</div>` : ""}
+      <div class="note ${clsSug}">Resultado sugerido: <b>${esc(ev.sug)}</b></div>
+      <label class="f" style="margin-top:12px"><span>Resultado final</span><select data-bind="prov.cuestionario.resultado"><option value="">—</option>${ESTADOS.slice(1, 4).map(e => `<option ${p.cuestionario.resultado === e ? "selected" : ""}>${e}</option>`).join("")}</select></label>
+      <label class="f" style="margin-top:10px"><span>Condiciones</span><textarea data-bind="prov.cuestionario.condiciones">${esc(p.cuestionario.condiciones)}</textarea></label>
+      <label class="f" style="margin-top:10px"><span>Fecha de evaluación</span><input type="date" data-bind="prov.cuestionario.fecha" value="${esc(p.cuestionario.fecha)}"></label>
+      <button class="btn pri" style="margin-top:12px;width:100%;justify-content:center" data-act="aplicar-eval" ${p.cuestionario.resultado ? "" : "disabled"}>Aplicar al estado del proveedor</button>
+      <p class="sm mut" style="margin-top:8px">Actualiza el estado, la fecha de evaluación y la próxima revisión (1 año si la criticidad es alta, 2 si es media, 3 si es baja).</p>
+    </div></div></div>`;
+}
+function evRiesgos(p) {
+  const amen = S.bib.amenazas.filter(a => S.amenazasTodas || aplica(a, p));
+  const filas = p.riesgos.map((r, i) => {
+    const a = S.bib.amenazas.find(x => x.id === r.amenaza);
+    const sel = (k, v) => `<select data-bind="prov.riesgos.${i}.${k}">${[1, 2, 3].map(n => `<option ${Number(v) === n ? "selected" : ""}>${n}</option>`).join("")}</select>`;
+    return `<tr><td style="min-width:200px"><select data-bind="prov.riesgos.${i}.amenaza"><option value="">(otra)</option>${S.bib.amenazas.map(x => `<option value="${x.id}" ${r.amenaza === x.id ? "selected" : ""}>${x.id} · ${esc(x.nombre)}</option>`).join("")}</select>
+        <textarea data-bind="prov.riesgos.${i}.descripcion" rows="4" style="margin-top:6px" placeholder="Descripción del riesgo">${esc(r.descripcion)}</textarea>${a ? `<div class="sm mut" style="margin-top:4px" title="${esc(a.descripcion)}">Caso: ${esc(a.caso)}</div>` : ""}</td>
+      <td style="width:62px">${sel("p", r.p)}</td><td style="width:62px">${sel("i", r.i)}</td><td>${badgeR(nivelR(r.p, r.i))}</td>
+      <td style="width:120px"><select data-bind="prov.riesgos.${i}.tratamiento">${TRATAMIENTOS.map(t => `<option ${r.tratamiento === t ? "selected" : ""}>${t}</option>`).join("")}</select></td>
+      <td style="min-width:200px"><textarea data-bind="prov.riesgos.${i}.medidas" rows="4" placeholder="Medidas">${esc(r.medidas)}</textarea>${a ? `<select data-act="add-medida" data-i="${i}" style="margin-top:6px"><option value="">+ medida sugerida…</option>${a.medidas.map(m => `<option>${esc(m)}</option>`).join("")}</select>` : ""}</td>
+      <td style="width:120px"><input type="text" data-bind="prov.riesgos.${i}.responsable" value="${esc(r.responsable)}"></td>
+      <td style="width:62px">${sel("pr", r.pr)}</td><td style="width:62px">${sel("ir", r.ir)}</td><td>${badgeR(nivelR(r.pr, r.ir))}</td>
+      <td><button class="btn sm ghost danger" data-act="borrar-riesgo" data-i="${i}" title="Eliminar">✕</button></td></tr>`;
+  }).join("");
+  return `<div class="card" style="margin-top:16px">
+    <div class="addbar" style="margin-bottom:14px"><b class="sm">Añadir riesgo desde el catálogo:</b>
+      <select id="sel-amenaza"><option value="">Elige una amenaza…</option>${amen.map(a => `<option value="${a.id}">${a.id} · ${esc(a.nombre)}</option>`).join("")}</select>
+      <button class="btn sm pri" data-act="add-riesgo">Añadir</button><button class="btn sm" data-act="add-riesgo-vacio">Riesgo en blanco</button>
+      <label class="sm mut row" style="gap:6px"><input type="checkbox" data-act="amen-todas" ${S.amenazasTodas ? "checked" : ""}> mostrar amenazas de otros tipos de proveedor</label></div>
+    <div class="tw"><table class="t risk"><thead><tr><th>Riesgo</th><th>P</th><th>I</th><th>Nivel</th><th>Tratamiento</th><th>Medidas</th><th>Responsable</th><th>P res.</th><th>I res.</th><th>Residual</th><th></th></tr></thead>
+    <tbody>${filas || `<tr><td colspan="11" class="empty">Sin riesgos registrados para este proveedor.</td></tr>`}</tbody></table></div>
+    <p class="sm mut">P = probabilidad, I = impacto (1 bajo, 2 medio, 3 alto). El impacto en OT se valora sobre seguridad de las personas, medio ambiente, producción y calidad. «Compartir» (seguros, cláusulas) compensa económicamente pero no reduce la probabilidad ni el impacto en planta.</p></div>
+    <div class="grid g2"><div class="card"><h2>Matriz inherente</h2>${heatmap(p.riesgos, false)}</div><div class="card"><h2>Matriz residual</h2>${heatmap(p.riesgos, true)}</div></div>`;
+}
+
+/* ---------- DOCUMENTOS ---------- */
+/* Marcadores: {{Organización}} (alias {{cliente}}), {{Proveedor}}, {{Suministro}}, {{Fecha}} y los parámetros de cada cláusula.
+   Sin distinguir mayúsculas ni tildes. Un marcador desconocido que no es un parámetro se imprime como texto, sin llaves. */
+const normTok = t => String(t).normalize("NFD").replace(/[̀-ͯ]/g, "").trim().toLowerCase();
+const TOK_ALIAS = { organizacion: "org", cliente: "org", organization: "org", empresa: "org", proveedor: "prov", suministro: "sum", fecha: "fecha" };
+const RE_TOK = /\{\{\s*([^{}]+?)\s*\}\}/g;
+function nombresDoc(p, d) {
+  const org = (d && d.nombreOrg && d.nombreOrg.trim()) || S.data.proyecto.organizacion || "[Organización]";
+  const prv = (d && d.nombreProv && d.nombreProv.trim()) || p.nombre || "[Proveedor]";
+  if (d && d.marcadores) return { org: "{{Organización}}", prov: "{{Proveedor}}" };
+  return { org, prov: prv };
+}
+function tokensDesconocidos(txt, params) {
+  const out = []; String(txt || "").replace(RE_TOK, (m, k) => { const n = normTok(k); if (!TOK_ALIAS[n] && !(params && n in params) && !(params && k.trim() in params)) out.push(m); return m; });
+  return [...new Set(out)];
+}
+function rellenar(txt, p, doc, params) {
+  const sum = p.suministra ? (/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]/.test(p.suministra) ? p.suministra[0].toLowerCase() + p.suministra.slice(1) : p.suministra) : "[suministro]";
+  const nm = nombresDoc(p, doc);
+  const base = { org: nm.org, prov: nm.prov, sum, fecha: fechaES(doc && doc.fecha) };
+  const s = String(txt || "");
+  return s.replace(RE_TOK, (m, k, off) => {
+    const n = normTok(k), alias = TOK_ALIAS[n];
+    let v;
+    if (alias) v = base[alias];
+    else if (params && (params[k.trim()] !== undefined || params[n] !== undefined)) { v = params[k.trim()] ?? params[n]; if (v === "") v = `[${k.trim()}]`; }
+    else if (/^[a-z0-9]+(_[a-z0-9]+)+$/i.test(k.trim())) v = `[${k.trim()}]`;
+    else v = k.trim();
+    if ((alias === "org" || alias === "prov") && !String(v).startsWith("{{") && (off === 0 || /[.:]\s*$/.test(s.slice(0, off)))) v = v.charAt(0).toUpperCase() + v.slice(1);
+    if (String(v).endsWith(".") && s.charAt(off + m.length) === ".") v = String(v).slice(0, -1);
+    return v;
+  });
+}
+function bloqueDe(c) {
+  const params = {}; Object.entries(c.params || {}).forEach(([k, v]) => params[k] = v.defecto);
+  return { tipo: "clausula", ref: c.id, titulo: c.titulo, texto: c.texto, params };
+}
+const todasClausulas = () => [...S.bib.clausulas, ...S.bib.procedimientos];
+function nuevoDocumento(p, plId) {
+  const pl = S.bib.plantillas.find(x => x.id === plId); if (!pl) return null;
+  const d = { id: uid("D"), plantilla: pl.id, tipo: pl.tipo, modo: pl.modo || "", titulo: pl.nombre, fecha: hoy(), version: "1.0", firmas: !!pl.firmas, resultado: "", bloques: [] };
+  if (pl.intro) d.bloques.push({ tipo: "texto", texto: pl.intro });
+  if (pl.tipo === "texto") {
+    (pl.secciones || []).forEach(s => {
+      d.bloques.push({ tipo: "seccion", titulo: s.titulo });
+      [...(s.clausulas || []), ...(s.procedimientos || [])].forEach(id => { const c = todasClausulas().find(x => x.id === id); if (c) d.bloques.push(bloqueDe(c)); });
+      if (s.requisitos) d.bloques.push({ tipo: "requisitos", items: requisitosRecomendados(p).map(r => ({ ref: r.id, categoria: r.categoria, texto: r.texto, verificacion: r.verificacion })) });
+    });
+    if (pl.registroAccesos) { d.bloques.push({ tipo: "seccion", titulo: "Registro de accesos" }); d.bloques.push({ tipo: "registro", filas: 8 }); }
+  } else if (pl.tipo === "checklist") {
+    const lista = S.bib.checklists[pl.modo] || [];
+    d.bloques.push({ tipo: "checklist", modo: pl.modo, items: lista.map(textoCheck).map(t => pl.modo === "fatsat" ? { texto: t, fat: "", sat: "", obs: "" } : { texto: t, hecho: "", fecha: "", resp: "" }) });
+  } else if (pl.tipo === "informe") {
+    d.bloques.push({ tipo: "informe" });
+    d.bloques.push({ tipo: "seccion", titulo: "Observaciones" }); d.bloques.push({ tipo: "texto", texto: "" });
+  }
+  return d;
+}
+
+function vDocumentos() {
+  const p = prov();
+  if (!p) return `<div class="split">${listaLateral("Documentos")}<div class="card empty">Selecciona un proveedor.</div></div>`;
+  const d = docAct();
+  const lista = `<div class="card"><div class="row"><h2 style="margin:0">Documentos de ${esc(p.nombre)}</h2>${badgeCrit(criticidad(p))}</div>
+    <div class="addbar" style="margin-top:12px"><b class="sm">Nuevo documento:</b><select id="sel-plantilla">${S.bib.plantillas.map(pl => `<option value="${pl.id}">${esc(pl.nombre)}</option>`).join("")}</select><button class="btn sm pri" data-act="nuevo-doc">Crear</button></div>
+    ${p.documentos.length ? `<div class="tw" style="margin-top:12px"><table class="t"><thead><tr><th>Documento</th><th>Versión</th><th>Fecha</th><th></th></tr></thead><tbody>${p.documentos.map(x => `<tr class="click ${x.id === S.selDoc ? "on" : ""}" data-act="sel-doc" data-id="${x.id}"><td><b>${esc(x.titulo)}</b>${x.id === S.selDoc ? ` <span class="b acc">abierto</span>` : ""}</td><td>${esc(x.version)}</td><td class="nw">${fechaES(x.fecha)}</td><td class="nw"><button class="btn sm ghost" data-act="dup-doc" data-id="${x.id}">Duplicar</button><button class="btn sm ghost danger" data-act="borrar-doc" data-id="${x.id}">Eliminar</button></td></tr>`).join("")}</tbody></table></div>` : `<p class="sm mut" style="margin-top:12px">Este proveedor aún no tiene documentos. Elige una plantilla y pulsa Crear.</p>`}</div>`;
+  return `<div class="split">${listaLateral("Documentos")}<div>${lista}${d ? editorDoc(p, d) : ""}</div></div>`;
+}
+function editorDoc(p, d) {
+  const barra = `<div class="card"><div class="row"><label class="f" style="flex:1;min-width:220px"><span>Título</span><input type="text" data-bind="doc.titulo" data-rr value="${esc(d.titulo)}"></label>
+    <label class="f" style="width:100px"><span>Versión</span><input type="text" data-bind="doc.version" value="${esc(d.version)}"></label>
+    <label class="f" style="width:160px"><span>Fecha</span><input type="date" data-bind="doc.fecha" value="${esc(d.fecha)}"></label></div>
+    <div class="row" style="margin-top:10px;align-items:flex-end">
+      <label class="f" style="flex:1;min-width:220px"><span>{{Organización}} en este documento</span><input type="text" data-bind="doc.nombreOrg" value="${esc(d.nombreOrg || "")}" placeholder="${esc(S.data.proyecto.organizacion)}"></label>
+      <label class="f" style="flex:1;min-width:220px"><span>{{Proveedor}} en este documento</span><input type="text" data-bind="doc.nombreProv" value="${esc(d.nombreProv || "")}" placeholder="${esc(p.nombre)}"></label>
+      <label class="row sm" style="gap:6px;padding-bottom:8px" title="El Word y el PDF conservan {{Organización}} y {{Proveedor}} para rellenarlos después a mano"><input type="checkbox" data-bind="doc.marcadores" ${d.marcadores ? "checked" : ""}> Exportar como plantilla (sin sustituir los nombres)</label></div>
+    <p class="sm mut" style="margin:6px 0 0">Vacío = se usan los nombres del proyecto y de la ficha del proveedor. Escribe aquí la razón social que debe figurar en este documento si es distinta.</p>
+    <div class="row" style="margin-top:12px"><button class="btn ${S.preview ? "" : "pri"}" data-act="preview" data-on="0">Editar</button><button class="btn ${S.preview ? "pri" : ""}" data-act="preview" data-on="1">Vista previa</button><span class="spacer"></span>
+    <label class="row sm" style="gap:6px"><input type="checkbox" data-bind="doc.firmas" ${d.firmas ? "checked" : ""}> Incluir firmas</label>
+    <button class="btn" data-act="imprimir">Imprimir / PDF</button><button class="btn pri" data-act="docx">Descargar Word</button></div></div>`;
+  if (S.preview) return barra + `<div class="card" style="background:var(--line2)">${docHTML(p, d)}</div>`;
+  const bl = d.bloques.map((b, i) => bloqueEditor(p, d, b, i)).join("");
+  const cats = [...new Set(todasClausulas().map(c => c.categoria))];
+  const reqCats = [...new Set(S.bib.requisitos.map(r => r.categoria))];
+  const add = d.tipo === "texto" ? `<div class="addbar"><b class="sm">Añadir:</b>
+      <button class="btn sm" data-act="add-blk" data-t="seccion">Sección</button><button class="btn sm" data-act="add-blk" data-t="texto">Texto libre</button>
+      <select id="sel-clausula"><option value="">Cláusula o procedimiento…</option>${cats.map(c => `<optgroup label="${esc(c)}">${todasClausulas().filter(x => x.categoria === c).map(x => `<option value="${x.id}">${esc(x.titulo)}</option>`).join("")}</optgroup>`).join("")}</select><button class="btn sm" data-act="add-clausula">Añadir cláusula</button>
+      <select id="sel-req"><option value="">Requisito…</option><option value="__rec">★ Todos los recomendados para este proveedor</option>${reqCats.map(c => `<optgroup label="${esc(c)}">${S.bib.requisitos.filter(r => r.categoria === c).map(r => `<option value="${r.id}">${aplica(r, p) && ORDEN[criticidad(p)] >= ORDEN[r.criticidadMin] ? "★ " : ""}${esc(r.texto.slice(0, 80))}</option>`).join("")}</optgroup>`).join("")}</select><button class="btn sm" data-act="add-req">Añadir requisito</button>
+      <button class="btn sm" data-act="add-blk" data-t="registro">Tabla de registro de accesos</button></div>
+      <p class="sm mut">★ = recomendado según el tipo y la criticidad del proveedor. Marcadores: {{Organización}}, {{Proveedor}}, {{Suministro}}, {{Fecha}} (sin distinguir mayúsculas ni tildes). No escribas los nombres entre llaves: escríbelos tal cual o usa los marcadores.</p>` : "";
+  const aviso = `<div id="aviso-tokens">${avisoTokens(d)}</div>`;
+  return barra + aviso + bl + add;
+}
+function avisoTokens(d) {
+  const malos = [...new Set(d.bloques.flatMap(b => b.tipo === "texto" ? tokensDesconocidos(b.texto) : b.tipo === "clausula" ? tokensDesconocidos(b.texto, b.params) : []))];
+  return malos.length ? `<div class="note warn" style="margin-bottom:12px">Marcadores no reconocidos: <b>${malos.map(esc).join(", ")}</b>. Se imprimirán como texto normal, sin llaves. Si querías el nombre de la organización o del proveedor, usa {{Organización}} o {{Proveedor}}.</div>` : "";
+}
+function mover(i) { return `<button class="btn sm ghost" data-act="mv" data-i="${i}" data-d="-1" title="Subir">↑</button><button class="btn sm ghost" data-act="mv" data-i="${i}" data-d="1" title="Bajar">↓</button><button class="btn sm ghost danger" data-act="del-blk" data-i="${i}" title="Eliminar">✕</button>`; }
+function bloqueEditor(p, d, b, i) {
+  const pre = `doc.bloques.${i}`;
+  if (b.tipo === "seccion") return `<div class="blk sec"><div class="bh"><span class="k">Sección</span><input type="text" data-bind="${pre}.titulo" value="${esc(b.titulo)}" style="font-weight:600"><span class="spacer"></span>${mover(i)}</div></div>`;
+  if (b.tipo === "texto") return `<div class="blk"><div class="bh"><span class="k">Texto</span><span class="spacer"></span>${mover(i)}</div><textarea data-bind="${pre}.texto" rows="3">${esc(b.texto)}</textarea></div>`;
+  if (b.tipo === "clausula") {
+    const def = todasClausulas().find(c => c.id === b.ref) || {};
+    const ps = Object.entries(def.params || {});
+    const extra = Object.keys(b.params || {}).filter(k => !(def.params || {})[k]);
+    return `<div class="blk"><div class="bh"><span class="k">${esc(def.categoria || "Cláusula")}</span><span class="b n">${esc(b.ref || "personalizada")}</span><input type="text" data-bind="${pre}.titulo" value="${esc(b.titulo)}" style="font-weight:600;max-width:360px"><span class="spacer"></span>${def.texto && def.texto !== b.texto ? `<button class="btn sm ghost" data-act="restaurar-clausula" data-i="${i}" title="Volver al texto de la biblioteca">Restaurar texto</button>` : ""}${mover(i)}</div>
+      <textarea data-bind="${pre}.texto" rows="3">${esc(b.texto)}</textarea>
+      ${ps.length || extra.length ? `<div class="params">${ps.map(([k, v]) => `<label class="f"><span>${esc(v.etiqueta)}</span><input type="text" data-bind="${pre}.params.${k}" value="${esc((b.params || {})[k])}"></label>`).join("")}${extra.map(k => `<label class="f"><span>${esc(k)}</span><input type="text" data-bind="${pre}.params.${k}" value="${esc(b.params[k])}"></label>`).join("")}</div>` : ""}</div>`;
+  }
+  if (b.tipo === "requisitos") return `<div class="blk"><div class="bh"><span class="k">Tabla de requisitos (${b.items.length})</span><span class="spacer"></span>${mover(i)}</div>
+    <div class="tw"><table class="t"><thead><tr><th>Ref.</th><th>Categoría</th><th>Requisito</th><th>Verificación</th><th></th></tr></thead><tbody>${b.items.map((r, j) => `<tr><td class="nw sm">${esc(r.ref)}</td><td class="sm">${esc(r.categoria)}</td><td><textarea data-bind="${pre}.items.${j}.texto" rows="2">${esc(r.texto)}</textarea></td><td><input type="text" data-bind="${pre}.items.${j}.verificacion" value="${esc(r.verificacion)}"></td><td><button class="btn sm ghost danger" data-act="del-req" data-i="${i}" data-j="${j}">✕</button></td></tr>`).join("")}</tbody></table></div></div>`;
+  if (b.tipo === "registro") return `<div class="blk"><div class="bh"><span class="k">Tabla de registro de accesos</span><span class="spacer"></span>${mover(i)}</div><div class="row sm"><span>Filas en blanco:</span><input type="text" data-bind="${pre}.filas" value="${esc(b.filas)}" style="width:70px"></div></div>`;
+  if (b.tipo === "informe") return `<div class="blk"><div class="bh"><span class="k">Informe automático</span><span class="spacer"></span>${mover(i)}</div><p class="sm mut" style="margin:0">Se genera con los datos actuales del proveedor: ficha, criticidad, cuestionario y registro de riesgos. Míralo en Vista previa.</p></div>`;
+  if (b.tipo === "checklist") {
+    const fat = b.modo === "fatsat";
+    const opts = (v, arr) => `<option value="">—</option>` + arr.map(o => `<option ${v === o ? "selected" : ""}>${o}</option>`).join("");
+    return `<div class="blk"><div class="bh"><span class="k">${fat ? "Checklist FAT/SAT" : "Checklist de baja"}</span><span class="spacer"></span><button class="btn sm" data-act="add-item" data-i="${i}">+ Punto</button></div>
+      <div class="tw"><table class="t"><thead><tr><th>N.º</th><th>${fat ? "Verificación" : "Acción"}</th>${fat ? "<th>FAT</th><th>SAT</th><th>Observaciones</th>" : "<th>Hecho</th><th>Fecha</th><th>Responsable</th>"}<th></th></tr></thead><tbody>
+      ${b.items.map((it, j) => `<tr><td class="nw">${j + 1}</td><td><textarea data-bind="${pre}.items.${j}.texto" rows="2">${esc(it.texto)}</textarea></td>
+        ${fat ? `<td style="width:96px"><select data-bind="${pre}.items.${j}.fat">${opts(it.fat, ["OK", "NOK", "N/A"])}</select></td><td style="width:96px"><select data-bind="${pre}.items.${j}.sat">${opts(it.sat, ["OK", "NOK", "N/A"])}</select></td><td><input type="text" data-bind="${pre}.items.${j}.obs" value="${esc(it.obs)}"></td>`
+        : `<td style="width:96px"><select data-bind="${pre}.items.${j}.hecho">${opts(it.hecho, ["Sí", "No", "N/A"])}</select></td><td style="width:150px"><input type="date" data-bind="${pre}.items.${j}.fecha" value="${esc(it.fecha)}"></td><td><input type="text" data-bind="${pre}.items.${j}.resp" value="${esc(it.resp)}"></td>`}
+        <td><button class="btn sm ghost danger" data-act="del-item" data-i="${i}" data-j="${j}">✕</button></td></tr>`).join("")}</tbody></table></div>
+      <label class="f" style="margin-top:10px;max-width:320px"><span>Resultado</span><select data-bind="doc.resultado"><option value="">—</option>${(fat ? ["Aceptado", "Aceptado con reservas", "Rechazado"] : ["Baja completada", "Baja pendiente"]).map(o => `<option ${d.resultado === o ? "selected" : ""}>${o}</option>`).join("")}</select></label></div>`;
+  }
+  return "";
+}
+
+/* modelo intermedio del documento (para HTML y Word) */
+function docElementos(p, d) {
+  const nm = nombresDoc(p, d), org = nm.org;
+  const E = [{ t: "title", text: rellenar(d.titulo, p, d) }, { t: "meta", text: `${nm.org} · ${nm.prov} · Versión ${d.version} · ${fechaES(d.fecha)}` }];
+  let n = 0;
+  d.bloques.forEach(b => {
+    if (b.tipo === "seccion") E.push({ t: "h2", text: b.titulo });
+    else if (b.tipo === "texto") { rellenar(b.texto, p, d).split(/\n+/).filter(x => x.trim()).forEach(x => E.push({ t: "p", text: x })); }
+    else if (b.tipo === "clausula") { n++; E.push({ t: "clause", num: n, title: b.titulo, text: rellenar(b.texto, p, d, b.params) }); }
+    else if (b.tipo === "requisitos") {
+      [...new Set(b.items.map(r => r.categoria))].forEach(c => {
+        E.push({ t: "h3", text: c });
+        E.push({ t: "table", head: ["Ref.", "Requisito", "Verificación"], widths: [16, 56, 28], rows: b.items.filter(r => r.categoria === c).map(r => [r.ref, rellenar(r.texto, p, d), r.verificacion]) });
+      });
+    }
+    else if (b.tipo === "registro") E.push({ t: "table", small: true, head: ["Fecha", "Técnico", "Remoto / planta", "Equipos", "Motivo", "Autoriza", "Inicio", "Cierre"], widths: [11, 14, 12, 14, 17, 12, 10, 10], rows: Array.from({ length: Math.min(40, Number(b.filas) || 8) }, () => ["", "", "", "", "", "", "", ""]) });
+    else if (b.tipo === "checklist") {
+      const fat = b.modo === "fatsat";
+      E.push({ t: "table", head: fat ? ["N.º", "Verificación", "FAT", "SAT", "Observaciones"] : ["N.º", "Acción", "Hecho", "Fecha", "Responsable"], widths: fat ? [6, 52, 9, 9, 24] : [6, 54, 10, 14, 16], rows: b.items.map((it, j) => fat ? [String(j + 1), it.texto, it.fat, it.sat, it.obs] : [String(j + 1), it.texto, it.hecho, fechaES(it.fecha), it.resp]) });
+      E.push({ t: "p", text: `Resultado: ${d.resultado || "____________________"}` });
+    }
+    else if (b.tipo === "informe") {
+      const ev = evaluarCuestionario(p), cc = criticidadCalc(p);
+      E.push({ t: "h2", text: "Datos del proveedor" });
+      E.push({ t: "table", head: ["Campo", "Valor"], widths: [30, 70], rows: [["Razón social", p.nombre], ["CIF / NIF", p.cif], ["Tipo", tipoNombre(p.tipo)], ["Suministra", p.suministra], ["Contacto", [p.contacto, p.email, p.telefono].filter(Boolean).join(" · ")], ["Certificaciones", p.certificaciones], ["Estado", p.estado], ["Última evaluación", fechaES(p.ultimaEval)], ["Próxima revisión", fechaES(p.proximaRev)]] });
+      E.push({ t: "h2", text: "Criticidad" });
+      const accs = S.bib.preguntasCriticidad.filter(q => p.acceso[q.id]).map(q => q.texto.replace(/^¿|\?$/g, ""));
+      E.push({ t: "p", text: `Criticidad ${criticidad(p).toUpperCase()}${p.criticidadManual ? ` (ajustada manualmente; calculada: ${cc.nivel}). Justificación: ${p.justificacion || "sin justificar"}` : " (calculada)"}.` });
+      if (accs.length) E.push({ t: "p", text: "Motivos: " + accs.join("; ") + "." });
+      const act = S.data.contexto.activos.filter(a => p.activos.includes(a.id));
+      if (act.length) E.push({ t: "p", text: "Activos afectados: " + act.map(a => `${a.nombre} (${a.zona})`).join(", ") + "." });
+      E.push({ t: "h2", text: "Cuestionario de homologación" });
+      E.push({ t: "table", head: ["N.º", "Pregunta", "Respuesta", "Evidencia"], widths: [7, 55, 12, 26], rows: ev.qs.map(q => { const r = p.cuestionario.respuestas[q.id] || {}; return [q.id, q.texto, RESP[r.valor] || "—", r.evidencia || ""]; }) });
+      E.push({ t: "p", text: `Respondidas ${ev.resp} de ${ev.total}. Puntuación ${ev.pct} %.${ev.elim.length ? " Falla eliminatoria: " + ev.elim.map(q => q.id).join(", ") + "." : ""} Resultado sugerido: ${ev.sug}. Resultado final: ${p.cuestionario.resultado || "pendiente"}.` });
+      if (p.cuestionario.condiciones) E.push({ t: "p", text: "Condiciones: " + p.cuestionario.condiciones });
+      E.push({ t: "h2", text: "Riesgos de la cadena de suministro" });
+      if (p.riesgos.length) E.push({ t: "table", small: true, head: ["Riesgo", "P", "I", "Nivel", "Tratamiento", "Medidas", "Residual"], widths: [28, 5, 5, 12, 11, 27, 12], rows: p.riesgos.map(r => [r.descripcion, String(r.p), String(r.i), `${nivelR(r.p, r.i)} ${textoR(nivelR(r.p, r.i))}`, r.tratamiento, r.medidas, `${nivelR(r.pr, r.ir)} ${textoR(nivelR(r.pr, r.ir))}`]) });
+      else E.push({ t: "p", text: "Sin riesgos registrados." });
+    }
+  });
+  if (d.firmas) E.push({ t: "firmas", left: nm.org, right: nm.prov });
+  E.push({ t: "pie", text: "Generado con Proveedores-OT · Toolbox-OT v1.9" });
+  return E;
+}
+function docHTML(p, d) {
+  const h = docElementos(p, d).map(e => {
+    if (e.t === "title") return `<h1>${esc(e.text)}</h1>`;
+    if (e.t === "meta") return `<p class="meta">${esc(e.text)}</p>`;
+    if (e.t === "h2") return `<h2>${esc(e.text)}</h2>`;
+    if (e.t === "h3") return `<h3>${esc(e.text)}</h3>`;
+    if (e.t === "p") return `<p>${esc(e.text)}</p>`;
+    if (e.t === "clause") return `<p><b>${e.num}. ${esc(e.title)}.</b> ${esc(e.text)}</p>`;
+    if (e.t === "table") return `<table${e.small ? ' style="font-size:8.5pt"' : ""}><colgroup>${e.widths.map(w => `<col style="width:${w}%">`).join("")}</colgroup><thead><tr>${e.head.map(x => `<th>${esc(x)}</th>`).join("")}</tr></thead><tbody>${e.rows.map(r => `<tr>${r.map(c => `<td>${esc(c) || "&nbsp;"}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+    if (e.t === "firmas") return `<div class="firmas"><div>Por ${esc(e.left)}<br><br>Nombre:<br>Fecha:</div><div>Por ${esc(e.right)}<br><br>Nombre:<br>Fecha:</div></div>`;
+    if (e.t === "pie") return `<p class="pie">${esc(e.text)}</p>`;
+    return "";
+  }).join("");
+  return `<div class="docv">${h}</div>`;
+}
+
+/* ---------- BIBLIOTECA ---------- */
+/* ---------- PROYECTO ---------- */
+function vProyecto() {
+  const pr = S.data.proyecto, cx = S.data.contexto;
+  return `<h1>Proyecto</h1><p class="sub">Los datos se guardan automáticamente en este navegador. Exporta el proyecto para entregarlo o abrirlo en otro equipo.</p>
+  <div class="grid g2">
+    <div class="card"><h2>Datos del proyecto</h2><div class="grid" style="gap:10px">
+      <label class="f"><span>Organización (cliente)</span><input type="text" data-bind="proy.organizacion" data-rr value="${esc(pr.organizacion)}"></label>
+      <label class="f"><span>Nombre del proyecto</span><input type="text" data-bind="proy.nombre" data-rr value="${esc(pr.nombre)}"></label>
+      <label class="f"><span>Descripción</span><textarea data-bind="proy.descripcion">${esc(pr.descripcion)}</textarea></label>
+      <label class="f" style="max-width:200px"><span>Fecha</span><input type="date" data-bind="proy.fecha" value="${esc(pr.fecha)}"></label></div></div>
+    <div class="card"><h2>Archivo</h2>
+      <div class="row" style="margin-bottom:10px"><button class="btn pri" data-act="exp-proy">Exportar proyecto (.json)</button><label class="btn">Abrir proyecto<input type="file" accept=".json,application/json" data-act-file="imp-proy" hidden></label></div>
+      <div class="row"><b class="sm">Cargar ejemplo:</b><button class="btn" data-act="ejemplo" data-ej="envasados">Envasados del Sur</button><button class="btn" data-act="ejemplo" data-ej="etap">ETAP El Lomo</button><button class="btn danger" data-act="nuevo-proy">Proyecto en blanco</button></div>
+      <h3>Contexto de red (Red OT)</h3>
+      <p class="sm mut">Importa el JSON exportado por el editor Red OT, u otro JSON de Toolbox-OT con activos, para asignar a cada proveedor los activos y zonas a los que accede.</p>
+      <div class="row"><label class="btn">Importar activos desde JSON<input type="file" accept=".json,application/json" data-act-file="imp-ctx" hidden></label><button class="btn sm" data-act="proponer-fab" ${cx.activos.some(a => fabricanteNorm(a.fabricante)) ? "" : "disabled"}>Proponer fabricantes desde el inventario</button><button class="btn danger sm" data-act="borrar-ctx">Vaciar contexto</button></div>
+      <p class="sm mut" style="margin-top:6px">«Proponer fabricantes» crea un proveedor de tipo fabricante por cada marca del inventario (sin «Genérico»), con sus activos asignados y la criticidad precalculada. No duplica los que ya existen.</p>
+      <p class="sm" style="margin-top:8px">${cx.activos.length} activos en ${new Set(cx.activos.map(a => a.zona)).size} zonas${cx.fuente ? ` · Fuente: ${esc(cx.fuente)}` : ""}</p></div>
+  </div>
+  <div class="card"><h2>Acerca de</h2><p><b>Proveedores-OT</b> forma parte de <b>Toolbox-OT v1.9</b>: herramientas educativas de ciberseguridad OT/ICS. Gestiona la cadena de suministro según IEC 62443-2-4, ISO/IEC 27036, ISO 31000 y NIST SP 800-161.</p>
+    <p class="sm">Inspirador: David de Armas Suárez · <a href="mailto:conecta3@hotmail.com">conecta3@hotmail.com</a> · Propulsada por Claude.ai · Licencia <a href="https://creativecommons.org/licenses/by/4.0/deed.es" target="_blank" rel="noopener">CC BY 4.0</a></p>
+    <p class="sm mut">Funciona sin conexión y sin servidor. Los datos no salen del navegador salvo que los exportes.</p></div>`;
+}
+
+/* ---------- importación de contexto (tolerante con el formato) ---------- */
+const NIVELES_PURDUE = { 0: "Nivel 0 · Proceso", 1: "Nivel 1 · Control", 2: "Nivel 2 · Supervisión", 3: "Nivel 3 · Operaciones", 3.5: "Nivel 3.5 · DMZ", 4: "Nivel 4 · Empresa", 5: "Nivel 5 · Empresa / Internet" };
+const nivelNombre = l => NIVELES_PURDUE[l] || `Nivel ${l}`;
+/* Formato nativo del editor Red OT (schema "red-ot/x"): devices[] con level y props */
+function extraerRedOT(json) {
+  const activos = (json.devices || []).map(d => {
+    const p = d.props || {}, lvl = Number(d.level);
+    return { id: String(d.id), ref: p.ref || "", nombre: p.name || p.ref || d.type || d.id, zona: isNaN(lvl) ? (p.zone || "Sin zona") : nivelNombre(lvl), nivel: isNaN(lvl) ? null : lvl, zonaRed: p.zone || "", tipo: d.type || "", fabricante: (p.manufacturer || "").trim(), modelo: (p.model || "").trim(), ip: p.ip || "", firmware: p.firmware || "", clase: p.clase || [] };
+  }).sort((a, b) => (a.nivel ?? 99) - (b.nivel ?? 99) || String(a.ref).localeCompare(String(b.ref)));
+  const zonas = [...new Set(activos.map(a => a.zona))];
+  return { activos, zonas, nombre: json.nombre || "" };
+}
+/* Agrupa el inventario por fabricante para proponer proveedores */
+function fabricanteNorm(f) {
+  const w = String(f || "").trim().split(/\s+/)[0] || "";
+  if (!w || /^gen[eé]rico$/i.test(w) || w === "-") return "";
+  return w.length <= 3 ? w.toUpperCase() : w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+}
+function extraerActivos(json) {
+  if (json && Array.isArray(json.devices) && (String(json.schema || "").startsWith("red-ot") || json.devices.some(d => d && d.props))) return extraerRedOT(json);
+  const activos = [], zonas = new Set(), vistos = new Set();
+  const nombreDe = o => o.nombre || o.name || o.label || o.etiqueta || o.titulo || o.title || o.hostname || o.tag;
+  const zonaDe = (o, z) => { const v = o.zona || o.zone || o.nivel || o.level || o.capa || o.layer || o.purdue; return v == null ? z : (typeof v === "object" ? nombreDe(v) || z : (typeof v === "number" ? "Nivel " + v : String(v))); };
+  const esLista = k => /activ|asset|device|dispositiv|nod|equip|element|item/i.test(k || "");
+  const esZonas = k => /zona|zone|nivel|level|capa|layer/i.test(k || "");
+  function walk(o, clave, zonaCtx, depth) {
+    if (!o || depth > 8) return;
+    if (Array.isArray(o)) {
+      o.forEach(x => {
+        if (x && typeof x === "object" && !Array.isArray(x)) {
+          const n = nombreDe(x);
+          if (esZonas(clave) && n) { zonas.add(String(n)); walk(x, "", String(n), depth + 1); return; }
+          if (n && (esLista(clave) || x.tipo || x.type || x.ip || x.modelo || x.model)) {
+            const id = String(x.id ?? x.uid ?? n); if (!vistos.has(id)) { vistos.add(id); const z = zonaDe(x, zonaCtx) || "Sin zona"; zonas.add(z); activos.push({ id, nombre: String(n), zona: z }); }
+          }
+          walk(x, clave, zonaCtx, depth + 1);
+        }
+      });
+    } else if (typeof o === "object") {
+      Object.entries(o).forEach(([k, v]) => { if (v && typeof v === "object") walk(v, k, zonaCtx, depth + 1); });
+    }
+  }
+  walk(json, "", "", 0);
+  return { activos, zonas: [...zonas].filter(Boolean) };
+}
+
+/* ---------- Word (.docx) sin dependencias ---------- */
+const CRC = (() => { const t = []; for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+function crc32(b) { let c = 0xFFFFFFFF; for (let i = 0; i < b.length; i++) c = CRC[(c ^ b[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+function zip(files) {
+  const enc = new TextEncoder(), parts = [], central = []; let off = 0;
+  files.forEach(f => {
+    const name = enc.encode(f.name), data = typeof f.data === "string" ? enc.encode(f.data) : f.data, crc = crc32(data);
+    const h = new DataView(new ArrayBuffer(30));
+    h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint16(8, 0, true); h.setUint16(10, 0, true); h.setUint16(12, 0x5A21, true);
+    h.setUint32(14, crc, true); h.setUint32(18, data.length, true); h.setUint32(22, data.length, true); h.setUint16(26, name.length, true); h.setUint16(28, 0, true);
+    parts.push(new Uint8Array(h.buffer), name, data);
+    const c = new DataView(new ArrayBuffer(46));
+    c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true); c.setUint16(10, 0, true); c.setUint16(12, 0, true); c.setUint16(14, 0x5A21, true);
+    c.setUint32(16, crc, true); c.setUint32(20, data.length, true); c.setUint32(24, data.length, true); c.setUint16(28, name.length, true);
+    c.setUint32(42, off, true);
+    central.push(new Uint8Array(c.buffer), name);
+    off += 30 + name.length + data.length;
+  });
+  const cs = central.reduce((s, a) => s + a.length, 0);
+  const e = new DataView(new ArrayBuffer(22));
+  e.setUint32(0, 0x06054b50, true); e.setUint16(8, files.length, true); e.setUint16(10, files.length, true); e.setUint32(12, cs, true); e.setUint32(16, off, true);
+  return new Blob([...parts, ...central, new Uint8Array(e.buffer)], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+}
+function docxBlob(p, d) {
+  const x = s => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const run = (t, o = {}) => `<w:r><w:rPr>${o.b ? "<w:b/>" : ""}${o.i ? "<w:i/>" : ""}${o.sz ? `<w:sz w:val="${o.sz}"/><w:szCs w:val="${o.sz}"/>` : ""}${o.color ? `<w:color w:val="${o.color}"/>` : ""}</w:rPr><w:t xml:space="preserve">${x(t)}</w:t></w:r>`;
+  const para = (runs, o = {}) => `<w:p><w:pPr>${o.style ? `<w:pStyle w:val="${o.style}"/>` : ""}${o.after != null ? `<w:spacing w:after="${o.after}"/>` : ""}${o.keep ? "<w:keepNext/>" : ""}</w:pPr>${runs}</w:p>`;
+  const W = 9638; // ancho útil A4 con márgenes de 2 cm, en twips
+  const table = (e) => {
+    const ws = e.widths.map(w => Math.round(W * w / 100)), sz = e.small ? 16 : 18;
+    const cell = (t, w, head) => `<w:tc><w:tcPr><w:tcW w:w="${w}" w:type="dxa"/>${head ? '<w:shd w:val="clear" w:color="auto" w:fill="E8ECEF"/>' : ""}</w:tcPr><w:p><w:pPr><w:spacing w:after="0"/><w:jc w:val="left"/></w:pPr>${run(t, { b: head, sz })}</w:p></w:tc>`;
+    const b = `<w:top w:val="single" w:sz="4" w:color="999999"/><w:left w:val="single" w:sz="4" w:color="999999"/><w:bottom w:val="single" w:sz="4" w:color="999999"/><w:right w:val="single" w:sz="4" w:color="999999"/><w:insideH w:val="single" w:sz="4" w:color="999999"/><w:insideV w:val="single" w:sz="4" w:color="999999"/>`;
+    return `<w:tbl><w:tblPr><w:tblW w:w="${W}" w:type="dxa"/><w:tblBorders>${b}</w:tblBorders><w:tblLayout w:type="fixed"/><w:tblCellMar><w:left w:w="80" w:type="dxa"/><w:right w:w="80" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid>${ws.map(w => `<w:gridCol w:w="${w}"/>`).join("")}</w:tblGrid>
+      <w:tr><w:trPr><w:tblHeader/></w:trPr>${e.head.map((h, i) => cell(h, ws[i], true)).join("")}</w:tr>${e.rows.map(r => `<w:tr><w:trPr><w:cantSplit/></w:trPr>${r.map((c, i) => cell(c, ws[i], false)).join("")}</w:tr>`).join("")}</w:tbl>${para("", { after: 120 })}`;
+  };
+  const body = docElementos(p, d).map(e => {
+    if (e.t === "title") return para(run(e.text), { style: "Title" });
+    if (e.t === "meta") return para(run(e.text, { i: true, color: "555555", sz: 18 }), { after: 240 });
+    if (e.t === "h2") return para(run(e.text), { style: "Heading1" });
+    if (e.t === "h3") return para(run(e.text), { style: "Heading2" });
+    if (e.t === "p") return para(run(e.text));
+    if (e.t === "clause") return para(run(`${e.num}. ${e.title}. `, { b: true }) + run(e.text));
+    if (e.t === "table") return table(e);
+    if (e.t === "firmas") { const half = Math.round(W / 2); const c = t => `<w:tc><w:tcPr><w:tcW w:w="${half}" w:type="dxa"/></w:tcPr>${para(run("Por " + t, { b: true }), { after: 600 })}${para(run("Firma: ____________________"))}${para(run("Nombre:"))}${para(run("Fecha:"))}</w:tc>`; return para("", { after: 360 }) + `<w:tbl><w:tblPr><w:tblW w:w="${W}" w:type="dxa"/><w:tblLayout w:type="fixed"/></w:tblPr><w:tblGrid><w:gridCol w:w="${half}"/><w:gridCol w:w="${half}"/></w:tblGrid><w:tr>${c(e.left)}${c(e.right)}</w:tr></w:tbl>`; }
+    if (e.t === "pie") return para(run(e.text, { sz: 16, color: "888888" }), { after: 0 });
+    return "";
+  }).join("");
+  const docXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><w:body>${body}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134" w:header="708" w:footer="708" w:gutter="0"/></w:sectPr></w:body></w:document>`;
+  const styles = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+<w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="Calibri" w:cs="Calibri"/><w:sz w:val="22"/><w:szCs w:val="22"/><w:lang w:val="es-ES"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="120" w:line="264" w:lineRule="auto"/><w:jc w:val="both"/></w:pPr></w:pPrDefault></w:docDefaults>
+<w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/></w:style>
+<w:style w:type="paragraph" w:styleId="Title"><w:name w:val="Title"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:pPr><w:spacing w:after="60"/><w:jc w:val="left"/></w:pPr><w:rPr><w:b/><w:color w:val="0B4F54"/><w:sz w:val="36"/><w:szCs w:val="36"/></w:rPr></w:style>
+<w:style w:type="paragraph" w:styleId="Heading1"><w:name w:val="heading 1"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:pPr><w:keepNext/><w:spacing w:before="320" w:after="120"/><w:jc w:val="left"/><w:outlineLvl w:val="0"/></w:pPr><w:rPr><w:b/><w:color w:val="0B4F54"/><w:sz w:val="28"/><w:szCs w:val="28"/></w:rPr></w:style>
+<w:style w:type="paragraph" w:styleId="Heading2"><w:name w:val="heading 2"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:pPr><w:keepNext/><w:spacing w:before="200" w:after="80"/><w:jc w:val="left"/><w:outlineLvl w:val="1"/></w:pPr><w:rPr><w:b/><w:sz w:val="24"/><w:szCs w:val="24"/></w:rPr></w:style>
+</w:styles>`;
+  return zip([
+    { name: "[Content_Types].xml", data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/></Types>` },
+    { name: "_rels/.rels", data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/></Relationships>` },
+    { name: "docProps/core.xml", data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><dc:title>${x(d.titulo)}</dc:title><dc:creator>Proveedores-OT · Toolbox-OT v1.9</dc:creator><dcterms:created xsi:type="dcterms:W3CDTF">${new Date().toISOString().slice(0, 19)}Z</dcterms:created></cp:coreProperties>` },
+    { name: "word/_rels/document.xml.rels", data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>` },
+    { name: "word/document.xml", data: docXml },
+    { name: "word/styles.xml", data: styles }
+  ]);
+}
+
+/* ---------- acciones ---------- */
+function leerArchivo(input, cb) {
+  const f = input.files && input.files[0]; if (!f) return;
+  const r = new FileReader(); r.onload = () => { try { cb(JSON.parse(r.result), f.name); } catch (e) { alert("El archivo no es un JSON válido: " + e.message); } input.value = ""; }; r.readAsText(f);
+}
+const ACC = {
+  "sel-prov": el => { S.sel = el.dataset.id; S.selDoc = null; S.preview = false; },
+  "abrir-prov": el => { S.sel = el.dataset.id; S.vista = "proveedores"; },
+  "ir": el => { S.vista = el.dataset.v; },
+  "nuevo-prov": () => { const p = normalizarProveedor({ id: uid("P"), nombre: "Nuevo proveedor", estado: "En evaluación" }); S.data.proveedores.push(p); S.sel = p.id; S.vista = "proveedores"; },
+  "borrar-prov": () => { const p = prov(); if (p && confirm(`¿Eliminar ${p.nombre} y toda su evaluación y documentos?`)) { S.data.proveedores = S.data.proveedores.filter(x => x !== p); S.sel = (S.data.proveedores[0] || {}).id || null; } },
+  "toggle-activo": el => { const p = prov(), id = el.dataset.id; p.activos = el.checked ? [...new Set([...p.activos, id])] : p.activos.filter(x => x !== id); },
+  "hm": el => { S.hmModo = el.dataset.m; },
+  "ayuda-matriz": () => { S.ayudaMatriz = true; setTimeout(() => { const d = $('details[data-ayuda="matriz"]'); if (d) d.scrollIntoView({ behavior: "smooth", block: "start" }); }, 30); },
+  "evtab": el => { S.evalTab = el.dataset.t; },
+  "aplicar-eval": () => {
+    const p = prov(), c = p.cuestionario; if (!c.resultado) return;
+    p.estado = c.resultado; p.ultimaEval = c.fecha || hoy(); if (!c.fecha) c.fecha = p.ultimaEval;
+    p.proximaRev = sumarMeses(p.ultimaEval, { alta: 12, media: 24, baja: 36 }[criticidad(p)]);
+    toast("Estado actualizado: " + p.estado);
+  },
+  "add-riesgo": () => { const id = $("#sel-amenaza").value; if (!id) { toast("Elige una amenaza"); return; } const a = S.bib.amenazas.find(x => x.id === id); prov().riesgos.push({ id: uid("R"), amenaza: id, descripcion: a.nombre, p: 2, i: 2, tratamiento: "Reducir", medidas: "", responsable: "", pr: 1, ir: 2 }); },
+  "add-riesgo-vacio": () => { prov().riesgos.push({ id: uid("R"), amenaza: "", descripcion: "", p: 2, i: 2, tratamiento: "Reducir", medidas: "", responsable: "", pr: 1, ir: 2 }); },
+  "borrar-riesgo": el => { prov().riesgos.splice(Number(el.dataset.i), 1); },
+  "nuevo-doc": () => { const p = prov(), d = nuevoDocumento(p, $("#sel-plantilla").value); if (d) { p.documentos.push(d); S.selDoc = d.id; S.preview = false; } },
+  "sel-doc": (el, ev) => { if (ev.target.closest("button")) return false; S.selDoc = el.dataset.id; S.preview = false; },
+  "dup-doc": el => { const p = prov(), d = p.documentos.find(x => x.id === el.dataset.id); const c = clone(d); c.id = uid("D"); c.titulo += " (copia)"; p.documentos.push(c); S.selDoc = c.id; },
+  "borrar-doc": el => { const p = prov(); if (confirm("¿Eliminar este documento?")) { p.documentos = p.documentos.filter(x => x.id !== el.dataset.id); if (S.selDoc === el.dataset.id) S.selDoc = null; } },
+  "preview": el => { S.preview = el.dataset.on === "1"; },
+  "add-blk": el => { const t = el.dataset.t; docAct().bloques.push(t === "seccion" ? { tipo: "seccion", titulo: "Nueva sección" } : t === "registro" ? { tipo: "registro", filas: 8 } : { tipo: "texto", texto: "" }); },
+  "add-clausula": () => { const id = $("#sel-clausula").value; if (!id) { toast("Elige una cláusula"); return; } const b = docAct().bloques; let k = -1; b.forEach((x, i) => { if (x.tipo === "clausula") k = i; });
+    b.splice(k >= 0 ? k + 1 : b.length, 0, bloqueDe(todasClausulas().find(c => c.id === id))); toast(k >= 0 ? "Cláusula añadida tras la última cláusula" : "Cláusula añadida al final"); },
+  "add-req": () => {
+    const v = $("#sel-req").value, p = prov(), d = docAct(); if (!v) { toast("Elige un requisito"); return; }
+    let blk = d.bloques.find(b => b.tipo === "requisitos"); if (!blk) { blk = { tipo: "requisitos", items: [] }; d.bloques.push(blk); }
+    const nuevos = v === "__rec" ? requisitosRecomendados(p) : [S.bib.requisitos.find(r => r.id === v)];
+    let n = 0; nuevos.forEach(r => { if (!blk.items.some(x => x.ref === r.id)) { blk.items.push({ ref: r.id, categoria: r.categoria, texto: r.texto, verificacion: r.verificacion }); n++; } });
+    toast(n ? `${n} requisito(s) añadido(s)` : "Ya estaban en el documento");
+  },
+  "del-req": el => { docAct().bloques[el.dataset.i].items.splice(Number(el.dataset.j), 1); },
+  "mv": el => { const b = docAct().bloques, i = Number(el.dataset.i), j = i + Number(el.dataset.d); if (j < 0 || j >= b.length) return false; [b[i], b[j]] = [b[j], b[i]]; },
+  "del-blk": el => { docAct().bloques.splice(Number(el.dataset.i), 1); },
+  "restaurar-clausula": el => { const b = docAct().bloques[el.dataset.i], c = todasClausulas().find(x => x.id === b.ref); if (c) { b.texto = c.texto; b.titulo = c.titulo; } },
+  "add-item": el => { const b = docAct().bloques[el.dataset.i]; b.items.push(b.modo === "fatsat" ? { texto: "", fat: "", sat: "", obs: "" } : { texto: "", hecho: "", fecha: "", resp: "" }); },
+  "del-item": el => { docAct().bloques[el.dataset.i].items.splice(Number(el.dataset.j), 1); },
+  "imprimir": () => { const p = prov(), d = docAct(); $("#print-area").innerHTML = docHTML(p, d); document.body.classList.add("printing"); const t = document.title; document.title = slug(d.titulo + "-" + p.nombre); setTimeout(() => { window.print(); document.title = t; }, 50); return false; },
+  "docx": () => { const p = prov(), d = docAct(); descargar(slug(d.titulo + "-" + p.nombre) + ".docx", docxBlob(p, d)); toast("Documento Word generado"); return false; },
+  "bibtab": el => { S.bibTab = el.dataset.t; },
+  "exp-bib": () => { descargar("biblioteca-proveedores-ot.json", JSON.stringify(S.bib, null, 2)); return false; },
+  "reset-bib": () => { if (confirm("¿Sustituir la biblioteca actual por la de serie?")) { S.bib = normalizarBib(BIBLIOTECA_DEFECTO); toast("Biblioteca restaurada"); } },
+  "exp-proy": () => { const n = slug(S.data.proyecto.organizacion + "-" + S.data.proyecto.nombre); descargar(`proveedores-ot-${n}.json`, JSON.stringify(S.data, null, 2)); return false; },
+  "ejemplo": el => { if (confirm("Se sustituirá el proyecto actual por el ejemplo. ¿Continuar? (Exporta antes si quieres conservarlo)")) { S.data = normalizar(clone(el.dataset.ej === "etap" ? PROYECTO_ETAP : PROYECTO_EJEMPLO)); S.sel = S.data.proveedores[0].id; S.selDoc = null; S.vista = "panel"; toast("Ejemplo cargado: " + S.data.proyecto.organizacion); } },
+  "nuevo-proy": () => { if (confirm("Se vaciará el proyecto actual. ¿Continuar? (Exporta antes si quieres conservarlo)")) { S.data = proyectoVacio(); S.sel = null; S.selDoc = null; } },
+  "proponer-fab": () => {
+    const grupos = {};
+    S.data.contexto.activos.forEach(a => { const f = fabricanteNorm(a.fabricante); if (f) (grupos[f] = grupos[f] || []).push(a); });
+    let n = 0;
+    Object.entries(grupos).forEach(([f, acts]) => {
+      if (S.data.proveedores.some(p => fabricanteNorm(p.nombre) === f)) return;
+      const sw = acts.some(a => /plc|hmi|scada|eng_ws|firewall|switch|vfd|io_remote|modem|router|rtu|gateway/i.test(a.tipo || "") && (a.nivel == null || a.nivel <= 3.5));
+      const red = acts.some(a => a.ip || (a.clase || []).includes("COM"));
+      S.data.proveedores.push(normalizarProveedor({ id: uid("P"), nombre: f, tipo: "fabricante", estado: "En evaluación",
+        suministra: [...new Set(acts.map(a => a.modelo || a.nombre).filter(Boolean))].join(", "),
+        acceso: { software: sw, conectado: red }, activos: acts.map(a => a.id),
+        notas: "Propuesto desde el inventario: " + acts.map(a => a.ref || a.nombre).join(", ") + ". Completa los datos de la empresa (fabricante o distribuidor real)." }));
+      n++;
+    });
+    toast(n ? `${n} fabricante(s) añadidos como proveedores` : "No hay fabricantes nuevos que añadir");
+  },
+  "borrar-ctx": () => { if (confirm("¿Vaciar los activos de contexto? Las asignaciones de los proveedores se perderán.")) { S.data.contexto = { fuente: "", zonas: [], activos: [] }; S.data.proveedores.forEach(p => p.activos = []); } }
+};
+const ARCH = {
+  "imp-proy": (j, n) => { if (!j || !Array.isArray(j.proveedores)) { alert("Este archivo no es un proyecto de Proveedores-OT."); return; } S.data = normalizar(j); S.sel = (S.data.proveedores[0] || {}).id || null; S.selDoc = null; toast("Proyecto abierto: " + n); },
+  "imp-bib": (j) => { if (!j || !Array.isArray(j.clausulas) || !Array.isArray(j.requisitos)) { alert("Este archivo no es una biblioteca de Proveedores-OT."); return; } S.bib = normalizarBib(j); toast("Biblioteca importada"); },
+  "imp-ctx": (j, n) => {
+    const r = extraerActivos(j);
+    if (!r.activos.length) { alert("No se han encontrado activos en el archivo. Se buscan listas con nombre/name/label y, opcionalmente, zona/nivel."); return; }
+    S.data.contexto = { fuente: r.nombre ? `${r.nombre} (${n})` : n, zonas: r.zonas, activos: r.activos };
+    const ids = new Set(r.activos.map(a => a.id)); S.data.proveedores.forEach(p => p.activos = p.activos.filter(id => ids.has(id)));
+    toast(`${r.activos.length} activos importados`);
+  }
+};
+
+document.addEventListener("click", ev => {
+  const nav = ev.target.closest("nav.tabs button"); if (nav) { S.vista = nav.dataset.vista; S.preview = false; S.modal = null; render(); return; }
+  const el = ev.target.closest("[data-act]"); if (!el || el.tagName === "SELECT" || el.type === "checkbox") return;
+  const f = ACC[el.dataset.act]; if (!f) return;
+  if (f(el, ev) !== false) { guardar(); render(); }
+});
+document.addEventListener("input", ev => {
+  const el = ev.target;
+  if (el.dataset.actInput === "filtro") { S.filtro = el.value; const pos = el.selectionStart; render(); const n = $('[data-act-input="filtro"]'); if (n) { n.focus(); n.setSelectionRange(pos, pos); } return; }
+  if (el.dataset.bind && (el.tagName === "TEXTAREA" || (el.tagName === "INPUT" && !["checkbox", "date"].includes(el.type)))) { bind(el); guardar(); }
+});
+document.addEventListener("change", ev => {
+  const el = ev.target;
+  if (el.dataset.actFile) { leerArchivo(el, (j, n) => { ARCH[el.dataset.actFile](j, n); guardar(); render(); }); return; }
+  if (el.dataset.act === "toggle-activo") { ACC["toggle-activo"](el); guardar(); render(); return; }
+  if (el.dataset.act === "amen-todas") { S.amenazasTodas = el.checked; render(); return; }
+  if (el.dataset.act === "add-medida") { const r = prov().riesgos[el.dataset.i]; if (el.value) r.medidas = (r.medidas ? r.medidas.replace(/[.\s]*$/, "") + ". " : "") + el.value; guardar(); render(); return; }
+  if (el.dataset.bind && el.dataset.bind.startsWith("doc.bloques") && $("#aviso-tokens") && docAct()) { bind(el); guardar(); $("#aviso-tokens").innerHTML = avisoTokens(docAct()); if (el.tagName !== "SELECT") return; }
+  if (el.dataset.bind) {
+    bind(el); guardar();
+    if (el.tagName === "SELECT" || el.type === "checkbox" || el.type === "date") render();
+    else if ("rr" in el.dataset) setTimeout(render, 0); // tras mover el foco, para conservarlo en el campo nuevo
+  }
+});
+function bind(el) {
+  const [root, ...rest] = el.dataset.bind.split("."); const path = rest.join(".");
+  const obj = { prov: prov(), proy: S.data.proyecto, doc: docAct() }[root]; if (!obj) return;
+  let v = el.type === "checkbox" ? el.checked : el.value;
+  if (/\.(p|i|pr|ir)$/.test(path) && el.tagName === "SELECT") v = Number(v);
+  setPath(obj, path, v);
+}
+document.addEventListener("toggle", ev => { const d = ev.target; if (d.matches && d.matches('details[data-ayuda="matriz"]')) S.ayudaMatriz = d.open; }, true);
+window.addEventListener("afterprint", () => document.body.classList.remove("printing"));
+
+
+/* ---------- BIBLIOTECA: vista, ordenación y edición ---------- */
+const TIPOS_IDS = () => S.bib.tiposProveedor.map(t => t.id);
+const NIVELES = ["alta", "media", "baja"];
+const LISTAS_CHECK = { fatsat: "FAT/SAT", baja: "Baja del proveedor" };
+
+function normalizarBib(b) {
+  b = Object.assign(clone(BIBLIOTECA_DEFECTO), b || {});
+  ["amenazas", "cuestionario", "requisitos", "clausulas", "procedimientos", "plantillas"].forEach(k => { if (!Array.isArray(b[k])) b[k] = []; });
+  b.checklists = b.checklists || {};
+  Object.keys(LISTAS_CHECK).forEach(k => { if (!Array.isArray(b.checklists[k])) b.checklists[k] = []; });
+  Object.entries(b.checklists).forEach(([k, lista]) => {
+    const pref = k === "fatsat" ? "FS" : k === "baja" ? "BJ" : k.slice(0, 2).toUpperCase();
+    b.checklists[k] = lista.map((x, i) => typeof x === "string" ? { id: `${pref}-${String(i + 1).padStart(2, "0")}`, texto: x } : x);
+  });
+  return b;
+}
+const textoCheck = x => typeof x === "string" ? x : x.texto;
+
+/* Definición de cada categoría: columnas (ordenables), campos del formulario y ámbito del identificador */
+function catDef(t) {
+  const tiposTxt = x => x === "todos" || !x ? "Todos" : x.join(", ");
+  const D = {
+    amenazas: { lista: () => S.bib.amenazas, nombre: "amenaza", ambito: () => S.bib.amenazas,
+      cols: [["id", "Id", x => x.id], ["nombre", "Amenaza", x => x.nombre, x => `<b>${esc(x.nombre)}</b><div class="sm mut">${esc(x.descripcion)}</div>`], ["caso", "Caso real", x => x.caso], ["tipos", "Tipos", x => tiposTxt(x.tipos)], ["medidas", "Medidas sugeridas", x => (x.medidas || []).join(" "), x => (x.medidas || []).map(esc).join("<br>")]],
+      campos: [["id", "Identificador", "id"], ["nombre", "Nombre", "text"], ["descripcion", "Descripción", "area"], ["caso", "Caso real", "text"], ["tipos", "Tipos de proveedor", "tipos"], ["medidas", "Medidas sugeridas (una por línea)", "lineas"]] },
+    cuestionario: { lista: () => S.bib.cuestionario, nombre: "pregunta", ambito: () => S.bib.cuestionario,
+      cols: [["id", "Id", x => x.id], ["bloque", "Bloque", x => x.bloque], ["texto", "Pregunta", x => x.texto], ["tipos", "Tipos", x => tiposTxt(x.tipos)], ["peso", "Peso", x => Number(x.peso) || 0], ["eliminatoria", "Eliminatoria en", x => (x.eliminatoria || []).join(", ") || "—"]],
+      campos: [["id", "Identificador", "id"], ["bloque", "Bloque", "cat"], ["texto", "Pregunta", "area"], ["tipos", "Tipos de proveedor", "tipos"], ["peso", "Peso", "peso"], ["eliminatoria", "Eliminatoria para criticidad", "niveles"]] },
+    requisitos: { lista: () => S.bib.requisitos, nombre: "requisito", ambito: () => S.bib.requisitos,
+      cols: [["id", "Id", x => x.id], ["categoria", "Categoría", x => x.categoria], ["texto", "Requisito", x => x.texto], ["verificacion", "Verificación", x => x.verificacion], ["ref", "Referencia", x => x.ref], ["tipos", "Tipos", x => tiposTxt(x.tipos)], ["criticidadMin", "Criticidad mín.", x => ORDEN[x.criticidadMin] || 0, x => badgeCrit(x.criticidadMin || "baja")]],
+      campos: [["id", "Identificador", "id"], ["categoria", "Categoría", "cat"], ["texto", "Requisito", "area"], ["verificacion", "Cómo se verifica", "text"], ["ref", "Referencia normativa", "text"], ["tipos", "Tipos de proveedor", "tipos"], ["criticidadMin", "Criticidad mínima a la que se exige", "nivel"]] },
+    clausulas: { lista: () => S.bib.clausulas, nombre: "cláusula", ambito: () => todasClausulas(),
+      cols: [["id", "Id", x => x.id], ["categoria", "Categoría", x => x.categoria], ["titulo", "Título", x => x.titulo, x => `<b>${esc(x.titulo)}</b>`], ["texto", "Texto", x => x.texto], ["params", "Parámetros", x => Object.keys(x.params || {}).length, x => Object.entries(x.params || {}).map(([k, v]) => `${esc(v.etiqueta)}: <b>${esc(v.defecto)}</b>`).join("<br>") || "—"]],
+      campos: [["id", "Identificador", "id"], ["categoria", "Categoría", "cat"], ["titulo", "Título", "text"], ["texto", "Texto (marcadores: {{Organización}}, {{Proveedor}}, {{Suministro}}, {{Fecha}} y {{parametro}})", "area"], ["params", "Parámetros (uno por línea: clave | etiqueta | valor por defecto)", "params"]] },
+    checklists: { lista: () => Object.entries(S.bib.checklists).flatMap(([k, l]) => l.map((x, i) => Object.assign({ _lista: k, _orden: i + 1 }, x))), nombre: "punto de checklist", ambito: () => Object.values(S.bib.checklists).flat(),
+      cols: [["_lista", "Checklist", x => LISTAS_CHECK[x._lista] || x._lista], ["_orden", "Orden", x => x._orden], ["id", "Id", x => x.id], ["texto", "Punto a verificar", x => x.texto]],
+      campos: [["_lista", "Checklist", "lista"], ["id", "Identificador", "id"], ["texto", "Punto a verificar", "area"]] }
+  };
+  D.procedimientos = Object.assign({}, D.clausulas, { lista: () => S.bib.procedimientos, nombre: "procedimiento" });
+  return D[t];
+}
+
+function tablaOrdenable(t, items, cols, acciones) {
+  const so = S.bibSort[t] || {};
+  let filas = items.map((x, i) => ({ x, i }));
+  if (so.col) {
+    const c = cols.find(c => c[0] === so.col);
+    if (c) filas.sort((a, b) => { const va = c[2](a.x), vb = c[2](b.x); const r = typeof va === "number" && typeof vb === "number" ? va - vb : String(va ?? "").localeCompare(String(vb ?? ""), "es", { numeric: true, sensitivity: "base" }); return so.dir === "desc" ? -r : r; });
+  }
+  const th = cols.map(c => `<th class="sortable" data-act="bib-sort" data-col="${c[0]}" title="Ordenar por ${esc(c[1])}">${esc(c[1])} <span class="arr">${so.col === c[0] ? (so.dir === "desc" ? "▼" : "▲") : "↕"}</span></th>`).join("");
+  return `<table class="t stick"><thead><tr>${th}${acciones ? "<th></th>" : ""}</tr></thead><tbody>${filas.map(({ x, i }) => `<tr>${cols.map(c => `<td class="${c[0] === "id" ? "nw" : ""}">${c[3] ? c[3](x) : c[0] === "id" ? `<b>${esc(c[2](x))}</b>` : esc(c[2](x))}</td>`).join("")}${acciones ? `<td class="nw">${acciones(x, i)}</td>` : ""}</tr>`).join("") || `<tr><td colspan="${cols.length + 1}" class="empty">Sin elementos</td></tr>`}</tbody></table>`;
+}
+
+function vBiblioteca() {
+  const B = S.bib, t = S.bibTab;
+  const tabs = [["amenazas", "Amenazas", B.amenazas.length], ["cuestionario", "Cuestionario", B.cuestionario.length], ["requisitos", "Requisitos", B.requisitos.length], ["clausulas", "Cláusulas", B.clausulas.length], ["procedimientos", "Procedimientos", B.procedimientos.length], ["checklists", "Checklists", Object.values(B.checklists).flat().length], ["plantillas", "Plantillas", B.plantillas.length]];
+  let body = "";
+  if (t === "plantillas") {
+    body = `<div class="bib-bar"><p class="sm mut" style="margin:0">Las plantillas combinan cláusulas, procedimientos y checklists. Se editan en el JSON de la biblioteca.</p></div>` + tablaOrdenable(t, B.plantillas, [["id", "Id", x => x.id], ["nombre", "Plantilla", x => x.nombre], ["tipo", "Tipo", x => x.tipo], ["contenido", "Contenido", x => (x.secciones || []).length, x => (x.secciones || []).map(s => `${esc(s.titulo)}: ${[...(s.clausulas || []), ...(s.procedimientos || [])].join(", ")}${s.requisitos ? " requisitos recomendados" : ""}`).join("<br>") || (x.modo ? "checklist " + esc(x.modo) : "generado automáticamente")]]);
+  } else {
+    const def = catDef(t);
+    const acc = (x) => {
+      const ord = t === "checklists" && !(S.bibSort[t] || {}).col ? `<button class="btn sm ghost" data-act="bib-mv" data-lista="${x._lista}" data-id="${esc(x.id)}" data-d="-1" title="Subir">↑</button><button class="btn sm ghost" data-act="bib-mv" data-lista="${x._lista}" data-id="${esc(x.id)}" data-d="1" title="Bajar">↓</button>` : "";
+      return `${ord}<button class="btn sm" data-act="bib-edit" data-id="${esc(x.id)}">Editar</button> <button class="btn sm ghost danger" data-act="bib-del" data-id="${esc(x.id)}" title="Eliminar">✕</button>`;
+    };
+    const so = S.bibSort[t] || {};
+    body = `<div class="bib-bar"><div class="row"><button class="btn pri sm" data-act="bib-new">+ Añadir ${esc(def.nombre)}</button><span class="sm mut">${def.lista().length} elementos. Pulsa una cabecera para ordenar.</span><span class="spacer"></span>${so.col ? `<button class="btn sm ghost" data-act="bib-sort-reset">Quitar orden</button>` : ""}</div>
+      ${t === "checklists" ? `<p class="sm mut" style="margin:8px 0 0">Sin ordenar por columnas, la tabla muestra el orden real en que los puntos aparecen en el documento; usa ↑ ↓ para cambiarlo.</p>` : ""}</div>
+      ${tablaOrdenable(t, def.lista(), def.cols, acc)}`;
+  }
+  return `<div class="bib-top"><div class="bib-head"><h1>Biblioteca</h1><span class="b acc">${esc(B.nombre || "Biblioteca")}</span><span class="sm mut">v${esc(B.version)}</span><span class="spacer"></span>
+    <button class="btn sm" data-act="exp-bib">Exportar biblioteca.json</button><label class="btn sm">Importar biblioteca<input type="file" accept=".json,application/json" data-act-file="imp-bib" hidden></label><button class="btn sm danger" data-act="reset-bib">Restaurar la de serie</button></div>
+  <p class="sub">Catálogos que alimentan los desplegables y las plantillas. Los cambios se guardan en este navegador; exporta la biblioteca para compartirla.</p>
+  <div class="sec-tabs bib-tabs">${tabs.map(([k, l, n]) => `<button class="${t === k ? "on" : ""}" data-act="bibtab" data-t="${k}">${l} <span class="sm mut">${n}</span></button>`).join("")}</div></div>
+  <div class="card bib-body">${body}</div>
+  ${S.modal ? modalBib() : ""}`;
+}
+
+/* ---- formulario modal ---- */
+function modalBib() {
+  const m = S.modal, def = catDef(m.cat), x = m.item;
+  const cats = k => [...new Set(def.lista().map(i => i[k]).filter(Boolean))];
+  const campo = ([k, lab, tipo]) => {
+    const v = x[k];
+    if (tipo === "id") return `<label class="f"><span>${lab} <span class="mut">(único; letras, números, guion, punto o guion bajo)</span></span><input type="text" name="id" value="${esc(v || "")}" maxlength="40" autocomplete="off"></label>`;
+    if (tipo === "text") return `<label class="f"><span>${lab}</span><input type="text" name="${k}" value="${esc(v || "")}"></label>`;
+    if (tipo === "area") return `<label class="f"><span>${lab}</span><textarea name="${k}" rows="4">${esc(v || "")}</textarea></label>`;
+    if (tipo === "lineas") return `<label class="f"><span>${lab}</span><textarea name="${k}" rows="4">${esc((v || []).join("\n"))}</textarea></label>`;
+    if (tipo === "cat") return `<label class="f"><span>${lab}</span><input type="text" name="${k}" value="${esc(v || "")}" list="dl-${k}"><datalist id="dl-${k}">${cats(k).map(c => `<option value="${esc(c)}">`).join("")}</datalist></label>`;
+    if (tipo === "peso") return `<label class="f" style="max-width:160px"><span>${lab}</span><select name="peso">${[1, 2, 3].map(n => `<option ${Number(v || 1) === n ? "selected" : ""}>${n}</option>`).join("")}</select></label>`;
+    if (tipo === "nivel") return `<label class="f" style="max-width:240px"><span>${lab}</span><select name="${k}">${NIVELES.map(n => `<option value="${n}" ${(v || "media") === n ? "selected" : ""}>${n}</option>`).join("")}</select></label>`;
+    if (tipo === "niveles") return `<div class="f"><span class="sm" style="font-weight:600;color:var(--muted)">${lab}</span><div class="row">${NIVELES.map(n => `<label class="row sm" style="gap:4px"><input type="checkbox" name="${k}" value="${n}" ${(v || []).includes(n) ? "checked" : ""}> ${n}</label>`).join("")}</div></div>`;
+    if (tipo === "tipos") { const todos = !v || v === "todos"; return `<div class="f"><span class="sm" style="font-weight:600;color:var(--muted)">${lab}</span><div class="row"><label class="row sm" style="gap:4px"><input type="checkbox" name="tipos-todos" ${todos ? "checked" : ""}> <b>Todos</b></label>${S.bib.tiposProveedor.map(tp => `<label class="row sm" style="gap:4px"><input type="checkbox" name="tipos" value="${tp.id}" ${!todos && v.includes(tp.id) ? "checked" : ""}> ${esc(tp.id)}</label>`).join("")}</div></div>`; }
+    if (tipo === "params") return `<label class="f"><span>${lab}</span><textarea name="params" rows="3" placeholder="plazo_incidentes_h | Plazo de notificación (h) | 24">${esc(Object.entries(v || {}).map(([pk, pv]) => `${pk} | ${pv.etiqueta} | ${pv.defecto}`).join("\n"))}</textarea></label>`;
+    if (tipo === "lista") return `<label class="f" style="max-width:260px"><span>${lab}</span><select name="_lista">${Object.keys(S.bib.checklists).map(l => `<option value="${l}" ${(v || "fatsat") === l ? "selected" : ""}>${esc(LISTAS_CHECK[l] || l)}</option>`).join("")}</select></label>`;
+    return "";
+  };
+  return `<div class="modal-bg"><div class="modal" role="dialog" aria-modal="true" aria-label="Editar ${esc(def.nombre)}">
+    <div class="row" style="margin-bottom:12px"><h2 style="margin:0">${m.idx < 0 ? "Añadir" : "Editar"} ${esc(def.nombre)}</h2><span class="spacer"></span><button class="btn sm ghost" data-act="bib-cancel" title="Cerrar">✕</button></div>
+    <form id="bib-form" class="grid" style="gap:12px" onsubmit="return false">${def.campos.map(campo).join("")}</form>
+    <div id="bib-err" class="note warn" style="margin-top:12px;display:none"></div>
+    ${m.idx >= 0 ? `<p class="sm mut" style="margin:10px 0 0">Si cambias el identificador, se actualizarán las referencias en plantillas, documentos y evaluaciones del proyecto.</p>` : ""}
+    <div class="row end" style="margin-top:16px"><button class="btn" data-act="bib-cancel">Cancelar</button><button class="btn pri" data-act="bib-save">Guardar</button></div>
+  </div></div>`;
+}
+
+function siguienteId(t) {
+  const pref = { amenazas: "T", cuestionario: "Q", requisitos: "R-NEW-", clausulas: "C-NEW-", procedimientos: "P-NEW-", checklists: "CK-" }[t];
+  const usados = new Set(catDef(t).ambito().map(x => x.id));
+  for (let n = 1; n < 1000; n++) { const id = pref + String(n).padStart(2, "0"); if (!usados.has(id)) return id; }
+  return uid(pref);
+}
+function leerForm(t, prev) {
+  const f = $("#bib-form"), g = n => (f.elements[n] ? f.elements[n].value : "").trim();
+  const checks = n => [...f.querySelectorAll(`input[name="${n}"]:checked`)].map(i => i.value);
+  const o = {};
+  catDef(t).campos.forEach(([k, , tipo]) => {
+    if (tipo === "tipos") o.tipos = f.querySelector('input[name="tipos-todos"]').checked ? "todos" : checks("tipos");
+    else if (tipo === "niveles") o[k] = checks(k);
+    else if (tipo === "lineas") o[k] = g(k).split(/\n+/).map(s => s.trim()).filter(Boolean);
+    else if (tipo === "peso") o.peso = Number(g("peso")) || 1;
+    else if (tipo === "params") {
+      const ps = {};
+      g("params").split(/\n+/).map(l => l.trim()).filter(Boolean).forEach(l => { const [k2, et, de] = l.split("|").map(s => (s || "").trim()); if (k2) ps[k2] = { etiqueta: et || k2, defecto: de || "" }; });
+      if (Object.keys(ps).length) o.params = ps;
+    }
+    else o[k] = g(k);
+  });
+  return Object.assign({}, prev, o);
+}
+function validar(t, o, idOriginal) {
+  const errs = [];
+  if (!o.id) errs.push("El identificador es obligatorio.");
+  else if (!/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(o.id)) errs.push("El identificador solo puede contener letras, números, guion, punto y guion bajo, sin espacios.");
+  else if (o.id.toLowerCase() !== String(idOriginal || "").toLowerCase() && catDef(t).ambito().some(x => String(x.id).toLowerCase() === o.id.toLowerCase()))
+    errs.push(`Ya existe un elemento con el identificador «${o.id}»${t === "clausulas" || t === "procedimientos" ? " (cláusulas y procedimientos comparten identificadores)" : t === "checklists" ? " (en alguna de las checklists)" : ""}.`);
+  const req = { amenazas: ["nombre"], cuestionario: ["texto", "bloque"], requisitos: ["texto", "categoria"], clausulas: ["titulo", "texto", "categoria"], procedimientos: ["titulo", "texto", "categoria"], checklists: ["texto"] }[t];
+  req.forEach(k => { if (!o[k]) errs.push(`El campo «${catDef(t).campos.find(c => c[0] === k)[1]}» es obligatorio.`); });
+  if (o.tipos !== undefined && o.tipos !== "todos" && !o.tipos.length) errs.push("Marca al menos un tipo de proveedor o «Todos».");
+  if (o.params) Object.keys(o.params).forEach(k => { if (!/^[a-z0-9_]+$/i.test(k)) errs.push(`La clave de parámetro «${k}» solo puede llevar letras, números y guion bajo.`); });
+  return errs;
+}
+/* Propaga un cambio de identificador a plantillas y datos del proyecto */
+function renombrarRefs(t, viejo, nuevo) {
+  if (!viejo || viejo === nuevo) return;
+  if (t === "clausulas" || t === "procedimientos") S.bib.plantillas.forEach(pl => (pl.secciones || []).forEach(s => ["clausulas", "procedimientos"].forEach(k => { if (s[k]) s[k] = s[k].map(id => id === viejo ? nuevo : id); })));
+  S.data.proveedores.forEach(p => {
+    if (t === "amenazas") p.riesgos.forEach(r => { if (r.amenaza === viejo) r.amenaza = nuevo; });
+    if (t === "cuestionario" && p.cuestionario.respuestas[viejo]) { p.cuestionario.respuestas[nuevo] = p.cuestionario.respuestas[viejo]; delete p.cuestionario.respuestas[viejo]; }
+    p.documentos.forEach(d => d.bloques.forEach(b => {
+      if ((t === "clausulas" || t === "procedimientos") && b.tipo === "clausula" && b.ref === viejo) b.ref = nuevo;
+      if (t === "requisitos" && b.tipo === "requisitos") b.items.forEach(it => { if (it.ref === viejo) it.ref = nuevo; });
+    }));
+  });
+}
+function usos(t, id) {
+  let n = 0;
+  if (t === "clausulas" || t === "procedimientos") S.bib.plantillas.forEach(pl => (pl.secciones || []).forEach(s => n += [...(s.clausulas || []), ...(s.procedimientos || [])].filter(x => x === id).length));
+  S.data.proveedores.forEach(p => {
+    if (t === "amenazas") n += p.riesgos.filter(r => r.amenaza === id).length;
+    if (t === "cuestionario" && p.cuestionario.respuestas[id]) n++;
+  });
+  return n;
+}
+
+Object.assign(ACC, {
+  "bib-sort": el => { const t = S.bibTab, c = el.dataset.col, so = S.bibSort[t] || {}; S.bibSort[t] = so.col === c ? (so.dir === "asc" ? { col: c, dir: "desc" } : {}) : { col: c, dir: "asc" }; },
+  "bib-sort-reset": () => { S.bibSort[S.bibTab] = {}; },
+  "bib-new": () => { const t = S.bibTab; S.modal = { cat: t, idx: -1, foco: true, item: t === "checklists" ? { _lista: "fatsat", id: siguienteId(t) } : { id: siguienteId(t), tipos: "todos", peso: 1, criticidadMin: "media" } }; },
+  "bib-edit": el => {
+    const t = S.bibTab, id = el.dataset.id;
+    if (t === "checklists") { const [k, l] = Object.entries(S.bib.checklists).find(([, l]) => l.some(x => x.id === id)); const i = l.findIndex(x => x.id === id); S.modal = { cat: t, idx: i, lista0: k, item: Object.assign({ _lista: k }, clone(l[i])) }; return; }
+    const lista = catDef(t).lista(), i = lista.findIndex(x => x.id === id); S.modal = { cat: t, idx: i, item: clone(lista[i]) };
+  },
+  "bib-cancel": () => { S.modal = null; },
+  "bib-save": () => {
+    const m = S.modal, t = m.cat, o = leerForm(t, m.item), idOrig = m.idx >= 0 ? m.item.id : "";
+    const errs = validar(t, o, idOrig);
+    const box = $("#bib-err");
+    if (errs.length) { box.innerHTML = errs.map(esc).join("<br>"); box.style.display = "block"; const inp = $('#bib-form [name="id"]'); if (inp && errs[0].includes("identificador")) inp.focus(); return false; }
+    if (t === "checklists") {
+      const destino = o._lista; delete o._lista; delete o._orden;
+      if (m.idx >= 0) { S.bib.checklists[m.lista0].splice(m.idx, 1); if (m.lista0 === destino) S.bib.checklists[destino].splice(m.idx, 0, o); else S.bib.checklists[destino].push(o); }
+      else S.bib.checklists[destino].push(o);
+    } else {
+      const lista = catDef(t).lista();
+      if (m.idx >= 0) lista[m.idx] = o; else lista.push(o);
+    }
+    if (m.idx >= 0) renombrarRefs(t, idOrig, o.id);
+    S.modal = null; toast(m.idx >= 0 ? "Cambios guardados" : "Elemento añadido");
+  },
+  "bib-del": el => {
+    const t = S.bibTab, id = el.dataset.id, n = usos(t, id);
+    if (!confirm(`¿Eliminar «${id}» de la biblioteca?${n ? `\n\nSe usa en ${n} sitio(s) (plantillas o evaluaciones). ${t === "clausulas" || t === "procedimientos" ? "Se quitará de las plantillas. " : ""}Los documentos ya creados conservan su copia del texto.` : ""}`)) return false;
+    if (t === "checklists") Object.keys(S.bib.checklists).forEach(k => S.bib.checklists[k] = S.bib.checklists[k].filter(x => x.id !== id));
+    else { const lista = catDef(t).lista(), i = lista.findIndex(x => x.id === id); if (i >= 0) lista.splice(i, 1); }
+    if (t === "clausulas" || t === "procedimientos") S.bib.plantillas.forEach(pl => (pl.secciones || []).forEach(s => ["clausulas", "procedimientos"].forEach(k => { if (s[k]) s[k] = s[k].filter(x => x !== id); })));
+    toast("Eliminado: " + id);
+  },
+  "bib-mv": el => { const l = S.bib.checklists[el.dataset.lista], i = l.findIndex(x => x.id === el.dataset.id), j = i + Number(el.dataset.d); if (j < 0 || j >= l.length) return false; [l[i], l[j]] = [l[j], l[i]]; }
+});
+document.addEventListener("keydown", ev => { if (ev.key === "Escape" && S.modal) { S.modal = null; render(); } });
+
+cargar();
+
+</script>
+</body>
+</html>

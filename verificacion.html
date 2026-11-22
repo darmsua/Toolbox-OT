@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verificación OT (beta) · Toolbox-OT</title>
+<style>
+:root{
+  --navy:#0f2744;--navy2:#17375e;--teal:#1f8a8a;--teal-d:#0e6b6b;--ink:#1a2535;
+  --muted:#5a6b80;--line:#dfe6ee;--bg:#f4f7fa;--card:#fff;--accent:#e8743b;--soft:#eef4f8;--soft2:#f6f9fb;
+  --ok:#2f9e5e;--okbg:#e5f4e4;--al:#c0392b;--albg:#f7d6d2;--me:#d9662f;--mebg:#fbe3d3;--ba:#c88a1e;--babg:#fdf0d5;--nc:#6b7a8c;--ncbg:#eceff3;
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --navy:#132233;--navy2:#1b3147;--ink:#e7eef6;--muted:#9fb2c6;--line:#2b3a4c;--bg:#0f1720;--card:#16212e;--soft:#172431;--soft2:#1a2735;
+  --ok:#5fcf8a;--okbg:#1e3a2a;--al:#f06a6a;--albg:#43242a;--me:#f0905a;--mebg:#432a20;--ba:#e3b55a;--babg:#3d3320;--nc:#9fb2c6;--ncbg:#243243;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;color:var(--ink);background:var(--bg);font-size:14px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+header.top{background:linear-gradient(135deg,#0f2744,#17375e 60%,#0e6b6b);color:#fff;padding:20px 0 0}
+header.top .row{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+h1{margin:0;font-size:24px;font-weight:800;letter-spacing:-.3px}
+.sub{color:#bcd4e6;font-size:13px;margin-top:3px}
+.beta{font-size:12px;font-weight:800;letter-spacing:.5px;background:#e8743b;color:#fff;padding:2px 9px;border-radius:20px;margin-left:8px;vertical-align:middle}
+.betabar{background:var(--mebg);border:1px solid var(--me);color:var(--ink);border-radius:10px;padding:9px 14px;font-size:13px;line-height:1.5;margin-bottom:16px}
+@media print{.betabar{display:none}}
+.hbtns{display:flex;gap:8px;flex-wrap:wrap}
+.hbtn{border:1px solid rgba(255,255,255,.4);background:transparent;color:#fff;padding:7px 12px;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer;text-decoration:none}
+.hbtn:hover{background:rgba(255,255,255,.12)}
+.tabs{display:flex;gap:4px;margin-top:16px}
+.tab{background:rgba(255,255,255,.1);color:#dbe8f3;border:0;padding:10px 18px;border-radius:10px 10px 0 0;font-weight:700;font-size:14px;cursor:pointer}
+.tab.on{background:var(--bg);color:var(--ink)}
+main.wrap{padding-top:22px;padding-bottom:50px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 13px;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer}
+.btn:hover{border-color:var(--teal)}
+.btn.pri{background:var(--teal);border-color:var(--teal);color:#fff}
+.btn.pri:hover{background:var(--teal-d)}
+.btn.sm{padding:4px 9px;font-size:12px}
+.btn.del{color:var(--al)}
+.sep{flex:1}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:16px}
+.card h2{margin:0 0 12px;font-size:17px;color:var(--navy)}
+:root[data-theme="dark"] .card h2{color:var(--ink)}
+.card h3{margin:16px 0 8px;font-size:14px;color:var(--teal-d)}
+:root[data-theme="dark"] .card h3{color:#4fcfcf}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px 14px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;color:var(--muted)}
+label.chk{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--ink);padding-top:16px}
+input.t,select.t,textarea.t{font:inherit;font-size:13px;padding:6px 8px;border:1px solid var(--line);border-radius:7px;background:var(--card);color:var(--ink);width:100%}
+:root[data-theme="dark"] input.t,:root[data-theme="dark"] select.t,:root[data-theme="dark"] textarea.t{background:#1d2a38}
+input.t:focus,select.t:focus{outline:2px solid var(--teal);outline-offset:-1px}
+.hint{color:var(--muted);font-size:12.5px;line-height:1.5}
+.intro{color:var(--muted);line-height:1.6;max-width:880px;margin:0 0 16px}
+.dev{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;background:var(--card);overflow:hidden}
+.dev>summary{list-style:none;cursor:pointer;padding:12px 16px;display:flex;align-items:center;gap:12px;background:var(--soft2)}
+.dev>summary::-webkit-details-marker{display:none}
+.dev>summary .nm{font-weight:700;font-size:15px}
+.dev>summary .ip{font-family:Consolas,monospace;color:var(--muted)}
+.dev[open]>summary{border-bottom:1px solid var(--line)}
+.dev .body{padding:14px 16px}
+.pill{font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;border:1px solid var(--line);background:var(--card);color:var(--muted);white-space:nowrap}
+table.mini{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:4px}
+table.mini th{text-align:left;color:var(--muted);font-weight:600;padding:4px 5px;border-bottom:1px solid var(--line)}
+table.mini td{padding:3px 4px;vertical-align:top}
+table.mini input.t,table.mini select.t{padding:4px 6px;font-size:12.5px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:16px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;border-left:5px solid var(--nc)}
+.kpi b{display:block;font-size:26px;line-height:1.1}
+.kpi span{color:var(--muted);font-size:12px;font-weight:600}
+.kpi.ok{border-left-color:var(--ok)}.kpi.al{border-left-color:var(--al)}.kpi.me{border-left-color:var(--me)}.kpi.ba{border-left-color:var(--ba)}
+table.res{width:100%;border-collapse:collapse;font-size:13px}
+table.res th{text-align:left;font-size:12px;color:var(--muted);padding:7px 8px;border-bottom:2px solid var(--line)}
+table.res td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+table.res td.mono{font-family:Consolas,monospace;font-size:12px;word-break:break-word}
+.st{display:inline-block;font-size:11px;font-weight:800;padding:2px 8px;border-radius:6px;white-space:nowrap}
+.st.OK{background:var(--okbg);color:var(--ok)}
+.st.ALTA{background:var(--albg);color:var(--al)}
+.st.MEDIA{background:var(--mebg);color:var(--me)}
+.st.BAJA{background:var(--babg);color:var(--ba)}
+.st.NC,.st.INFO{background:var(--ncbg);color:var(--nc)}
+.rec{color:var(--muted);font-size:12px;margin-top:3px}
+.ev{white-space:pre-wrap;font-family:Consolas,monospace;font-size:11.5px;color:var(--muted);margin-top:4px;max-height:160px;overflow:auto}
+.devres{margin-bottom:16px}
+.devres h3{margin:0;font-size:15px}
+.devres .hd{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.obs{font-size:12px;color:var(--muted);margin:0 0 8px}
+.obs code{background:var(--soft);padding:1px 5px;border-radius:4px;color:var(--ink)}
+.empty{text-align:center;color:var(--muted);padding:40px 10px;border:2px dashed var(--line);border-radius:14px}
+pre.cmd{background:#0f1a26;color:#d6e6f5;padding:12px 14px;border-radius:10px;font-size:12.5px;overflow:auto;margin:6px 0 10px}
+.note{background:var(--soft);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:10px 14px;font-size:13px;line-height:1.55;margin-bottom:14px}
+footer{border-top:1px solid var(--line);padding:18px 0 34px;color:var(--muted);font-size:12px;line-height:1.6}
+footer a{color:var(--teal-d);font-weight:600}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#0f2744;color:#fff;padding:10px 18px;border-radius:10px;font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,.25);z-index:50;display:none}
+@media print{
+  header.top .hbtns,.tabs,.bar,.noprint,footer .noprint{display:none!important}
+  header.top{background:none;color:#000;padding:0}.sub{color:#333}
+  body,html{background:#fff;color:#000}.card,.kpi{break-inside:avoid;border-color:#bbb}
+  .devres{break-inside:avoid-page}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="row">
+      <div>
+        <h1>Verificación OT<span class="beta">BETA</span></h1>
+        <div class="sub">Línea base de configuración de una célula · comprobación activa de solo lectura · Toolbox-OT</div>
+      </div>
+      <div class="hbtns">
+        <a class="hbtn" href="index.html">🧰 Toolbox-OT</a>
+        <a class="hbtn" href="redot.html">🔌 Red OT</a>
+        <a class="hbtn" href="riesgo.html">🛡 Análisis de riesgo</a>
+        <a class="hbtn" href="proveedores.html">🤝 Proveedores</a>
+        <a class="hbtn" href="accesos.html">🔐 Accesos</a>
+        <button class="hbtn" id="themebtn">🌙 Oscuro</button>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab on" data-tab="base">① Línea base</button>
+      <button class="tab" data-tab="run">② Ejecutar script</button>
+      <button class="tab" data-tab="res">③ Resultados</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="betabar"><b>Herramienta en fase beta.</b> El script se ha probado con equipos simulados (PLC, OPC UA, SNMP, IoT Core). Antes de usarlo en una célula real, ejecútalo con <code>--plan</code> y revisa los resultados con espíritu crítico. Si algo no cuadra con lo que ves en el equipo, anótalo: es parte de la práctica.</div>
+  <!-- ───────────── LÍNEA BASE ───────────── -->
+  <section id="tab-base">
+    <div class="bar">
+      <button class="btn pri" id="bImpRed">🔌 Importar Red OT…</button>
+      <button class="btn" id="bAbrirBase">📂 Abrir línea base…</button>
+      <button class="btn" id="bEjBase">Cargar ejemplo</button>
+      <button class="btn" id="bNuevaBase">✚ Nueva</button>
+      <span class="sep"></span>
+      <button class="btn pri" id="bExpBase">💾 Exportar línea base (.json)</button>
+    </div>
+    <div id="redotSel"></div>
+    <div id="baseEd"></div>
+  </section>
+
+  <!-- ───────────── EJECUTAR ───────────── -->
+  <section id="tab-run" hidden>
+    <div class="card">
+      <h2>Cómo ejecutar la verificación en la célula</h2>
+      <div class="note"><b>Solo lectura y con permiso.</b> El script consulta únicamente las IP de la línea base, con pausas entre consultas, y nunca escribe en los equipos. Aun así, ejecútalo con la instalación parada o en pruebas y con autorización del responsable. En OT, una consulta inoportuna también es un riesgo.</div>
+      <h3>1 · Dónde se ejecuta</h3>
+      <p class="hint">En un PC autorizado conectado a la <b>VLAN de la célula</b> (o con ruta hacia ella). El descubrimiento PROFINET DCP es de capa 2: solo funciona desde la misma VLAN y, en Windows, necesita Npcap.</p>
+      <h3>2 · Preparación (una vez)</h3>
+      <pre class="cmd">python --version          # Python 3.9 o superior
+pip install python-snap7 asyncua netmiko pnio_dcp   # opcionales</pre>
+      <p class="hint">Sin bibliotecas opcionales el script funciona igual: puertos, SNMP, web e IoT Core de ifm usan solo Python estándar. Lo que necesite una biblioteca ausente aparecerá como <i>NO COMPROBABLE</i>.</p>
+      <h3>3 · Credenciales (nunca en el JSON)</h3>
+      <pre class="cmd"># Windows (PowerShell)                 # Linux / Raspberry Pi
+$env:OT_SSH_USER="admin"               export OT_SSH_USER=admin
+$env:OT_SSH_PASS="********"            export OT_SSH_PASS='********'</pre>
+      <p class="hint">El prefijo lo define el campo <i>Variable de credenciales</i> de cada equipo (OT_SSH, OT_IFM, OT_OPCUA…). Si no existe la variable, el script lo pregunta por teclado.</p>
+      <h3>4 · Ejecución</h3>
+      <pre class="cmd">python verificar_celda.py <span id="runFile">linea_base_celda.json</span> --plan     # ver qué consultaría (no toca la red)
+python verificar_celda.py <span id="runFile2">linea_base_celda.json</span>            # verificación real</pre>
+      <p class="hint">Genera <code>resultado_&lt;celda&gt;_&lt;fecha&gt;.json</code>; cárgalo en la pestaña ③. Las copias de configuración de los switches se guardan en <code>copias_config/</code> y la siguiente ejecución muestra qué líneas cambiaron.</p>
+      <h3>5 · Automatizar (nivel avanzado)</h3>
+      <pre class="cmd"># Raspberry Pi en la red de gestión, todos los días a las 06:30
+30 6 * * * cd /home/pi/verif &amp;&amp; python3 verificar_celda.py linea_base.json --si -o res_$(date +\%F).json</pre>
+    </div>
+  </section>
+
+  <!-- ───────────── RESULTADOS ───────────── -->
+  <section id="tab-res" hidden>
+    <div class="bar">
+      <button class="btn pri" id="bAbrirRes">📂 Cargar resultados…</button>
+      <button class="btn" id="bEjRes">Cargar ejemplo simulado</button>
+      <label class="chk" style="padding:0 6px"><input type="checkbox" id="soloDesv"> Solo desviaciones</label>
+      <span class="sep"></span>
+      <button class="btn" id="bCSV">⬇ Hallazgos CSV</button>
+      <button class="btn" id="bRedOTUpd" title="Escribe firmware y hallazgos en el JSON de Red OT para importarlo después en el Análisis de Riesgo">🔁 Actualizar inventario Red OT</button>
+      <button class="btn" id="bPrint">🖨 Informe</button>
+    </div>
+    <div id="resView"></div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <b>Verificación OT (beta)</b> · parte de <b>Toolbox-OT v1.9</b> — Material educativo. Aplicación concebida e <b>inspirada por David de Armas Suárez</b> · <a href="mailto:conecta3@hotmail.com">conecta3@hotmail.com</a>.<br>
+  <b>Propulsada por Claude.ai</b> (Anthropic) · <i>boosted by Claude.ai</i>. Licencia <b>CC BY 4.0</b>. <span class="noprint">Los datos se guardan solo en este navegador.</span>
+</footer>
+<div class="toast" id="toast"></div>
+<input type="file" id="fileIn" accept=".json,application/json" hidden>
+
+<script>
+/* ===================== datos de ejemplo (embebidos) ===================== */
+var EJ_BASE = {"schema": "ot-baseline/1.0", "celda": {"nombre": "Picadora", "zona_redot": "s46", "vlan": "11", "red": "10.10.11.0/24", "origen": "ejemplo_red_ot.json", "autor": "", "fecha": "2026-11-22", "notas": "Línea base de ejemplo. Los valores esperados (firmware, avisos, números de serie) son ficticios: cada grupo los rellena con los datos de su célula."}, "ajustes": {"timeout_s": 2, "pausa_s": 0.5, "snmp_comunidades": ["public", "private"], "dcp": {"activar": false, "ip_interfaz": "10.10.11.250"}, "ifm_ruta_validacion": "/iolinkmaster/port[{p}]/validation_datastorage_mode"}, "dispositivos": [{"id_redot": "n6", "tipo_redot": "plc", "nombre": "PLC 1", "ip": "10.10.11.10", "perfil": "plc_s7", "esperado": {"referencia": "6ES7 215-1AG40-0XB0", "nombre_pn": "plc1", "fw_minimo": "V4.6.0", "avisos": [{"id": "SSA-000000", "titulo": "Aviso de ejemplo (sustituir por uno real)", "corregido_en": "V4.6.1", "severidad": "ALTA", "cve": "CVE-0000-00000", "mitigacion": "Actualizar a la versión corregida o aplicar las mitigaciones del aviso."}], "estado_cpu": "RUN", "put_get": false, "rack": 0, "slot": 1, "snmp": "v3", "web": "desactivado", "puertos_abiertos": [102], "puertos_cerrados": [21, 23, 80, 443, 502], "opcua": {"url": "opc.tcp://10.10.11.10:4840", "cred_env": "OT_OPCUA", "nodos": [{"nombre": "G120 · r0018 firmware CU", "nodeid": "ns=3;s=\"DB_Verif\".\"G120_r0018\"", "esperado": 4710000, "severidad": "MEDIA"}, {"nombre": "G120 · p1082 velocidad máx. (rpm)", "nodeid": "ns=3;s=\"DB_Verif\".\"G120_p1082\"", "maximo": 1500, "severidad": "ALTA", "recomendacion": "Velocidad máxima por encima de la línea base: riesgo para la máquina y las personas."}]}}}, {"id_redot": "n7", "tipo_redot": "vfd", "nombre": "VF 1", "ip": "10.10.11.11", "perfil": "vfd_g120", "esperado": {"nombre_pn": "g120-picadora", "snmp": "v3", "web": "https", "puertos_abiertos": [], "puertos_cerrados": [21, 23]}}, {"id_redot": "n5", "tipo_redot": "hmi", "nombre": "HMI 1", "ip": "10.10.11.12", "perfil": "hmi", "esperado": {"nombre_pn": "hmi1", "snmp": "v3", "web": "desactivado", "puertos_abiertos": [102], "puertos_cerrados": [21, 23, 5900]}}, {"id_redot": "", "tipo_redot": "io_remote", "nombre": "Maestro IO-Link", "ip": "10.10.11.20", "perfil": "iolink_ifm", "esperado": {"nombre_pn": "iolink-picadora", "iot_auth": true, "cred_env": "OT_IFM", "snmp": "v3", "puertos_abiertos": [80], "puertos_cerrados": [21, 23], "puertos_iolink": {"1": {"nombre": "Sensor de temperatura", "vendorid": 310, "deviceid": 1063, "serial": "000123456789", "validacion": ""}, "2": {"nombre": "Sensor de nivel", "vendorid": 310, "deviceid": 1027, "serial": "", "validacion": ""}}}}, {"id_redot": "n4", "tipo_redot": "switch_ind", "nombre": "SW1", "ip": "10.10.11.2", "perfil": "switch_cisco", "esperado": {"snmp": "v3", "cred_env": "OT_SSH", "netmiko_tipo": "cisco_ios", "puertos_abiertos": [22], "puertos_cerrados": [23, 80], "debe_contener": [{"patron": "^ip ssh version 2", "severidad": "MEDIA", "recomendacion": "Forzar SSH v2."}, {"patron": "^service password-encryption", "severidad": "BAJA"}, {"patron": "transport input ssh", "severidad": "ALTA", "recomendacion": "En las líneas vty permitir solo SSH."}], "no_debe_contener": [{"patron": "^snmp-server community (public|private)", "severidad": "ALTA", "recomendacion": "Eliminar las comunidades SNMP por defecto."}, {"patron": "^ip http server", "severidad": "MEDIA", "recomendacion": "Desactivar el servidor HTTP del switch."}, {"patron": "transport input (telnet|all)", "severidad": "ALTA"}]}}]};
+var EJ_RES  = {"schema": "ot-verif/1.0", "herramienta": "verificar_celda.py v1.0", "celda": {"nombre": "Picadora", "zona_redot": "s46", "vlan": "11", "red": "10.10.11.0/24", "origen": "ejemplo_red_ot.json", "autor": "", "fecha": "2026-11-22", "notas": "Línea base de ejemplo. Los valores esperados (firmware, avisos, números de serie) son ficticios: cada grupo los rellena con los datos de su célula."}, "linea_base": "linea_base_picadora.json", "fecha": "2026-11-22T10:30:00", "equipo_origen": {"host": "PC-INGENIERIA-01", "so": "Windows-11"}, "dispositivos": [{"id_redot": "n6", "nombre": "PLC 1", "ip": "10.10.11.10", "perfil": "plc_s7", "observado": {"puertos_abiertos": [102], "snmp_sysdescr": "Siemens, SIMATIC S7, CPU-1200, 6ES7 215-1AG40-0XB0, HW: Version 1, FW: Version V4.5.2, S C-XXX", "snmp_sysname": "plc1", "firmware": "V4.5.2", "referencia": "6ES7 215-1AG40-0XB0", "estado_cpu": "RUN", "put_get": true, "web": "desactivado", "opcua:G120 · p1082 velocidad máx. (rpm)": 1800.0}, "comprobaciones": [{"id": "puerto_102", "descripcion": "Puerto necesario 102/tcp (S7comm (ISO-TSAP))", "esperado": "abierto", "real": "abierto", "estado": "OK", "severidad": "", "evidencia": "", "recomendacion": ""}, {"id": "puerto_21", "descripcion": "Puerto no permitido 21/tcp (FTP)", "esperado": "cerrado", "real": "cerrado", "estado": "OK", "severidad": "", "evidencia": "", "recomendacion": ""}, {"id": "puerto_23", "descripcion": "Puerto no permitido 23/tcp (Telnet)", "esperado": "cerrado", "real": "cerrado", "estado": "OK", "severidad": "", "evidencia": "", "recomendacion": ""}, {"id": "puerto_80", "descripcion": "Puerto no permitido 80/tcp (HTTP)", "esperado": "cerrado", "real": "cerrado", "estado": "OK", "severidad": "", "evidencia": "", "recomendacion": ""}, {"id": "puerto_443", "descripcion": "Puerto no permitido 443/tcp (HTTPS)", "esperado": "cerrado", "real": "cerrado", "estado": "OK", "severidad": "", "evidencia": "", "recomendacion": ""}, {"id": "puerto_502", "descripcion": "Puerto no permitido 502/tcp (Modbus/TCP)", "esperado": "cerrado", "real": "cerrado", "estado": "OK", "severidad": "", "evidencia": "", "recomendacion": ""}, {"id": "snmp", "descripcion": "SNMP v1/v2c con comunidad por defecto", "esperado": "sin respuesta (SNMPv3)", "real": "RESPONDE a la comunidad «public» (v2c)", "estado": "DESVIACION", "severidad": "MEDIA", "evidencia": "Siemens, SIMATIC S7, CPU-1200, 6ES7 215-1AG40-0XB0, HW: Version 1, FW: Version V4.5.2, S C-XXX", "recomendacion": "Desactivar SNMP v1/v2c o cambiar la comunidad; usar SNMPv3 con autenticación y cifrado."}, {"id": "s7_estado", "descripcion": "Estado de la CPU", "esperado": "RUN", "real": "RUN", "estado": "OK", "severidad": "", "evidencia": "", "recomendacion": ""}, {"id": "s7_putget", "descripcion": "Acceso PUT/GET (lectura/escritura sin autenticación)", "esperado": "deshabilitado", "real": "HABILITADO", "estado": "DESVIACION", "severidad": "ALTA", "evidencia": "lectura de MB0 aceptada sin autenticación", "recomendacion": "Desactivar «Permitir acceso vía comunicación PUT/GET» en las propiedades de la CPU (TIA Portal) y usar OPC UA con usuarios."}, {"id": "s7_proteccion", "descripcion": "Nivel de protección (SZL 0x0232)", "esperado": "-", "real": "no disponible en S7-1200", "estado": "NO_COMPROBABLE", "severidad": "", "evidencia": "", "recomendacion": "Contrastar con el nivel de acceso configurado en TIA Portal."}, {"id": "web", "descripcion": "Servidor web", "esperado": "desactivado", "real": "desactivado", "estado": "OK", "severidad": "", "evidencia": "", "recomendacion": ""}, {"id": "opcua_anon", "descripcion": "Acceso OPC UA", "esperado": "con usuario", "real": "anónimo aceptado", "estado": "DESVIACION", "severidad": "MEDIA", "evidencia": "", "recomendacion": "Desactivar el acceso anónimo al servidor OPC UA y exigir usuario y certificado."}, {"id": "opcua_G120 · r0018 firmware CU", "descripcion": "G120 · r0018 firmware CU", "esperado": 4710000, "real": 4710000, "estado": "OK", "severidad": "", "evidencia": "", "recomendacion": ""}, {"id": "opcua_G120 · p1082 velocidad máx. (rpm)", "descripcion": "G120 · p1082 velocidad máx. (rpm)", "esperado": "≤ 1500", "real": 1800.0, "estado": "DESVIACION", "severidad": "ALTA", "evidencia": "", "recomendacion": "Velocidad máxima por encima de la línea base: riesgo para la máquina y las personas."}, {"id": "referencia", "descripcion": "Referencia del equipo", "esperado": "6ES7 215-1AG40-0XB0", "real": "6ES7 215-1AG40-0XB0", "estado": "OK", "severidad": "", "evidencia": "", "recomendacion": ""}, {"id": "fw", "descripcion": "Versión de firmware", "esperado": "≥ V4.6.0", "real": "V4.5.2", "estado": "DESVIACION", "severidad": "MEDIA", "evidencia": "", "recomendacion": "Planificar la actualización del firmware (en parada y con copia del proyecto)."}, {"id": "aviso_SSA-000000", "descripcion": "Aviso SSA-000000 (Aviso de ejemplo (sustituir por uno real))", "esperado": "firmware ≥ V4.6.1", "real": "V4.5.2 → VULNERABLE", "estado": "DESVIACION", "severidad": "ALTA", "evidencia": "CVE-0000-00000", "recomendacion": "Actualizar a la versión corregida o aplicar las mitigaciones del aviso."}]}, {"id_redot": "n7", "nombre": "VF 1", "ip": "10.10.11.11", "perfil": "vfd_g120", "observado": {"puertos_abiertos": [], "web": "solo HTTP"}, "comprobaciones": [{"id": "puerto_21", "descripcion": "Puerto no permitido 21/tcp (FTP)", "esperado": "cerrado", "real": "cerrado", "estado": "OK", "severidad": "", "evidencia": "", "recomendacion": ""}, {"id": "puerto_23", "descripcion": "Puerto no permitido 23/tcp (Telnet)", "esperado": "cerrado", "real": "cerrado", "estado": "OK", "severidad": "", "evidencia": "", "recomendacion": ""}, {"id": "snmp", "descripcion": "SNMP v1/v2c con comunidades por defecto", "esperado": "sin respuesta", "real": "sin respuesta a public, private", "estado": "OK", "severidad": "", "evidencia": "", "recomendacion": ""}, {"id": "web", "descripcion": "Servidor web cifrado", "esperado": "solo HTTPS (HTTP redirigido o cerrado)", "real": "solo HTTP", "estado": "DESVIACION", "severidad": "MEDIA", "evidencia": "", "recomendacion": "Forzar HTTPS y desactivar HTTP sin cifrar: las credenciales viajan en claro."}]}, {"id_redot": "n5", "nombre": "HMI 1", "ip": "10.10.11.12", "perfil": "hmi", "observado": {"puertos_abiertos": [102, 23], "web": "desactivado"}, "comprobaciones": [{"id": "puerto_102", "descripcion": "Puerto necesario 102/tcp (S7comm (ISO-TSAP))", "esperado": "abierto", "real": "abierto", "estado": "OK", "severidad": "", "evidencia": "", "recomendacion": ""}, {"id": "puerto_21", "descripcion": "Puerto no permitido 21/tcp (FTP)", "esperado": "cerrado", "real": "cerrado", "estado": "OK", "severidad": "", "evidencia": "", "recomendacion": ""}, {"id": "puerto_23", "descripcion": "Puerto no permitido 23/tcp (Telnet)", "esperado": "cerrado", "real": "ABIERTO", "estado": "DESVIACION", "severidad": "ALTA", "evidencia": "", "recomendacion": "Desactivar el servicio Telnet si no es necesario o filtrarlo en el cortafuegos de la célula."}, {"id": "puerto_5900", "descripcion": "Puerto no permitido 5900/tcp (VNC)", "esperado": "cerrado", "real": "cerrado", "estado": "OK", "severidad": "", "evidencia": "", "recomendacion": ""}, {"id": "snmp", "descripcion": "SNMP v1/v2c con comunidades por defecto", "esperado": "sin respuesta", "real": "sin respuesta a public, private", "estado": "OK", "severidad": "", "evidencia": "", "recomendacion": ""}, {"id": "web", "descripcion": "Servidor web", "esperado": "desactivado", "real": "desactivado", "estado": "OK", "severidad": "", "evidencia": "", "recomendacion": ""}]}, {"id_redot": "", "nombre": "Maestro IO-Link", "ip": "10.10.11.20", "perfil": "iolink_ifm", "observado": {"puertos_abiertos": [80], "referencia": "AL1102", "firmware": "AL1102_cn_if_v2.4.27", "serie": "000201234567", "iolink": {"1": {"vendorid": 310, "deviceid": 1063, "serial": "000123456789", "producto": "Temp sensor", "firmware": "V3.12", "validacion": 0}, "2": {"vendorid": 310, "deviceid": 9999, "serial": "X", "producto": "Otro sensor", "firmware": "1.0", "validacion": 0}}}, "comprobaciones": [{"id": "puerto_80", "descripcion": "Puerto necesario 80/tcp (HTTP)", "esperado": "abierto", "real": "abierto", "estado": "OK", "severidad": "", "evidencia": "", "recomendacion": ""}, {"id": "puerto_21", "descripcion": "Puerto no permitido 21/tcp (FTP)", "esperado": "cerrado", "real": "cerrado", "estado": "OK", "severidad": "", "evidencia": "", "recomendacion": ""}, {"id": "puerto_23", "descripcion": "Puerto no permitido 23/tcp (Telnet)", "esperado": "cerrado", "real": "cerrado", "estado": "OK", "severidad": "", "evidencia": "", "recomendacion": ""}, {"id": "snmp", "descripcion": "SNMP v1/v2c con comunidades por defecto", "esperado": "sin respuesta", "real": "sin respuesta a public, private", "estado": "OK", "severidad": "", "evidencia": "", "recomendacion": ""}, {"id": "ifm_auth", "descripcion": "IoT Core exige autenticación", "esperado": "sí", "real": "NO (responde a cualquiera)", "estado": "DESVIACION", "severidad": "ALTA", "evidencia": "", "recomendacion": "Activar usuario y contraseña en el IoT Core y limitar desde qué red se accede al puerto IoT."}, {"id": "iol_1_tipo", "descripcion": "Puerto IO-Link 1: tipo de dispositivo", "esperado": "vendor 310 / device 1063", "real": "vendor 310 / device 1063 (Temp sensor)", "estado": "OK", "severidad": "", "evidencia": "", "recomendacion": ""}, {"id": "iol_1_serie", "descripcion": "Puerto IO-Link 1: número de serie", "esperado": "000123456789", "real": "000123456789", "estado": "OK", "severidad": "", "evidencia": "", "recomendacion": ""}, {"id": "iol_2_tipo", "descripcion": "Puerto IO-Link 2: tipo de dispositivo", "esperado": "vendor 310 / device 1027", "real": "vendor 310 / device 9999 (Otro sensor)", "estado": "DESVIACION", "severidad": "ALTA", "evidencia": "", "recomendacion": "Se ha conectado un dispositivo distinto al previsto: verificar sustitución no autorizada."}]}, {"id_redot": "n4", "nombre": "SW1", "ip": "10.10.11.2", "perfil": "switch_cisco", "observado": {"puertos_abiertos": []}, "comprobaciones": [{"id": "puerto_22", "descripcion": "Puerto necesario 22/tcp (SSH)", "esperado": "abierto", "real": "abierto", "estado": "OK", "severidad": "", "evidencia": "", "recomendacion": ""}, {"id": "puerto_23", "descripcion": "Puerto no permitido 23/tcp (Telnet)", "esperado": "cerrado", "real": "cerrado", "estado": "OK", "severidad": "", "evidencia": "", "recomendacion": ""}, {"id": "puerto_80", "descripcion": "Puerto no permitido 80/tcp (HTTP)", "esperado": "cerrado", "real": "cerrado", "estado": "OK", "severidad": "", "evidencia": "", "recomendacion": ""}, {"id": "snmp", "descripcion": "SNMP v1/v2c con comunidades por defecto", "esperado": "sin respuesta", "real": "sin respuesta a public, private", "estado": "OK", "severidad": "", "evidencia": "", "recomendacion": ""}, {"id": "cfg-^snmp-server community (public|private)", "descripcion": "No debe contener «^snmp-server community (public|private)»", "esperado": "ausente", "real": "PRESENTE: snmp-server community public RO", "estado": "DESVIACION", "severidad": "ALTA", "evidencia": "", "recomendacion": "Eliminar las comunidades SNMP por defecto."}]}], "duracion_s": 19.4, "resumen": {"OK": 28, "DESVIACION": 11, "NO_COMPROBABLE": 1, "INFO": 0, "ALTA": 7, "MEDIA": 4, "BAJA": 0, "equipos_no_inventariados": 1}, "nota": "Resultado SIMULADO para practicar con la herramienta.", "dcp": {"equipos": [], "desconocidos": [{"nombre_pn": "et200sp-x", "ip": "10.10.11.77", "mac": "28:63:36:aa:bb:cc", "familia": "ET200SP"}]}};
+
+/* ===================== catálogos ===================== */
+var PERFILES = {
+  plc_s7:      {lbl:"PLC Siemens S7",               col:["puertos","snmp","s7","web","opcua"]},
+  vfd_g120:    {lbl:"Variador SINAMICS G120",       col:["puertos","snmp","web"]},
+  hmi:         {lbl:"HMI Siemens",                  col:["puertos","snmp","web"]},
+  iolink_ifm:  {lbl:"Maestro IO-Link ifm (IoT Core)",col:["puertos","snmp","ifm"]},
+  switch_cisco:{lbl:"Switch Cisco (SSH)",           col:["puertos","snmp","ssh"]},
+  scalance:    {lbl:"SCALANCE (switch / router)",   col:["puertos","snmp","web"]},
+  generico:    {lbl:"Genérico",                     col:["puertos","snmp","web"]}
+};
+var PRESET = {
+  plc_s7:      {put_get:false,estado_cpu:"RUN",rack:0,slot:1,snmp:"v3",web:"desactivado",puertos_abiertos:[102],puertos_cerrados:[21,23,80,443,502]},
+  vfd_g120:    {snmp:"v3",web:"https",puertos_abiertos:[],puertos_cerrados:[21,23]},
+  hmi:         {snmp:"v3",web:"desactivado",puertos_abiertos:[102],puertos_cerrados:[21,23,5900]},
+  iolink_ifm:  {iot_auth:true,cred_env:"OT_IFM",snmp:"v3",puertos_abiertos:[80],puertos_cerrados:[21,23],puertos_iolink:{}},
+  switch_cisco:{snmp:"v3",cred_env:"OT_SSH",netmiko_tipo:"cisco_ios",puertos_abiertos:[22],puertos_cerrados:[23,80],
+    debe_contener:[{patron:"^ip ssh version 2",severidad:"MEDIA"},{patron:"transport input ssh",severidad:"ALTA"}],
+    no_debe_contener:[{patron:"^snmp-server community (public|private)",severidad:"ALTA"},{patron:"^ip http server",severidad:"MEDIA"},{patron:"transport input (telnet|all)",severidad:"ALTA"}]},
+  scalance:    {snmp:"v3",web:"https",puertos_abiertos:[22],puertos_cerrados:[21,23]},
+  generico:    {snmp:"v3",web:"https",puertos_abiertos:[],puertos_cerrados:[21,23]}
+};
+function perfilDeRedOT(d){
+  var t=d.type, m=((d.props||{}).manufacturer||"").toLowerCase();
+  if(t==="plc")return "plc_s7";
+  if(t==="vfd")return "vfd_g120";
+  if(t==="hmi")return "hmi";
+  if(t==="io_remote")return m.indexOf("ifm")>=0?"iolink_ifm":"generico";
+  if(t==="switch_ind"||t==="switch_it"||t==="router_ot"||t==="firewall_ot"||t==="router")
+    return m.indexOf("cisco")>=0?"switch_cisco":(m.indexOf("siemens")>=0?"scalance":(t==="switch_ind"?"scalance":"generico"));
+  return "generico";
+}
+var SEV=["ALTA","MEDIA","BAJA"];
+
+/* ===================== estado ===================== */
+var LS="toolbox_verif_v1";
+var S={base:null, redot:null, res:null, zona:""};
+function save(){try{localStorage.setItem(LS,JSON.stringify(S));}catch(e){}}
+function load(){try{var r=localStorage.getItem(LS);if(r){var o=JSON.parse(r);if(o&&typeof o==="object")S=Object.assign(S,o);}}catch(e){}}
+function clone(o){return JSON.parse(JSON.stringify(o));}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function toast(t){var e=document.getElementById("toast");e.textContent=t;e.style.display="block";clearTimeout(toast._t);toast._t=setTimeout(function(){e.style.display="none";},2600);}
+function slug(s){return (s||"celda").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"");}
+function hoy(){return new Date().toISOString().slice(0,10);}
+function download(name,text,type){var b=new Blob([text],{type:type||"application/json"});var u=URL.createObjectURL(b);var a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u);},800);}
+function pickFile(cb){var f=document.getElementById("fileIn");f.value="";f.onchange=function(){var file=f.files[0];if(!file)return;var r=new FileReader();r.onload=function(){try{cb(JSON.parse(r.result),file.name);}catch(e){alert("El archivo no es un JSON válido: "+e.message);}};r.readAsText(file);};f.click();}
+
+/* ===================== tema y pestañas ===================== */
+(function(){
+  function apply(t){if(t==="dark")document.documentElement.setAttribute("data-theme","dark");else document.documentElement.removeAttribute("data-theme");document.getElementById("themebtn").textContent=(t==="dark")?"☀ Claro":"🌙 Oscuro";}
+  function get(){try{return localStorage.getItem("toolbox_theme")||"light";}catch(e){return "light";}}
+  apply(get());
+  document.getElementById("themebtn").onclick=function(){var n=get()==="dark"?"light":"dark";try{localStorage.setItem("toolbox_theme",n);}catch(e){}apply(n);};
+})();
+function showTab(t){
+  document.querySelectorAll(".tab").forEach(function(b){b.classList.toggle("on",b.dataset.tab===t);});
+  ["base","run","res"].forEach(function(k){document.getElementById("tab-"+k).hidden=(k!==t);});
+  if(t==="run"){var n="linea_base_"+slug(S.base&&S.base.celda&&S.base.celda.nombre)+".json";document.getElementById("runFile").textContent=n;document.getElementById("runFile2").textContent=n;}
+}
+document.querySelectorAll(".tab").forEach(function(b){b.onclick=function(){showTab(b.dataset.tab);};});
+
+/* ===================== LÍNEA BASE ===================== */
+function nuevaBase(){
+  return {schema:"ot-baseline/1.0",
+    celda:{nombre:"Nueva célula",zona_redot:"",vlan:"",red:"",origen:"",autor:"",fecha:hoy(),notas:""},
+    ajustes:{timeout_s:2,pausa_s:0.5,snmp_comunidades:["public","private"],dcp:{activar:false,ip_interfaz:""},ifm_ruta_validacion:"/iolinkmaster/port[{p}]/validation_datastorage_mode"},
+    dispositivos:[]};
+}
+function nuevoDisp(perfil,extra){
+  var d={id_redot:"",tipo_redot:"",nombre:"Equipo",ip:"",perfil:perfil||"generico",esperado:clone(PRESET[perfil||"generico"])};
+  return Object.assign(d,extra||{});
+}
+
+function renderRedSel(){
+  var el=document.getElementById("redotSel");
+  if(!S.redot){el.innerHTML="";return;}
+  var zonas=S.redot.zonas||[];
+  var opts=zonas.map(function(z){var n=(z.devices||[]).length;return '<option value="'+esc(z.id)+'"'+(S.zona===z.id?" selected":"")+'>'+esc(z.nombre)+' ('+n+' disp.)</option>';}).join("");
+  el.innerHTML='<div class="card"><h2>Esquema Red OT: '+esc(S.redot.nombre||"")+'</h2>'+
+    '<p class="hint">Elige la <b>zona</b> que corresponde a la célula. Se crea un equipo por cada dispositivo de la zona que tenga IP; los de campo sin IP (motores, sensores 4-20 mA) se omiten. El perfil se propone según el tipo y el fabricante, y puedes cambiarlo.</p>'+
+    '<div class="bar" style="margin:0"><select class="t" id="zonaSel" style="max-width:320px">'+(opts||'<option value="">— el esquema no tiene zonas —</option>')+'</select>'+
+    '<button class="btn pri" id="bCrearDeZona">Crear línea base de esta zona</button>'+
+    '<button class="btn" id="bAddDeZona">Añadir sus equipos a la línea base actual</button>'+
+    '<button class="btn sm del" id="bQuitarRed">Quitar esquema</button></div></div>';
+  document.getElementById("zonaSel").onchange=function(){S.zona=this.value;save();};
+  document.getElementById("bCrearDeZona").onclick=function(){crearDeZona(true);};
+  document.getElementById("bAddDeZona").onclick=function(){crearDeZona(false);};
+  document.getElementById("bQuitarRed").onclick=function(){S.redot=null;S.zona="";save();renderRedSel();};
+}
+function crearDeZona(reemplazar){
+  var zid=document.getElementById("zonaSel").value; S.zona=zid;
+  var z=(S.redot.zonas||[]).find(function(x){return x.id===zid;});
+  var ids=z?(z.devices||[]):S.redot.devices.map(function(d){return d.id;});
+  var devs=S.redot.devices.filter(function(d){return ids.indexOf(d.id)>=0 && d.props && d.props.ip;});
+  if(!devs.length){alert("Esa zona no tiene dispositivos con dirección IP.");return;}
+  if(reemplazar&&S.base&&S.base.dispositivos.length&&!confirm("Se sustituirá la línea base actual. ¿Continuar?"))return;
+  var b=reemplazar||!S.base?nuevaBase():S.base;
+  var vl={};devs.forEach(function(d){var v=d.props.vlan;if(v)vl[v]=(vl[v]||0)+1;});
+  if(reemplazar){
+    b.celda.nombre=z?z.nombre:(S.redot.nombre||"Célula");b.celda.zona_redot=zid;b.celda.origen=S.redot.nombre||"";
+    b.celda.vlan=Object.keys(vl).sort(function(a,c){return vl[c]-vl[a];})[0]||"";
+    var ip0=devs[0].props.ip.split(".");if(ip0.length===4)b.celda.red=ip0.slice(0,3).join(".")+".0/24";
+  }
+  devs.forEach(function(d){
+    if(b.dispositivos.some(function(x){return x.id_redot===d.id;}))return;
+    var p=perfilDeRedOT(d);
+    var nd=nuevoDisp(p,{id_redot:d.id,tipo_redot:d.type,nombre:d.props.name||d.type,ip:d.props.ip});
+    if(d.props.product_code)nd.esperado.referencia=d.props.product_code;
+    if(d.props.firmware)nd.esperado.fw_minimo=d.props.firmware;
+    b.dispositivos.push(nd);
+  });
+  S.base=b;save();renderBase();toast(devs.length+" equipos en la línea base");
+}
+
+function fld(label,path,val,type,extra){
+  type=type||"text";
+  return '<label class="f">'+label+'<input class="t" data-p="'+path+'" type="'+type+'" value="'+esc(val==null?"":val)+'"'+(extra||"")+'></label>';
+}
+function sel(label,path,val,opts){
+  return '<label class="f">'+label+'<select class="t" data-p="'+path+'">'+opts.map(function(o){var v=Array.isArray(o)?o[0]:o,l=Array.isArray(o)?o[1]:o;return '<option value="'+esc(v)+'"'+(String(val)===String(v)?" selected":"")+'>'+esc(l)+'</option>';}).join("")+'</select></label>';
+}
+function chk(label,path,val){return '<label class="chk"><input type="checkbox" data-p="'+path+'" data-k="bool"'+(val?" checked":"")+'> '+label+'</label>';}
+
+function renderBase(){
+  renderRedSel();
+  var el=document.getElementById("baseEd");
+  var b=S.base;
+  if(!b){el.innerHTML='<div class="empty"><p style="font-size:15px;margin:0 0 6px"><b>Aún no hay línea base</b></p><p style="margin:0">Importa el JSON exportado desde el <b>Editor Red OT</b> y elige la zona de tu célula, o carga el ejemplo.</p></div>';return;}
+  var c=b.celda, a=b.ajustes;
+  var h='<div class="card"><h2>Célula</h2><div class="grid">'+
+    fld("Nombre de la célula","celda.nombre",c.nombre)+fld("VLAN","celda.vlan",c.vlan)+fld("Red","celda.red",c.red,"text",' placeholder="10.10.11.0/24"')+
+    fld("Autor / grupo","celda.autor",c.autor)+fld("Fecha","celda.fecha",c.fecha,"date")+'</div>'+
+    '<label class="f" style="margin-top:10px">Notas<textarea class="t" data-p="celda.notas" rows="2">'+esc(c.notas)+'</textarea></label>'+
+    '<h3>Ajustes de la ejecución</h3><div class="grid">'+
+    fld("Tiempo de espera (s)","ajustes.timeout_s",a.timeout_s,"number",' step="0.5" min="0.5" data-k="num"')+
+    fld("Pausa entre consultas (s)","ajustes.pausa_s",a.pausa_s,"number",' step="0.1" min="0" data-k="num"')+
+    fld("Comunidades SNMP a probar","ajustes.snmp_comunidades",(a.snmp_comunidades||[]).join(", "),"text",' data-k="list"')+
+    chk("Descubrimiento PROFINET DCP","ajustes.dcp.activar",(a.dcp||{}).activar)+
+    fld("IP del PC en la VLAN (para DCP)","ajustes.dcp.ip_interfaz",(a.dcp||{}).ip_interfaz)+
+    '</div><p class="hint" style="margin:10px 0 0">Las comunidades SNMP se prueban para detectar configuraciones por defecto: si un equipo responde a «public» o «private», es un hallazgo. DCP solo envía <i>Identify</i>, nunca <i>Set</i>.</p></div>';
+
+  h+='<div class="bar"><b style="font-size:15px">Equipos ('+b.dispositivos.length+')</b><span class="sep"></span>'+
+     '<select class="t" id="nuevoPerfil" style="width:auto">'+Object.keys(PERFILES).map(function(k){return '<option value="'+k+'">'+PERFILES[k].lbl+'</option>';}).join("")+'</select>'+
+     '<button class="btn" id="bAddDisp">✚ Añadir equipo</button></div>';
+  b.dispositivos.forEach(function(d,i){h+=renderDisp(d,i);});
+  el.innerHTML=h;
+  bindBase();
+}
+
+function renderDisp(d,i){
+  var e=d.esperado||(d.esperado={}), P="dispositivos."+i+".", E=P+"esperado.";
+  var col=PERFILES[d.perfil]?PERFILES[d.perfil].col:PERFILES.generico.col;
+  var h='<details class="dev" data-i="'+i+'"'+(renderDisp.open[i]?" open":"")+'><summary><span class="nm">'+esc(d.nombre)+'</span><span class="ip">'+esc(d.ip||"sin IP")+'</span>'+
+    '<span class="pill">'+esc((PERFILES[d.perfil]||{}).lbl||d.perfil)+'</span>'+(d.id_redot?'<span class="pill">Red OT '+esc(d.id_redot)+'</span>':'')+
+    '<span class="sep"></span><span class="hint">'+col.join(" · ")+'</span></summary><div class="body">';
+  h+='<div class="grid">'+fld("Nombre",P+"nombre",d.nombre)+fld("IP",P+"ip",d.ip)+
+     sel("Perfil",P+"perfil",d.perfil,Object.keys(PERFILES).map(function(k){return [k,PERFILES[k].lbl];}))+
+     fld("Nombre PROFINET (DCP)",E+"nombre_pn",e.nombre_pn)+
+     fld("Referencia (MLFB)",E+"referencia",e.referencia,"text",' placeholder="6ES7 215-1AG40-0XB0"')+
+     fld("Firmware mínimo",E+"fw_minimo",e.fw_minimo,"text",' placeholder="V4.6.0"')+'</div>';
+  h+='<h3>Servicios de red</h3><div class="grid">'+
+     fld("Puertos TCP necesarios (abiertos)",E+"puertos_abiertos",(e.puertos_abiertos||[]).join(", "),"text",' data-k="ints"')+
+     fld("Puertos TCP prohibidos (cerrados)",E+"puertos_cerrados",(e.puertos_cerrados||[]).join(", "),"text",' data-k="ints"')+
+     sel("SNMP",E+"snmp",e.snmp||"v3",[["v3","Solo SNMPv3 (v1/v2c no deben responder)"],["desactivado","Desactivado"],["v1v2c_permitido","v1/v2c permitido"],["omitir","No comprobar"]]);
+  if(col.indexOf("web")>=0)h+=sel("Servidor web",E+"web",e.web||"",[["","No comprobar"],["desactivado","Desactivado"],["https","Solo HTTPS"],["permitido","Permitido"]]);
+  h+='</div>';
+
+  if(d.perfil==="plc_s7"){
+    var o=e.opcua||{};
+    h+='<h3>PLC S7</h3><div class="grid">'+
+      sel("Estado esperado de la CPU",E+"estado_cpu",e.estado_cpu||"RUN",["RUN","STOP"])+
+      fld("Rack",E+"rack",e.rack==null?0:e.rack,"number",' data-k="num"')+fld("Slot",E+"slot",e.slot==null?1:e.slot,"number",' data-k="num"')+
+      chk("PUT/GET permitido",E+"put_get",e.put_get)+'</div>'+
+      '<h3>OPC UA · valores que el PLC publica (p. ej. parámetros del G120 leídos con SINA_PARA_S)</h3><div class="grid">'+
+      fld("URL del servidor",E+"opcua.url",o.url,"text",' placeholder="opc.tcp://IP:4840"')+fld("Variable de credenciales",E+"opcua.cred_env",o.cred_env,"text",' placeholder="OT_OPCUA"')+'</div>'+
+      tabla(E+"opcua.nodos",o.nodos||[],[["nombre","Nombre"],["nodeid","NodeId"],["esperado","Valor esperado"],["maximo","Máximo"],["severidad","Severidad","sev"]]);
+  }
+  if(d.perfil==="iolink_ifm"){
+    h+='<h3>Maestro IO-Link (IoT Core)</h3><div class="grid">'+chk("El IoT Core debe exigir autenticación",E+"iot_auth",e.iot_auth!==false)+
+      fld("Variable de credenciales",E+"cred_env",e.cred_env,"text",' placeholder="OT_IFM"')+'</div>';
+    var rows=Object.keys(e.puertos_iolink||{}).map(function(k){return Object.assign({puerto:k},e.puertos_iolink[k]);});
+    h+='<p class="hint" style="margin:8px 0 2px">Dispositivos esperados por puerto. Vendor ID y Device ID son decimales. <i>Validación</i> es el valor de la ruta de validación/Data Storage de tu firmware (consúltalo con <code>/gettree</code>); vacío = no comprobar.</p>'+
+      tabla(E+"puertos_iolink",rows,[["puerto","Puerto"],["nombre","Dispositivo"],["vendorid","Vendor ID"],["deviceid","Device ID"],["serial","Nº serie"],["fw_minimo","FW mínimo"],["validacion","Validación"]],"iol");
+  }
+  if(d.perfil==="switch_cisco"){
+    h+='<h3>Configuración por SSH</h3><div class="grid">'+fld("Variable de credenciales",E+"cred_env",e.cred_env,"text",' placeholder="OT_SSH"')+
+      fld("Tipo netmiko",E+"netmiko_tipo",e.netmiko_tipo||"cisco_ios")+'</div>'+
+      '<p class="hint" style="margin:8px 0 2px">Reglas sobre <code>show running-config</code> (expresiones regulares, multilínea).</p>'+
+      '<b class="hint">Debe contener</b>'+tabla(E+"debe_contener",e.debe_contener||[],[["patron","Patrón"],["severidad","Severidad","sev"],["recomendacion","Recomendación"]])+
+      '<b class="hint">No debe contener</b>'+tabla(E+"no_debe_contener",e.no_debe_contener||[],[["patron","Patrón"],["severidad","Severidad","sev"],["recomendacion","Recomendación"]]);
+  }
+  h+='<h3>Avisos de seguridad conocidos (criterio c)</h3><p class="hint" style="margin:0 0 2px">Avisos SSA/CVE que afectan a este modelo, con la versión de firmware que los corrige. Si el firmware leído es anterior, el script lo marca como vulnerable.</p>'+
+     tabla(E+"avisos",e.avisos||[],[["id","Aviso (SSA-…)"],["titulo","Título"],["cve","CVE"],["corregido_en","Corregido en"],["severidad","Severidad","sev"],["mitigacion","Mitigación"]]);
+  h+='<div class="bar" style="margin:14px 0 0"><button class="btn sm" data-act="preset" data-i="'+i+'">Aplicar valores recomendados del perfil</button>'+
+     '<button class="btn sm" data-act="dup" data-i="'+i+'">Duplicar</button><span class="sep"></span><button class="btn sm del" data-act="del" data-i="'+i+'">Eliminar equipo</button></div>';
+  return h+'</div></details>';
+}
+renderDisp.open={};
+
+function tabla(path,rows,cols,modo){
+  var h='<table class="mini" data-tbl="'+path+'" data-mode="'+(modo||"")+'"><tr>'+cols.map(function(c){return '<th>'+c[1]+'</th>';}).join("")+'<th></th></tr>';
+  rows.forEach(function(r,ri){
+    h+='<tr>'+cols.map(function(c){
+      var v=r[c[0]];
+      if(c[2]==="sev")return '<td><select class="t" data-cell="'+c[0]+'" data-r="'+ri+'">'+SEV.map(function(s){return '<option'+((v||"MEDIA")===s?" selected":"")+'>'+s+'</option>';}).join("")+'</select></td>';
+      return '<td><input class="t" data-cell="'+c[0]+'" data-r="'+ri+'" value="'+esc(v==null?"":v)+'"></td>';
+    }).join("")+'<td><button class="btn sm del" data-rowdel="'+ri+'">✕</button></td></tr>';
+  });
+  return h+'<tr><td colspan="'+(cols.length+1)+'"><button class="btn sm" data-rowadd="1">✚ Añadir fila</button></td></tr></table>';
+}
+
+function getPath(o,p){return p.split(".").reduce(function(a,k){return a==null?a:a[k];},o);}
+function setPath(o,p,v){var ks=p.split(".");var last=ks.pop();var t=ks.reduce(function(a,k){if(a[k]==null||typeof a[k]!=="object")a[k]={};return a[k];},o);t[last]=v;}
+function numOr(v){if(v===""||v==null)return v;var n=Number(v);return isNaN(n)?v:n;}
+
+function bindBase(){
+  var el=document.getElementById("baseEd");
+  el.querySelectorAll("details.dev").forEach(function(dt){dt.addEventListener("toggle",function(){renderDisp.open[dt.dataset.i]=dt.open;});});
+  el.querySelectorAll("[data-p]").forEach(function(inp){
+    inp.addEventListener("change",function(){
+      var k=inp.dataset.k, v;
+      if(k==="bool")v=inp.checked;
+      else if(k==="num")v=inp.value===""?"":Number(inp.value);
+      else if(k==="list")v=inp.value.split(",").map(function(s){return s.trim();}).filter(Boolean);
+      else if(k==="ints")v=inp.value.split(/[,\s;]+/).map(function(s){return parseInt(s,10);}).filter(function(n){return n>0&&n<65536;});
+      else v=inp.value;
+      setPath(S.base,inp.dataset.p,v);
+      if(/\.perfil$/.test(inp.dataset.p)){var i=+inp.dataset.p.split(".")[1];var d=S.base.dispositivos[i];
+        d.esperado=Object.assign(clone(PRESET[v]||{}),{referencia:d.esperado.referencia,fw_minimo:d.esperado.fw_minimo,nombre_pn:d.esperado.nombre_pn,avisos:d.esperado.avisos});
+        renderDisp.open[i]=true;save();renderBase();return;}
+      save();
+      if(/\.(nombre|ip)$/.test(inp.dataset.p)&&/^dispositivos/.test(inp.dataset.p)){var dt=inp.closest("details");var i2=+inp.dataset.p.split(".")[1];var d2=S.base.dispositivos[i2];dt.querySelector(".nm").textContent=d2.nombre;dt.querySelector(".ip").textContent=d2.ip||"sin IP";}
+    });
+  });
+  el.querySelectorAll("table[data-tbl]").forEach(function(t){
+    var path=t.dataset.tbl, iol=t.dataset.mode==="iol";
+    function rows(){var v=getPath(S.base,path);if(iol){return Object.keys(v||{}).map(function(k){return Object.assign({puerto:k},v[k]);});}return v||[];}
+    function put(rs){
+      if(iol){var o={};rs.forEach(function(r){var k=String(r.puerto||"").trim();if(!k)k=String(Object.keys(o).length+1);var c=Object.assign({},r);delete c.puerto;
+        ["vendorid","deviceid"].forEach(function(f){c[f]=numOr(c[f]);});o[k]=c;});setPath(S.base,path,o);}
+      else{rs.forEach(function(r){["esperado","maximo"].forEach(function(f){if(f in r)r[f]=numOr(r[f]);});Object.keys(r).forEach(function(f){if(r[f]==="")delete r[f];});});setPath(S.base,path,rs);}
+      save();
+    }
+    t.querySelectorAll("[data-cell]").forEach(function(inp){inp.addEventListener("change",function(){var rs=rows();var r=rs[+inp.dataset.r];r[inp.dataset.cell]=inp.value;put(rs);if(iol&&inp.dataset.cell==="puerto")renderBase();});});
+    t.querySelectorAll("[data-rowdel]").forEach(function(b){b.onclick=function(){var rs=rows();rs.splice(+b.dataset.rowdel,1);put(rs);openOf(t);renderBase();};});
+    t.querySelector("[data-rowadd]").onclick=function(){var rs=rows();var n={};if(iol){var used=rs.map(function(r){return +r.puerto;});var p=1;while(used.indexOf(p)>=0)p++;n.puerto=String(p);}
+      if(/opcua\.nodos$/.test(path)){n.nombre="";n.nodeid='ns=3;s="DB_Verif"."G120_p1082"';}
+      if(/avisos$/.test(path)){n.id="SSA-";n.severidad="ALTA";}
+      rs.push(n);put(rs);openOf(t);renderBase();};
+  });
+  function openOf(node){var dt=node.closest("details");if(dt)renderDisp.open[dt.dataset.i]=true;}
+  el.querySelectorAll("[data-act]").forEach(function(b){b.onclick=function(){
+    var i=+b.dataset.i, d=S.base.dispositivos[i];
+    if(b.dataset.act==="del"){if(!confirm("¿Eliminar «"+d.nombre+"» de la línea base?"))return;S.base.dispositivos.splice(i,1);renderDisp.open={};}
+    if(b.dataset.act==="dup"){var c=clone(d);c.nombre+=" (copia)";c.id_redot="";c.ip="";S.base.dispositivos.splice(i+1,0,c);renderDisp.open[i+1]=true;}
+    if(b.dataset.act==="preset"){d.esperado=Object.assign(d.esperado,clone(PRESET[d.perfil]||{}));renderDisp.open[i]=true;toast("Valores recomendados aplicados");}
+    save();renderBase();};});
+  var add=document.getElementById("bAddDisp");
+  if(add)add.onclick=function(){var p=document.getElementById("nuevoPerfil").value;S.base.dispositivos.push(nuevoDisp(p,{nombre:PERFILES[p].lbl}));renderDisp.open[S.base.dispositivos.length-1]=true;save();renderBase();};
+}
+
+function validarBase(b){
+  var avisos=[];
+  var ips={};
+  b.dispositivos.forEach(function(d){
+    if(!d.ip)avisos.push("«"+d.nombre+"» no tiene IP.");
+    else if(!/^\d{1,3}(\.\d{1,3}){3}$/.test(d.ip))avisos.push("«"+d.nombre+"»: IP no válida ("+d.ip+").");
+    if(d.ip){if(ips[d.ip])avisos.push("IP repetida: "+d.ip+".");ips[d.ip]=1;}
+    var e=d.esperado||{};
+    (e.puertos_abiertos||[]).forEach(function(p){if((e.puertos_cerrados||[]).indexOf(p)>=0)avisos.push("«"+d.nombre+"»: el puerto "+p+" está como necesario y como prohibido.");});
+  });
+  if(b.ajustes.dcp&&b.ajustes.dcp.activar&&!b.ajustes.dcp.ip_interfaz)avisos.push("DCP activado sin la IP del PC en la VLAN.");
+  return avisos;
+}
+
+document.getElementById("bImpRed").onclick=function(){pickFile(function(o){
+  if(!o||!Array.isArray(o.devices)){alert("No parece un JSON exportado desde el Editor Red OT (falta «devices»).");return;}
+  S.redot=o;S.zona=(o.zonas&&o.zonas[0])?o.zonas[0].id:"";save();renderRedSel();toast("Esquema Red OT cargado");});};
+document.getElementById("bAbrirBase").onclick=function(){pickFile(function(o){
+  if(!o||o.schema!=="ot-baseline/1.0"||!Array.isArray(o.dispositivos)){alert("No es una línea base de Verificación OT (schema ot-baseline/1.0).");return;}
+  S.base=o;renderDisp.open={};save();renderBase();toast("Línea base abierta");});};
+document.getElementById("bEjBase").onclick=function(){if(S.base&&S.base.dispositivos.length&&!confirm("Se sustituirá la línea base actual por el ejemplo. ¿Continuar?"))return;S.base=clone(EJ_BASE);renderDisp.open={0:true};save();renderBase();};
+document.getElementById("bNuevaBase").onclick=function(){if(S.base&&S.base.dispositivos.length&&!confirm("¿Empezar una línea base vacía?"))return;S.base=nuevaBase();renderDisp.open={};save();renderBase();};
+document.getElementById("bExpBase").onclick=function(){
+  if(!S.base){alert("No hay línea base que exportar.");return;}
+  var av=validarBase(S.base);
+  if(av.length&&!confirm("Revisa antes de exportar:\n\n• "+av.join("\n• ")+"\n\n¿Exportar de todos modos?"))return;
+  S.base.celda.fecha=S.base.celda.fecha||hoy();
+  download("linea_base_"+slug(S.base.celda.nombre)+".json",JSON.stringify(S.base,null,2));
+};
+
+/* ===================== RESULTADOS ===================== */
+var ST_LBL={OK:"OK",DESVIACION:"DESVIACIÓN",NO_COMPROBABLE:"NO COMPROBABLE",INFO:"INFO"};
+function badge(c){
+  if(c.estado==="DESVIACION")return '<span class="st '+(c.severidad||"MEDIA")+'">'+(c.severidad||"MEDIA")+'</span>';
+  if(c.estado==="OK")return '<span class="st OK">OK</span>';
+  return '<span class="st '+(c.estado==="INFO"?"INFO":"NC")+'">'+ST_LBL[c.estado]+'</span>';
+}
+function fmt(v){if(v==null)return "";if(typeof v==="object")return JSON.stringify(v);return String(v);}
+function renderRes(){
+  var el=document.getElementById("resView"), r=S.res;
+  if(!r){el.innerHTML='<div class="empty"><p style="font-size:15px;margin:0 0 6px"><b>Sin resultados</b></p><p style="margin:0">Carga el archivo <code>resultado_….json</code> que genera <code>verificar_celda.py</code>, o el ejemplo simulado.</p></div>';return;}
+  var s=r.resumen||{}, solo=document.getElementById("soloDesv").checked;
+  var h='<div class="card"><h2>Informe de verificación · '+esc((r.celda||{}).nombre||"")+'</h2>'+
+    '<p class="hint" style="margin:0">Fecha: <b>'+esc(r.fecha||"")+'</b> · Línea base: '+esc(r.linea_base||"")+' · VLAN '+esc((r.celda||{}).vlan||"?")+
+    ' · Ejecutado desde '+esc((r.equipo_origen||{}).host||"?")+' · '+esc(r.herramienta||"")+(r.duracion_s?' · '+r.duracion_s+' s':'')+'</p>'+
+    (r.nota?'<p class="hint" style="margin:6px 0 0"><b>'+esc(r.nota)+'</b></p>':'')+'</div>';
+  h+='<div class="kpis">'+
+    '<div class="kpi al"><b>'+(s.ALTA||0)+'</b><span>Desviaciones ALTA</span></div>'+
+    '<div class="kpi me"><b>'+(s.MEDIA||0)+'</b><span>Desviaciones MEDIA</span></div>'+
+    '<div class="kpi ba"><b>'+(s.BAJA||0)+'</b><span>Desviaciones BAJA</span></div>'+
+    '<div class="kpi ok"><b>'+(s.OK||0)+'</b><span>Comprobaciones OK</span></div>'+
+    '<div class="kpi"><b>'+(s.NO_COMPROBABLE||0)+'</b><span>No comprobables</span></div>'+
+    '<div class="kpi '+((s.equipos_no_inventariados||0)?"me":"")+'"><b>'+(s.equipos_no_inventariados||0)+'</b><span>Equipos no inventariados</span></div></div>';
+  var dcp=r.dcp||{};
+  if(dcp.error)h+='<div class="note">DCP: '+esc(dcp.error)+'</div>';
+  if((dcp.desconocidos||[]).length){
+    h+='<div class="card"><h2>Equipos PROFINET no inventariados (DCP)</h2><table class="res"><tr><th>Nombre de estación</th><th>IP</th><th>MAC</th><th>Familia</th></tr>'+
+      dcp.desconocidos.map(function(e){return '<tr><td>'+esc(e.nombre_pn)+'</td><td class="mono">'+esc(e.ip)+'</td><td class="mono">'+esc(e.mac)+'</td><td>'+esc(e.familia)+'</td></tr>';}).join("")+
+      '</table><p class="hint" style="margin:8px 0 0"><span class="st MEDIA">MEDIA</span> Un equipo en la red de la célula que no figura en el inventario debe identificarse: o se añade al inventario o se retira.</p></div>';
+  }
+  var ord={ALTA:0,MEDIA:1,BAJA:2};
+  (r.dispositivos||[]).forEach(function(d){
+    var cs=(d.comprobaciones||[]).slice();
+    if(solo)cs=cs.filter(function(c){return c.estado==="DESVIACION";});
+    cs.sort(function(a,b){var ka=a.estado==="DESVIACION"?ord[a.severidad||"MEDIA"]:(a.estado==="OK"?4:3),kb=b.estado==="DESVIACION"?ord[b.severidad||"MEDIA"]:(b.estado==="OK"?4:3);return ka-kb;});
+    var nd=(d.comprobaciones||[]).filter(function(c){return c.estado==="DESVIACION";});
+    if(solo&&!cs.length)return;
+    var o=d.observado||{}, obs=[];
+    ["referencia","firmware","estado_cpu","nombre_pn","web","snmp_sysdescr"].forEach(function(k){if(o[k]!=null&&o[k]!=="")obs.push(k+': <code>'+esc(fmt(o[k]))+'</code>');});
+    if(o.put_get!=null)obs.push('put_get: <code>'+o.put_get+'</code>');
+    if(Array.isArray(o.puertos_abiertos))obs.push('puertos abiertos: <code>'+(o.puertos_abiertos.join(", ")||"—")+'</code>');
+    h+='<div class="card devres"><div class="hd"><h3>'+esc(d.nombre)+'</h3><span class="pill">'+esc(d.ip)+'</span><span class="pill">'+esc((PERFILES[d.perfil]||{}).lbl||d.perfil)+'</span>'+
+       (nd.length?'<span class="st '+(nd.some(function(c){return c.severidad==="ALTA";})?"ALTA":"MEDIA")+'">'+nd.length+' desviación(es)</span>':'<span class="st OK">conforme</span>')+'</div>'+
+       (obs.length?'<p class="obs">Observado → '+obs.join(" · ")+'</p>':'')+
+       '<table class="res"><tr><th style="width:110px">Resultado</th><th>Comprobación</th><th>Esperado</th><th>Real</th></tr>';
+    cs.forEach(function(c){
+      h+='<tr><td>'+badge(c)+'</td><td>'+esc(c.descripcion)+(c.recomendacion?'<div class="rec">➜ '+esc(c.recomendacion)+'</div>':'')+
+         (c.evidencia?'<div class="ev">'+esc(c.evidencia)+'</div>':'')+'</td><td class="mono">'+esc(fmt(c.esperado))+'</td><td class="mono">'+esc(fmt(c.real))+'</td></tr>';
+    });
+    h+='</table></div>';
+  });
+  h+='<div class="card noprint"><h2>Siguiente paso: llevar los hallazgos al análisis de riesgo</h2><p class="hint" style="margin:0">Con el esquema Red OT de la célula cargado en la pestaña ①, el botón <b>🔁 Actualizar inventario Red OT</b> escribe el firmware y la referencia leídos en cada dispositivo y añade sus desviaciones en las notas. Importa ese JSON en <b>Análisis de Riesgo → Importar desde Red OT</b>: los hallazgos quedan junto a cada activo para valorar amenazas y vulnerabilidades (criterio i).</p></div>';
+  el.innerHTML=h;
+}
+document.getElementById("soloDesv").onchange=renderRes;
+document.getElementById("bAbrirRes").onclick=function(){pickFile(function(o){
+  if(!o||o.schema!=="ot-verif/1.0"){alert("No es un archivo de resultados de verificar_celda.py (schema ot-verif/1.0).");return;}
+  S.res=o;save();renderRes();toast("Resultados cargados");});};
+document.getElementById("bEjRes").onclick=function(){S.res=clone(EJ_RES);save();renderRes();};
+document.getElementById("bPrint").onclick=function(){if(!S.res){alert("Carga primero unos resultados.");return;}window.print();};
+document.getElementById("bCSV").onclick=function(){
+  if(!S.res){alert("Carga primero unos resultados.");return;}
+  var q=function(v){v=fmt(v).replace(/"/g,'""');return '"'+v+'"';};
+  var solo=document.getElementById("soloDesv").checked;
+  var lines=[["Equipo","IP","Perfil","Comprobación","Estado","Severidad","Esperado","Real","Recomendación"].join(";")];
+  S.res.dispositivos.forEach(function(d){(d.comprobaciones||[]).forEach(function(c){
+    if(solo&&c.estado!=="DESVIACION")return;
+    lines.push([d.nombre,d.ip,d.perfil,c.descripcion,ST_LBL[c.estado]||c.estado,c.severidad,c.esperado,c.real,c.recomendacion].map(q).join(";"));});});
+  download("hallazgos_"+slug((S.res.celda||{}).nombre)+".csv","﻿"+lines.join("\r\n"),"text/csv");
+};
+document.getElementById("bRedOTUpd").onclick=function(){
+  if(!S.res){alert("Carga primero unos resultados.");return;}
+  if(!S.redot){alert("Carga el esquema Red OT de la planta en la pestaña ① (Importar Red OT) para poder actualizarlo.");return;}
+  var red=clone(S.redot), n=0, fecha=(S.res.fecha||"").slice(0,10);
+  S.res.dispositivos.forEach(function(d){
+    var dev=red.devices.find(function(x){return (d.id_redot&&x.id===d.id_redot)||(x.props&&x.props.ip&&x.props.ip===d.ip);});
+    if(!dev)return; n++;
+    var o=d.observado||{}, p=dev.props=dev.props||{};
+    if(o.firmware)p.firmware=o.firmware;
+    if(o.referencia&&!p.product_code)p.product_code=o.referencia;
+    var des=(d.comprobaciones||[]).filter(function(c){return c.estado==="DESVIACION";});
+    var txt="[Verificación OT "+fecha+"] "+(des.length?des.map(function(c){return c.severidad+": "+c.descripcion+" → "+fmt(c.real);}).join(" | "):"sin desviaciones");
+    p.notes=((p.notes||"").replace(/\s*\[Verificación OT [^\]]*\][^\n]*/g,"").trim()+"\n"+txt).trim();
+  });
+  if(!n){alert("Ningún equipo de los resultados coincide (por id o IP) con el esquema Red OT cargado.");return;}
+  download(slug(red.nombre||"red_ot")+"_verificado.json",JSON.stringify(red,null,2));
+  toast(n+" dispositivos actualizados en el JSON de Red OT");
+};
+
+/* ===================== inicio ===================== */
+load(); renderBase(); renderRes();
+</script>
+</body>
+</html>

@@ -13,7 +13,7 @@
 :root[data-theme="dark"]{--ink:#e7eef6;--muted:#9fb2c6;--line:#2b3a4c;--bg:#0f1720;--card:#16212e;--soft2:#1a2735;color-scheme:dark}
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;color:var(--ink);background:var(--bg)}
-.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
 header.top{background:linear-gradient(135deg,var(--navy),var(--navy2) 60%,var(--teal-d));color:#fff;padding:30px 0 26px}
 header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:16px}
@@ -25,7 +25,7 @@ header .sub{color:#bcd4e6;font-size:14px;margin-top:4px}
 .themebtn:hover{background:rgba(255,255,255,.12)}
 main{padding:34px 0 50px}
 .intro{color:var(--muted);font-size:15px;line-height:1.6;max-width:720px;margin:0 0 26px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
 @media(max-width:720px){.grid{grid-template-columns:1fr}}
 .tool{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:14px;box-shadow:0 2px 14px rgba(15,39,68,.05);transition:transform .12s,box-shadow .12s}
 .tool:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(15,39,68,.12)}
@@ -34,6 +34,7 @@ main{padding:34px 0 50px}
 :root[data-theme="dark"] .tool h2{color:var(--ink)}
 .tool p{margin:0;color:var(--muted);font-size:14px;line-height:1.55;flex:1}
 .tool .tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag.beta{background:#e8743b;border-color:#e8743b;color:#fff}
 .tag{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;background:var(--soft2);border:1px solid var(--line);color:var(--muted)}
 .open{align-self:flex-start;text-decoration:none;background:var(--teal);color:#fff;border:0;padding:11px 20px;border-radius:9px;font-weight:700;font-size:14px}
 .open:hover{background:var(--teal-d)}
@@ -55,7 +56,7 @@ footer a{color:var(--teal-d);font-weight:600}
         <path d="M20 26l-5 6 5 6"/><path d="M44 26l5 6-5 6"/><path d="M36 22l-8 20"/>
       </svg>
       <div>
-        <h1>Toolbox-OT<span class="ver">v1.0</span></h1>
+        <h1>Toolbox-OT<span class="ver">v1.9</span></h1>
         <div class="sub">Caja de herramientas para ciberseguridad en Tecnologías de la Operación (OT/ICS)</div>
       </div>
     </div>
@@ -63,7 +64,7 @@ footer a{color:var(--teal-d);font-weight:600}
   </div>
 </header>
 <main class="wrap">
-  <p class="intro">Dos herramientas independientes que trabajan juntas mediante un archivo <b>JSON</b>: diseña la arquitectura de la planta en el <b>Editor Red OT</b> y evalúa su riesgo con <b>Análisis de Riesgo OT/ICS</b>, siguiendo IEC 62443-3-2, MAGERIT v3 y MITRE ATT&amp;CK for ICS.</p>
+  <p class="intro">Cinco herramientas independientes que trabajan juntas mediante un archivo <b>JSON</b>: diseña la arquitectura de la planta en el <b>Editor Red OT</b>, evalúa su riesgo con <b>Análisis de Riesgo OT/ICS</b> (IEC 62443-3-2, MAGERIT v3 y MITRE ATT&amp;CK for ICS) controla la cadena de suministro con <b>Proveedores OT</b> (IEC 62443-2-4, ISO/IEC 27036, ISO 31000) y comprueba la configuración real de una célula con <b>Verificación OT</b> <i>(beta)</i> y gestiona quién tiene acceso a cada equipo con <b>Accesos OT</b>.</p>
   <div class="grid">
     <div class="tool">
       <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="#1f8a8a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
@@ -71,7 +72,7 @@ footer a{color:var(--teal-d);font-weight:600}
         <path d="M24 12v12M24 24H10v12M24 24v12M24 24h14v12"/>
       </svg>
       <h2>Editor Red OT</h2>
-      <p>Dibuja esquemas de red industrial según el <b>modelo Purdue</b> (niveles N0–N4). Paleta de dispositivos, conductos con protocolo, zonas IEC 62443 con SL-T, validación, zoom/minimapa y exportación a JSON e imagen.</p>
+      <p>Dibuja esquemas de red industrial según el <b>modelo Purdue</b> (niveles N0–N4). Paleta de dispositivos, conductos con protocolo, zonas IEC 62443 con SL-T, <b>capa física</b> (zonas Z0–Z3 y puntos de acceso), validación y exportación a JSON e imagen.</p>
       <div class="tags"><span class="tag">Modelo Purdue</span><span class="tag">Zonas y conductos</span><span class="tag">Exporta JSON</span></div>
       <a class="open" href="redot.html">Abrir herramienta →</a>
     </div>
@@ -85,6 +86,36 @@ footer a{color:var(--teal-d);font-weight:600}
       <div class="tags"><span class="tag">IEC 62443</span><span class="tag">MAGERIT</span><span class="tag">ATT&amp;CK ICS</span></div>
       <a class="open" href="riesgo.html">Abrir herramienta →</a>
     </div>
+    <div class="tool">
+      <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="#6a55b4" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="6" y="8" width="16" height="12" rx="2"/><rect x="26" y="8" width="16" height="12" rx="2"/><rect x="16" y="30" width="16" height="12" rx="2"/>
+        <path d="M14 20v5h20v-5M24 25v5"/><path d="M20 36l3 3 5-6"/>
+      </svg>
+      <h2>Proveedores OT</h2>
+      <p>Gestiona la <b>cadena de suministro</b>: registro de proveedores con <b>criticidad</b>, cuestionario de homologación, <b>riesgos</b> con casos reales y matriz P×I, y documentos editables (pliego, NDA, SLA, acceso de terceros, FAT/SAT, baja) en <b>Word y PDF</b>. Importa los activos de Red OT.</p>
+      <div class="tags"><span class="tag">IEC 62443-2-4</span><span class="tag">ISO/IEC 27036</span><span class="tag">Word / PDF</span></div>
+      <a class="open" href="proveedores.html">Abrir herramienta →</a>
+    </div>
+    <div class="tool">
+      <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="#1f8a8a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="8" y="6" width="32" height="38" rx="3"/><path d="M16 4h16v6H16z"/>
+        <path d="M15 20l3 3 6-6"/><path d="M28 20h6"/><path d="M15 31l3 3 6-6"/><path d="M28 31h6"/>
+      </svg>
+      <h2>Verificación OT <span class="tag beta" style="vertical-align:middle">BETA</span></h2>
+      <p>Crea la <b>línea base</b> de una célula a partir de Red OT y comprueba con un script de <b>solo lectura</b> que los equipos siguen como deben: firmware y avisos, PUT/GET, SNMP, servicios, IO-Link y configuración del switch.</p>
+      <div class="tags"><span class="tag">Línea base</span><span class="tag">Inventario activo</span><span class="tag">Python</span></div>
+      <a class="open" href="verificacion.html">Abrir herramienta →</a>
+    </div>
+    <div class="tool">
+      <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="#e8743b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="17" cy="15" r="6"/><path d="M6 36c0-7 5-11 11-11s11 4 11 11"/>
+        <rect x="28" y="24" width="14" height="12" rx="2"/><path d="M31 24v-4a4 4 0 0 1 8 0v4"/>
+      </svg>
+      <h2>Accesos OT <span class="tag" style="vertical-align:middle">RA4</span></h2>
+      <p>Gestiona <b>identidades, cuentas y credenciales</b> de la planta: inventario de cuentas por equipo (incluidas las compartidas y las de fábrica), roles, terceros con caducidad, certificados y excepciones. Diagnóstico frente a la política y a <b>IEC 62443-3-3</b>, y listas de comprobación para <b>bajas y cambios de puesto</b>.</p>
+      <div class="tags"><span class="tag">IEC 62443-3-3 FR1/FR2</span><span class="tag">Altas y bajas</span><span class="tag">Revisión de accesos</span></div>
+      <a class="open" href="accesos.html">Abrir herramienta →</a>
+    </div>
   </div>
   <div class="flow">
     <h3>Flujo de trabajo recomendado</h3>
@@ -92,11 +123,14 @@ footer a{color:var(--teal-d);font-weight:600}
       <li>En el <b>Editor Red OT</b>: coloca los dispositivos por niveles, conéctalos y dibuja las zonas con su SL-T. Exporta el <b>JSON</b>.</li>
       <li>En <b>Análisis de Riesgo</b>: <i>Menú → Importar desde Red OT</i>. Se crean activos, zonas y conductos.</li>
       <li>Valora los activos (MAGERIT), define escenarios de amenaza (ATT&amp;CK ICS) y revisa el riesgo por zona frente al SL-T.</li>
+      <li>En <b>Proveedores OT</b>: <i>Proyecto → Importar activos desde JSON</i> con el mismo esquema. Clasifica a los proveedores por criticidad, evalúalos, registra los riesgos de la cadena de suministro y genera la documentación de compra.</li>
+      <li>En <b>Verificación OT</b> <i>(beta)</i>: importa el mismo esquema, crea la <b>línea base</b> de una célula y ejecuta <code>verificar_celda.py</code> en su VLAN. Con <i>Actualizar inventario Red OT</i> los hallazgos vuelven al esquema y de ahí al Análisis de Riesgo.</li>
+          <li>En <b>Accesos OT</b>: <i>Menú → Importar activos desde Red OT</i> (trae también la zona física y los elementos de la capa física) y <i>Importar proveedores</i> desde Proveedores OT; completa lo que falte y registra roles, personas y <b>todas las cuentas</b> (sin contraseñas). El panel compara el inventario con la política; <i>Bajas y cambios</i> genera la lista de comprobación de una salida o un cambio de puesto.</li>
     </ol>
   </div>
 </main>
 <footer class="wrap">
-  <p><b>Toolbox-OT v1.0</b> — Material educativo. Aplicación concebida e <b>inspirada por David de Armas Suárez</b> · <a href="mailto:conecta3@hotmail.com">conecta3@hotmail.com</a>.<br>
+  <p><b>Toolbox-OT v1.9</b> — Material educativo. Aplicación concebida e <b>inspirada por David de Armas Suárez</b> · <a href="mailto:conecta3@hotmail.com">conecta3@hotmail.com</a>.<br>
   <b>Propulsada por Claude.ai</b> (Anthropic) · <i>boosted by Claude.ai</i>. Licencia <b>CC BY 4.0</b> — libre distribución citando la autoría. <a href="https://creativecommons.org/licenses/by/4.0/deed.es" target="_blank" rel="noopener">Ver licencia</a>.</p>
 </footer>
 <script>
@@ -104,6 +138,7 @@ footer a{color:var(--teal-d);font-weight:600}
   function apply(t){if(t==="dark")document.documentElement.setAttribute("data-theme","dark");else document.documentElement.removeAttribute("data-theme");var b=document.getElementById("themebtn");if(b)b.textContent=(t==="dark")?"☀ Claro":"🌙 Oscuro";}
   function get(){try{return localStorage.getItem("toolbox_theme")||"light";}catch(e){return "light";}}
   apply(get());
+  window.addEventListener("storage",function(e){if(e.key==="toolbox_theme")apply(get());});
   document.getElementById("themebtn").onclick=function(){var n=get()==="dark"?"light":"dark";try{localStorage.setItem("toolbox_theme",n);}catch(e){}apply(n);};
 })();
 </script>
